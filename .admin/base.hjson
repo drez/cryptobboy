@@ -1,0 +1,64 @@
+{
+    cryptobboy:
+    {
+        set_config:{
+            project_url:"https://gc.local/cryptobboy/.admin/",
+            project_root:"/var/www/gc/p/cryptobboy/.admin/"
+        },
+        add_validator:true,
+        add_tablestamp:true,
+        set_debug_level:3,
+        add_hooks:{ "afterFormObj":["asset"], 
+                    "beforeSave":[], 
+                    "afterSave":[],
+                    "beforeList":["trade", "asset"],
+                    "child.beforeList":["asset.trade", "template.file"],
+                    "child.beforeListTr":["asset.trade"]
+                },
+        with_api:true,
+
+        "authy('User')":{
+            // modifiers
+            set_parent_menu:"Settings",
+            set_menu_priority: 200,
+            set_list_hide_columns: ["rights", "passwd_hash", "rights_all", "rights_owner", "rights_group"],
+            add_search_columns: {
+                    "Name":[["username", "%val", "or"], ["email", "%val"]],
+                    "Primary group":[["id_authy_group", "%val"]]
+                    },
+            with_child_tables: ["authy_group_x", "authy_log"],
+
+            // columns
+            id_authy:["primary"],
+            validation_key:"string(32)",
+            "username(Username)":["string(32)", "not-required", "unique"],
+            "fullname(Fullname)":["string(100)", "not-required"],
+            "email(Email)":["string(100)", "required"],
+            "passwd_hash(Password)":["string(32)", "required"],
+            "expire(Expiration)":["date()", "default:0000-00-00"],
+            deactivate(Deactivated):["enum(Yes, No)", "default:No"],
+
+            validator:{
+                email:{
+                    required:"authy_email_required",
+                    unique:"authy_email_in_use",
+                },
+                passwd_hash:{
+                    required:"authy_password_required"
+                }
+            }
+        },
+        "country('Country')": {
+            set_parent_menu:"Settings",
+			"id_country()": ["primary()"],
+			"name('Name')": ["varchar(100)"],
+			"code('Code')": ["varchar(3)"],
+			"timezone('Timezone')": ["varchar(20)"],
+			"timezone_code('Timezone code')": ["varchar(50)"],
+			"priority('Priority')": ["integer()"],
+			"validator": {"name":{"required":{"msg":"coutry_name_required","value":null}}},
+		}
+
+
+    }
+}

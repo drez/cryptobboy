@@ -1,0 +1,17 @@
+Options +FollowSymlinks -SymLinksIfOwnerMatch
+DirectoryIndex public/index.php
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+<IfModule mod_rewrite.c>
+  RewriteEngine on
+
+  RewriteCond %{REQUEST_URI} !^/dbg/
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_URI} !=favicon.ico
+  RewriteRule ^([a-zA-Z_.0-9/]*)$ public/index.php?%{QUERY_STRING} [L]
+</IfModule>
+
+<Files ~ "\.xml$">
+  Order allow,deny
+  Deny from all
+</Files>

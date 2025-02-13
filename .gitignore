@@ -1,0 +1,17 @@
+.admin/vendor/*
+.admin/.build/*
+.env
+composer.lock
+gc
+.admin/auth.json
+.admin/config/Built/basedata.sql
+.admin/public/css/*.min.css
+.admin/public/js/*.min.js
+error.cryptobboy.log
+.vscode
+error.cryptobboy.log
+patch
+.admin/*.xml*
+!.admin/build.xml
+.admin/tmp/db-backup.sql
+.admin/tmp/.db-back*

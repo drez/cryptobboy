@@ -1,0 +1,53 @@
+{
+    "name": "apigoat/cryptobboy",
+    "type": "project",
+    "description": "base admin interface",
+    "autoload": {
+        "psr-4": {
+            "ApiGoat\\": "vendor/apigoat/runtime/src",
+            "App\\om\\": "src/App/Models/Built/om",
+            "App\\Domains\\": "src/App/Domains"
+        }
+    },
+    "config": {
+        "vendor-dir": "vendor"
+    },
+     "require": {
+        "slim/slim": "^4.0",
+        "php-di/slim-bridge": "^3.0",
+        "php-di/php-di": "^6.0",
+        "components/jquery": "2.*",
+        "components/jqueryui": "1.10.*",
+        "ckeditor/ckeditor": "4.22.1",
+        "moxiecode/plupload": "^3.1",
+        "slim/psr7": "^1.0",
+        "symfony/filesystem": "^5.0",
+        "apigoat/runtime": "dev-master",
+        "propel/propel1": "dev-master",
+        "apigoat/phing-copy2": "dev-master",
+        "peppeocchi/php-cron-scheduler": "dev-master",
+        "adhocore/env": "^0.1.0",
+        "thingengineer/mysqli-database-class": "dev-master",
+        "vlucas/phpdotenv": "5.6.x-dev",
+        "linwj/binance": "dev-master"
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/drez/APIgoat-Propel1.git"
+        },{
+            "type": "git",
+            "url": "https://github.com/drez/APIgoat-runtime.git"
+        },{
+            "type": "git",
+            "url": "https://github.com/drez/conditional-middleware"
+        },{
+            "type": "git",
+            "url": "https://github.com/drez/APIgoat-phing-copy.git"
+        },{
+            "type": "git",
+            "url": "https://github.com/drez/binance-php.git"
+        }
+    ],
+  "minimum-stability": "dev"
+}

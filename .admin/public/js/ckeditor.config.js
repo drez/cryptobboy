@@ -1,0 +1,1 @@
+CKEDITOR.config.versionCheck = false;

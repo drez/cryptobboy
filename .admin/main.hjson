@@ -1,0 +1,109 @@
+{
+    cryptobboy:
+    {
+      
+      "asset('Asset')": {
+        set_menu_priority: 1,
+        add_search_columns:{
+          "Token": [["id_token", "%val", "multiple"]], 
+        },
+        set_order_list_columns:[["total_token", "DESC"]],
+        "with_child_tables": ["asset_exchange", "trade"],
+        "set_child_colunms":{"id_token":["ticker"]},
+        "add_tab_columns": {"Other":"locked_token"},
+        "set_list_hide_columns":["locked_token", "freeze_token"],
+        "set_readonly_columns":["id_token", "free_token", "staked_token", "total_token", "usd_value",
+         "locked_token", "freeze_token", "last_sync"]
+
+        "id_asset()": ["primary()"],
+        
+        "id_token('Token')": ["integer()","foreign(token)"],
+        "free_token('Free')": ["decimal(16, 9)"],
+        "staked_token('Staked')": ["decimal(16, 9)"],
+        "total_token('Total')": ["decimal(16, 9)"],
+        "usd_value('Value USD')": ["decimal(12, 2)"],
+
+        "locked_token('Locked')": ["decimal(16, 9)"],
+        "freeze_token('Frozen')": ["decimal(16, 9)"],
+        "last_sync('Last sync')": ["timestamp()"],
+        
+        "validator": {"free_token":{"required":{"msg":"free_token_required"}}},
+		  },
+
+      "asset_exchange('Wallet')": {
+        add_search_columns:{
+          "Token": [["id_token", "%val", "multiple"]], 
+        },
+        set_order_list_columns:[["free_token", "DESC"]],
+        "add_tab_columns": {"Other":"locked_token"},
+
+        "id_asset_exchange()": ["primary()"],
+        "id_asset()": ["integer()","foreign(asset)"],
+        
+        "type(Type)":["enum(Spot, Locked, Flexible)",'required'],
+        "id_exchange('Exchange')": ["integer()","foreign(exchange)"],
+        "id_token('')": ["integer()","foreign(token)"],
+        "free_token('Free')": ["decimal(16, 9)"],
+
+        "locked_token('Locked')": ["decimal(16, 9)"],
+        "freeze_token('Frozen')": ["decimal(16, 9)"],
+        
+        "validator": {"id_exchange":{"required":{"msg":"id_exchange_required"}}},
+		  },
+
+      "trade('Trade')": {
+        "set_parent_table": 'asset',
+        add_search_columns:{
+          "Type": [["type", "%val", "multiple"]], 
+          "Exchange": [["id_exchange", "%val", "multiple"]], 
+          "Date": [["date", "%val"]], 
+          "Date before": [["date", "%val", "LE"]], 
+          "Date after": [["date", "%val", "GE"]],
+        },
+        set_order_list_columns:[["date", "DESC"]],
+        "set_child_colunms":{"id_asset":["token.ticker"], commission_asset:["ticker"]}
+
+        "id_trade()": ["primary()"],
+        "type('State')": ["enum(Buy, Sell)",'required'],
+        "id_exchange('Exchange')": ["integer()","foreign(exchange)"],
+        "id_asset('')": ["integer()","foreign(asset)"],
+        "qty('Qty')": ["decimal(16, 9)"],
+        "id_symbol('Symbol')": ["integer()","foreign(symbol)"],
+        "date('Date')": ["timestamp()"],
+        "gross_usd('Price')": ["decimal(16, 9)"],
+        "commission('Commission')": ["decimal(16, 9)"],
+        "commission_asset('commissionAsset')":  ["integer()","foreign(token)", 'default:null',"foreign:id_token"],
+        
+        "order_id()": ["integer()"],
+        
+        "validator": {"qty":{"required":{"msg":"qty_required"}}},
+		  },
+      
+      "exchange('Exchange')": {
+        set_parent_menu:"Settings",
+        "id_exchange()": ["primary()"],
+        "name('Name')": ["varchar(100)"],
+        "api_key('')": ["varchar(1)"],
+        
+        "validator": {"name":{"required":{"msg":"name_required","value":null}}},
+      },
+      "token('Token')": {
+        set_parent_menu:"Settings",
+        "id_token()": ["primary()"],
+        "name('Name')": ["varchar(100)"],
+        "ticker('Ticker')": ["varchar(100)"],
+        
+        "validator": {"ticker":{"required":{"msg":"ticker_required","value":null}}},
+      },
+      "symbol('Symbol')": {
+        set_parent_menu:"Settings",
+        "set_child_colunms":{"id_token":["ticker"]},
+
+        "id_symbol()": ["primary()"],
+        "name('Symbol')": ["varchar(100)"],
+        "id_token('Base Ticker')": ["integer()","foreign(token)"],
+        
+        "validator": {"name":{"required":{"msg":"name_required","value":null}}},
+      }
+		}
+}

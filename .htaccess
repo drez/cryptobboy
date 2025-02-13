@@ -1,0 +1,8 @@
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
+RewriteEngine on
+RewriteBase /
+
+# Rewrites all URLS without blog in them
+  
+  RewriteRule ^(.*)$ /.admin/$1 [L]

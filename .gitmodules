@@ -1,0 +1,3 @@
+[submodule ".admin/vendor/linwj"]
+	path = .admin/vendor/linwj
+	url = https://github.com/drez/binance-php.git

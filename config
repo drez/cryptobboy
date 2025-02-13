@@ -1,0 +1,15 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[branch "main"]
+	vscode-merge-base = origin/master
+	remote = origin
+	merge = refs/heads/main
+[user]
+	email = fred@apigoat.com
+	name = Fred
+[remote "origin"]
+	url = https://github.com/drez/cryptobboy.git
+	fetch = +refs/heads/*:refs/remotes/origin/*
