@@ -7,7 +7,9 @@ Seamlessly aggregate all your wallet and exchange data into one powerful dashboa
 All Your Crypto in One Place – Our platform consolidates your assets and trades across multiple exchanges and wallets, starting with Binance.
 
 🔹 Real-Time Insights – Get up-to-date portfolio tracking, trade history analysis, and performance metrics.
+
 🔹 Advanced Analytics – Gain deep insights with historical data, profit/loss tracking, and asset allocation breakdowns.
+
 🔹 Secure & Private – We prioritize security with read-only API-based integrations, ensuring your data remains safe and cannot be modified.
 
 ## Status
