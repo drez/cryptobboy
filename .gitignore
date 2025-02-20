@@ -16,3 +16,5 @@ patch
 .admin/tmp/db-backup.sql
 .admin/tmp/.db-back*
 .admin/public/file/*
+.package-lock.json
+node_modules/

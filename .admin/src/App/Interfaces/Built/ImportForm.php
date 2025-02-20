@@ -65,6 +65,7 @@ class ImportForm extends Import
     public $hookListSearchTop;
     public $hookListSearchButton;
     public $hookListReadyJs;
+    public $hookListJs;
     public $hookListReadyJsFirst;
     public $setListRemoveDelete;
     public $hookSwHeader;
@@ -493,7 +494,8 @@ $(function(){
         
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
-        $return['js'] .= "";
+        
+        $return['js'] .= script("". $this->hookListJs);
         return $return;
     }
     /*

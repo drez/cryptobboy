@@ -11,6 +11,7 @@
         add_hooks:{ "afterFormObj":["asset", "import"], 
                     "beforeSave":[], 
                     "afterSave":[],
+                    "beforeListTr":["asset"],
                     "beforeList":["trade", "asset"],
                     "child.beforeList":["asset.trade", "template.file"],
                     "child.beforeListTr":["asset.trade"],

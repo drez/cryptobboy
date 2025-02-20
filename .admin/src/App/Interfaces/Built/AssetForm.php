@@ -66,6 +66,7 @@ class AssetForm extends Asset
     public $hookListSearchTop;
     public $hookListSearchButton;
     public $hookListReadyJs;
+    public $hookListJs;
     public $hookListReadyJsFirst;
     public $setListRemoveDelete;
     public $hookSwHeader;
@@ -371,11 +372,12 @@ class AssetForm extends Asset
         if($data->getToken()){
             $altValue['Token_Ticker'] = $data->getToken()->getTicker();
         }
+                if (method_exists($this, 'beforeListTr')){ $this->beforeListTr($altValue, $data, $i, $hook, $cCmoreCols);}
                 
 
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
-                $tr .= tr(
+                $tr .= $hook['tr_before'].tr(
                 td(span((($altValue['IdToken']) ? $altValue['IdToken'] : $altValue['Token_Ticker']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdToken' class=''  j='editAsset'") . 
                 td(span((($altValue['FreeToken']) ? $altValue['FreeToken'] : str_replace(',', '.', $data->getFreeToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='FreeToken' class='right'  j='editAsset'") . 
                 td(span((($altValue['StakedToken']) ? $altValue['StakedToken'] : str_replace(',', '.', $data->getStakedToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='StakedToken' class='right'  j='editAsset'") . 
@@ -383,13 +385,13 @@ class AssetForm extends Asset
                 td(span((($altValue['UsdValue']) ? $altValue['UsdValue'] : str_replace(',', '.', $data->getUsdValue())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='UsdValue' class='right'  j='editAsset'") . 
                 td(span((($altValue['AvgPrice']) ? $altValue['AvgPrice'] : str_replace(',', '.', $data->getAvgPrice())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='AvgPrice' class='right'  j='editAsset'") . 
                 td(span((($altValue['Profit']) ? $altValue['Profit'] : str_replace(',', '.', $data->getProfit())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Profit' class='right'  j='editAsset'") . 
-                td(span((($altValue['FlexibleToken']) ? $altValue['FlexibleToken'] : str_replace(',', '.', $data->getFlexibleToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='FlexibleToken' class='right'  j='editAsset'") . $cCmoreCols.$actionCell
-                , " 
+                td(span((($altValue['FlexibleToken']) ? $altValue['FlexibleToken'] : str_replace(',', '.', $data->getFlexibleToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='FlexibleToken' class='right'  j='editAsset'") . $hook['td'].$cCmoreCols.$actionCell
+                , " ".$hook['tr']."
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
                         class='".$hook['class']." '
                         id='AssetRow".$data->getPrimaryKey()."'")
-                ;
+                .$hook['tr_after'];
                 $i++;
                 unset($altValue);
             }
@@ -518,7 +520,8 @@ class AssetForm extends Asset
         
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
-        $return['js'] .= "";
+        
+        $return['js'] .= script("". $this->hookListJs);
         return $return;
     }
     /*
@@ -1212,6 +1215,7 @@ $this->fields['Asset']['IdToken']['html']
         $this->TableName = 'Trade';
         $altValue = array (
   'IdTrade' => '',
+  'StartAvg' => '',
   'Type' => '',
   'IdExchange' => '',
   'IdAsset' => '',
@@ -1376,7 +1380,8 @@ $this->fields['Asset']['IdToken']['html']
             $actionRowHeader = th('&nbsp;', " r='delrow' class='actionrow' ");
         }
 
-        $header = tr( th(_("State"), " th='sorted' c='Type' title='" . _('State')."' ")
+        $header = tr( th(_("Avg"), " th='sorted' c='StartAvg' title='" . _('Avg')."' ")
+.th(_("State"), " th='sorted' c='Type' title='" . _('State')."' ")
 .th(_("Exchange"), " th='sorted' c='Exchange.Name' title='"._('Exchange.Name')."' ")
 .th(_("Trading pair"), " th='sorted' c='Symbol.Name' title='"._('Symbol.Name')."' ")
 .th(_("Date"), " th='sorted' c='Date' title='" . _('Date')."' ")
@@ -1433,6 +1438,7 @@ $this->fields['Asset']['IdToken']['html']
                         tr(
                             (isset($this->hookListColumnsTradeFirst)?$this->hookListColumnsTradeFirst:'').
                             
+                td(span((($altValue['StartAvg']) ? $altValue['StartAvg'] : isntPo($data->getStartAvg())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='StartAvg' class='center'  j='editTrade'") . 
                 td(span((($altValue['Type']) ? $altValue['Type'] : isntPo($data->getType())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editTrade'") . 
                 td(span((($altValue['IdExchange']) ? $altValue['IdExchange'] : $Exchange_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdExchange' class=''  j='editTrade'") . 
                 td(span((($altValue['IdSymbol']) ? $altValue['IdSymbol'] : $Symbol_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdSymbol' class=''  j='editTrade'") . 

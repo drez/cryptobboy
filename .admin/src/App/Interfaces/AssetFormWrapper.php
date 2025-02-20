@@ -35,13 +35,14 @@ class AssetFormWrapper extends AssetForm
             $swmessage = "sw_message('".$this->args['data']['sw']."')";
         }
 
-        $this->hookFormIncludeJs = "
+        $siteUrl = _SITE_URL;
+        $this->hookFormIncludeJs = <<<JS
         var last_value=0;
         let color='#000';
         const getTicker = () => {
             const id_token = $('#formAsset #IdToken').val();
 
-            $.post('" . _SITE_URL . "Asset/getAsset/', {ui:'list', id_token:id_token, id_symbol:$('#formAsset #IdSymbol').val()}, (data)=>{
+            $.post('{$siteUrl}Asset/getAsset/', {ui:'list', id_token:id_token, id_symbol:$('#formAsset #IdSymbol').val()}, (data)=>{
                 if(data?.bids){
                     const value = Number(data?.bids).toString();
                     if(last_value > value){color='#c44100';}
@@ -59,9 +60,9 @@ class AssetFormWrapper extends AssetForm
                 }
             }, 'json');
         };
-        ";
+JS;
 
-        $this->hookFormReadyJs = "
+        $this->hookFormReadyJs = <<<JS
     getTicker();
     $('#ogf_Asset [for=IdToken]').parent().hide();
 
@@ -75,11 +76,21 @@ class AssetFormWrapper extends AssetForm
             });
         });
     });*/
-            ".$swmessage;
+JS; 
+    $this->hookFormReadyJs .= $swmessage;
 
         $avgPrice = ['qty' => 0, 'amount' => 0];
-        $Trades = TradeQuery::create()->filterByIdAsset($dataObj->getPrimaryKey())->orderByDate('ASC')->find();
+        $Trades = TradeQuery::create()
+            ->filterByIdAsset($dataObj->getPrimaryKey())
+            ->orderByDate('ASC')
+            ->find();
         foreach($Trades as $Trade){
+                if($Trade->getStartAvg() == 'Reset'){
+                    $avgPrice['qty'] = 0;
+                    $avgPrice['amount'] = 0;
+                    $curavg = 0;
+                }
+
                 if($Trade->getType() == 'Buy'){
                     $avgPrice['qty'] += $Trade->getQty();
                     $avgPrice['amount'] += $Trade->getQty()*$Trade->getGrossUsd();
@@ -106,29 +117,65 @@ class AssetFormWrapper extends AssetForm
 
     public function beforeList(&$request, &$pmpoData)
     {
+        $siteUrl = _SITE_URL;
+        $this->hookListJs = <<<JS
+    var avgPrices = {};
+    const getTickersSpot = () => {
+        const id_token = $('#formAsset #IdToken').val();
+        
+        $.post('{$siteUrl}Asset/getTickersSpot/', {ui:'list'}, (tickers)=>{
+            for (var ticker in tickers) {
+                var data = tickers[ticker];
+                if($('[data-ticker='+ticker+'] [c=AvgPrice]').text()){
+                    if( $('#ticker_price_'+ticker).length == 0){
+                        var avgPrice = $('[data-ticker='+ticker+'] [c=AvgPrice]').text();
+                        avgPrices[ticker] = Number(avgPrice);
+                    }
 
-        $this->hookListReadyJs = "
-            $('.sw-header .custom-controls').append( $('<a>').html('Sync assets').addClass('button-link-blue header-controls').attr('href', 'Javascript:;').attr('id', 'syncAssets') );
-           /*
-            $('.sw-header .custom-controls').append( $('<a>').html('Sync trades').addClass('button-link-blue header-controls').attr('href', 'Javascript:;').attr('id', 'syncTrades') );
-           */
-            $('#syncAssets').click(()=>{
-                sw_message('Synchronizing...', false, 'sync_load', true);
-                $.post('" . _SITE_URL . $this->virtualClassName . "/syncAssets/', {ui:'list'}, (data)=>{
-                    $('#editPopupDialog').html(data);
-                    $('#editPopupDialog').dialog('open');
-                    sw_message(true, false, 'sync_load');
-                });
-            });
-            $('#syncTrades').click(()=>{
-                sw_message('Synchronizing...', false, 'sync_load', true);
-                $.post('" . _SITE_URL . $this->virtualClassName . "/syncTrades/', {ui:'list'}, (data)=>{
-                    $('#editPopupDialog').html(data);
-                    $('#editPopupDialog').dialog('open');
-                    sw_message(true, false, 'sync_load');
-                });
-            });
-        ";
+                    
+                    var diff = Number(Math.round((data-avgPrices[ticker])/avgPrices[ticker]*100));
+                    var color = (diff >= 0)?'good':'bad';
+                    console.log(diff + ': ' + color)
+
+                    if( $('#ticker_price_'+ticker).length){
+                        $('#ticker_price_'+ticker).removeClass('good bad').addClass(color).html(data);
+                        $('#ticker_price_diff_'+ticker).removeClass('good bad').addClass(color).html(diff+"%");
+                    }else{
+                        $('[data-ticker='+ticker+'] [c=AvgPrice]').append( $('<div>').attr('id', 'ticker_price_'+ticker).addClass('ticker_price').addClass(color).html(data) );
+                        $('[data-ticker='+ticker+'] [c=AvgPrice]').prepend( $('<div>').attr('id', 'ticker_price_diff_'+ticker).addClass('ticker_price').addClass(color).html(diff+"%") );
+                    }
+                }
+                
+                
+            }
+            setTimeout(getTickersSpot, 4000);
+        }, 'json');
+    };
+JS;
+
+        $this->hookListReadyJs = <<<JS
+    getTickersSpot();
+    $('.sw-header .custom-controls').append( $('<a>').html('Sync assets').addClass('button-link-blue header-controls').attr('href', 'Javascript:;').attr('id', 'syncAssets') );
+    /*
+    $('.sw-header .custom-controls').append( $('<a>').html('Sync trades').addClass('button-link-blue header-controls').attr('href', 'Javascript:;').attr('id', 'syncTrades') );
+    */
+    $('#syncAssets').click(()=>{
+        sw_message('Synchronizing...', false, 'sync_load', true);
+        $.post('" . _SITE_URL . $this->virtualClassName . "/syncAssets/', {ui:'list'}, (data)=>{
+            $('#editPopupDialog').html(data);
+            $('#editPopupDialog').dialog('open');
+            sw_message(true, false, 'sync_load');
+        });
+    });
+    $('#syncTrades').click(()=>{
+        sw_message('Synchronizing...', false, 'sync_load', true);
+        $.post('" . _SITE_URL . $this->virtualClassName . "/syncTrades/', {ui:'list'}, (data)=>{
+            $('#editPopupDialog').html(data);
+            $('#editPopupDialog').dialog('open');
+            sw_message(true, false, 'sync_load');
+        });
+    });
+JS;
     }
 
     public function beforeChildListTrade(){
@@ -151,6 +198,10 @@ class AssetFormWrapper extends AssetForm
             ".$refresh."
         ";
         }
+    }
+
+    public function beforeListTr(&$altValue, $data, $i, &$param, $actionRow){
+        $param['tr'] = "data-ticker='".$data->getToken()->getTicker()."'";
     }
 
     public function beforeListTrTrade(&$altValue, $data, $i, $param, $actionRow){

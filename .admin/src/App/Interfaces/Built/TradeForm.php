@@ -65,6 +65,7 @@ class TradeForm extends Trade
     public $hookListSearchTop;
     public $hookListSearchButton;
     public $hookListReadyJs;
+    public $hookListJs;
     public $hookListReadyJsFirst;
     public $setListRemoveDelete;
     public $hookSwHeader;
@@ -249,7 +250,8 @@ class TradeForm extends Trade
 
         switch($act) {
             case 'head':
-                $trHead = th(_("State"), " th='sorted' c='Type' title='" . _('State')."' ")
+                $trHead = th(_("Avg"), " th='sorted' c='StartAvg' title='" . _('Avg')."' ")
+.th(_("State"), " th='sorted' c='Type' title='" . _('State')."' ")
 .th(_("Exchange"), " th='sorted' c='Exchange.Name' title='"._('Exchange.Name')."' ")
 .th(_("Trading pair"), " th='sorted' c='Symbol.Name' title='"._('Symbol.Name')."' ")
 .th(_("Date"), " th='sorted' c='Date' title='" . _('Date')."' ")
@@ -327,6 +329,7 @@ class TradeForm extends Trade
         $this->TableName = 'Trade';
         $altValue = array (
   'IdTrade' => '',
+  'StartAvg' => '',
   'Type' => '',
   'IdExchange' => '',
   'IdAsset' => '',
@@ -430,6 +433,7 @@ class TradeForm extends Trade
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
+                td(span((($altValue['StartAvg']) ? $altValue['StartAvg'] : isntPo($data->getStartAvg())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='StartAvg' class='center'  j='editTrade'") . 
                 td(span((($altValue['Type']) ? $altValue['Type'] : isntPo($data->getType())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editTrade'") . 
                 td(span((($altValue['IdExchange']) ? $altValue['IdExchange'] : $Exchange_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdExchange' class=''  j='editTrade'") . 
                 td(span((($altValue['IdSymbol']) ? $altValue['IdSymbol'] : $Symbol_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdSymbol' class=''  j='editTrade'") . 
@@ -570,7 +574,8 @@ class TradeForm extends Trade
         
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
-        $return['js'] .= "";
+        
+        $return['js'] .= script("". $this->hookListJs);
         return $return;
     }
     /*
@@ -583,6 +588,7 @@ class TradeForm extends Trade
         $e = new Trade();
         
         
+        if( $data['StartAvg'] == '' )unset($data['StartAvg']);
         if(!$data['Type']){
             $data['Type'] = "Buy";
         } 
@@ -590,6 +596,7 @@ class TradeForm extends Trade
 
         #
         
+        $e->setStartAvg(($data['StartAvg'] == '' ) ? null : $data['StartAvg']);
         //integer not required
         $e->setQty( ($data['Qty'] == '' ) ? null : $data['Qty']);
         //integer not required
@@ -621,6 +628,7 @@ class TradeForm extends Trade
         $e = TradeQuery::create()->findPk(json_decode($data['i']));
         
         
+        if( $data['StartAvg'] == '' )unset($data['StartAvg']);
         if(!$data['Type']){
             $data['Type'] = "Buy";
         } 
@@ -628,6 +636,9 @@ class TradeForm extends Trade
 
         
         
+        if(isset($data['StartAvg'])){
+            $e->setStartAvg(($data['StartAvg'] == '' ) ? null : $data['StartAvg']);
+        }
         if(isset($data['Qty'])){
             $e->setQty( ($data['Qty'] == '' ) ? null : $data['Qty']);
         }
@@ -819,6 +830,7 @@ class TradeForm extends Trade
         
         
         
+$this->fields['Trade']['StartAvg']['html'] = stdFieldRow(_("Avg"), selectboxCustomArray('StartAvg', array( '0' => array('0'=>_("-"), '1'=>"-"),'1' => array('0'=>_("Reset"), '1'=>"Reset"), ), _('Avg'), "s='d'  ", $dataObj->getStartAvg(), '', true), 'StartAvg', "", $this->commentsStartAvg, $this->commentsStartAvg_css, '', ' ', 'no');
 $this->fields['Trade']['Type']['html'] = stdFieldRow(_("State"), selectboxCustomArray('Type', array( '0' => array('0'=>_("Buy"), '1'=>"Buy"),'1' => array('0'=>_("Sell"), '1'=>"Sell"), ), "", "s='d'  ", $dataObj->getType(), '', false), 'Type', "", $this->commentsType, $this->commentsType_css, '', ' ', 'no');
 $this->fields['Trade']['IdExchange']['html'] = stdFieldRow(_("Exchange"), selectboxCustomArray('IdExchange', $this->arrayIdExchangeOptions, "", "v='ID_EXCHANGE'  s='d'  val='".$dataObj->getIdExchange()."'", $dataObj->getIdExchange()), 'IdExchange', "", $this->commentsIdExchange, $this->commentsIdExchange_css, '', ' ', 'no');
 $this->fields['Trade']['IdSymbol']['html'] = stdFieldRow(_("Trading pair"), selectboxCustomArray('IdSymbol', $this->arrayIdSymbolOptions, "", "v='ID_SYMBOL'  s='d'  val='".$dataObj->getIdSymbol()."'", $dataObj->getIdSymbol()), 'IdSymbol', "", $this->commentsIdSymbol, $this->commentsIdSymbol_css, '', ' ', 'no');
@@ -880,7 +892,8 @@ $this->fields['Trade']['CommissionAsset']['html'] = stdFieldRow(_("commissionAss
                 $this->hookFormInnerTop
                 
                 .
-$this->fields['Trade']['Type']['html']
+$this->fields['Trade']['StartAvg']['html']
+.$this->fields['Trade']['Type']['html']
 .$this->fields['Trade']['IdExchange']['html']
 .$this->fields['Trade']['IdSymbol']['html']
 .$this->fields['Trade']['Date']['html']
@@ -946,6 +959,9 @@ $this->fields['Trade']['Type']['html']
     function lockFormField($fields, $dataObj)
     {
         
+        $this->fieldsRo['Trade']['StartAvg']['html'] = stdFieldRow(_("Avg"), div( $dataObj->getStartAvg(), 'StartAvg_label' , "class='readonly' s='d'")
+                .input('hidden', 'StartAvg', $dataObj->getStartAvg(), "s='d'"), 'StartAvg', "", $this->commentsStartAvg, $this->commentsStartAvg_css, 'readonly', ' ', 'no');
+
         $this->fieldsRo['Trade']['Type']['html'] = stdFieldRow(_("State"), div( $dataObj->getType(), 'Type_label' , "class='readonly' s='d'")
                 .input('hidden', 'Type', $dataObj->getType(), "s='d'"), 'Type', "", $this->commentsType, $this->commentsType_css, 'readonly', ' ', 'no');
 

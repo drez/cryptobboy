@@ -65,6 +65,7 @@ class CountryForm extends Country
     public $hookListSearchTop;
     public $hookListSearchButton;
     public $hookListReadyJs;
+    public $hookListJs;
     public $hookListReadyJsFirst;
     public $setListRemoveDelete;
     public $hookSwHeader;
@@ -434,7 +435,8 @@ class CountryForm extends Country
         
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
-        $return['js'] .= "";
+        
+        $return['js'] .= script("". $this->hookListJs);
         return $return;
     }
     /*

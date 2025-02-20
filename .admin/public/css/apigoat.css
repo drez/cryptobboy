@@ -66,4 +66,22 @@
   padding-left: 10px;
   padding-right: 10px;
   margin-right: 20px;
+}
+
+.ticker_price {
+  display: inline-block;
+  font-size: small;
+  border-radius: 5px;
+  padding: 2px 1px 1px 2px;
+  margin-left: 5px;
+  margin-right: 5px;
+  color: white;
+}
+
+.bad {
+  background-color: #c44100;
+}
+
+.good {
+  background-color: #00c411;
 }/*# sourceMappingURL=apigoat.css.map */

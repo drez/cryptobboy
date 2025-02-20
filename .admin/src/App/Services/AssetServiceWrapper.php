@@ -23,6 +23,7 @@ class AssetServiceWrapper extends AssetService
         $this->customActions['syncTrades']            = 'syncAccountTrades';
         $this->customActions['getAsset']            = 'getAsset';
         $this->customActions['syncPair']            = 'syncPair';
+        $this->customActions['getTickersSpot']            = 'getTickersSpot';
         $this->Form = new AssetFormWrapper($request, $args);
     }
 
@@ -63,6 +64,39 @@ class AssetServiceWrapper extends AssetService
 
     public function syncPair(){
 
+    }
+
+    function getTickersSpot()
+    {
+        try {
+            $binance = new Binance($_ENV['BINANCE_KEY'], $_ENV['BINANCE_SECRET']);
+            $results = $binance->system()->getTickerPrice();
+
+            $Assets = AssetQuery::create()
+                ->leftJoin('Token t')
+                ->leftJoin('Symbol s')
+                ->addAsColumn('TP', "IF( asset.id_symbol, s.name, CONCAT(t.ticker, 'USDT') ) ")
+                ->addAsColumn('ticker', "t.ticker")
+                ->select(['TP', 'ticker'])
+                ->find();
+
+            foreach($Assets as $Asset){
+                $tikers[$Asset['TP']] = $Asset['ticker'];
+            }
+            
+           // echo pre(print_r($tikers, true));
+            foreach($results as $result){
+                if($tikers[$result['symbol']]){
+                    $res[$tikers[$result['symbol']]] = trim($result['price'], '0');
+                }
+            }
+
+            //echo pre(print_r($result, true));
+        }catch (\Exception $e){
+          return pre(print_r($e->getMessage(), true));
+        }
+
+        return json_encode($res);
     }
 
 

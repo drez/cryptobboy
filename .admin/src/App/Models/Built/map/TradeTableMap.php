@@ -43,6 +43,11 @@ class TradeTableMap extends TableMap
         $this->setUseIdGenerator(true);
         // columns
         $this->addPrimaryKey('id_trade', 'IdTrade', 'INTEGER', true, 10, null);
+        $this->addColumn('start_avg', 'StartAvg', 'ENUM', false, null, null);
+        $this->getColumn('start_avg', false)->setValueSet(array (
+  0 => '-',
+  1 => 'Reset',
+));
         $this->addColumn('type', 'Type', 'ENUM', true, null, null);
         $this->getColumn('type', false)->setValueSet(array (
   0 => 'Buy',
@@ -66,6 +71,7 @@ class TradeTableMap extends TableMap
         $this->addValidator('qty', 'required', 'propel.validator.RequiredValidator', '', 'qty_required');
         $this->addValidator('id_trade', 'required', 'propel.validator.RequiredValidator', '', ('Trade_IdTrade_required'));
         $this->addValidator('id_trade', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Trade_IdTrade_match_/^(?:[0-9]*|null)$/'));
+        $this->addValidator('start_avg', 'type', 'propel.validator.TypeValidator', 'string', ('Trade_StartAvg_type_string'));
         $this->addValidator('type', 'required', 'propel.validator.RequiredValidator', '', ('Trade_Type_required'));
         $this->addValidator('type', 'type', 'propel.validator.TypeValidator', 'string', ('Trade_Type_type_string'));
         $this->addValidator('id_exchange', 'required', 'propel.validator.RequiredValidator', '', ('Trade_IdExchange_required'));

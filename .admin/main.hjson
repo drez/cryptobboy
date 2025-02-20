@@ -70,6 +70,7 @@
         "set_list_hide_columns":["commission", "commission_asset"],
 
         "id_trade()": ["primary()"],
+        "start_avg('Avg')": ["enum(-, Reset)",'not-required'],
         "type('State')": ["enum(Buy, Sell)",'required'],
         "id_exchange('Exchange')": ["integer()","foreign(exchange)"],
         "id_asset('')": ["integer()","foreign(asset)"],

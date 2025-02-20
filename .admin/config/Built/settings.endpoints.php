@@ -271,6 +271,11 @@ $table['trade'] = [
     'id_trade' => [
         'type' => 'INTEGER',
     ],
+    'start_avg' => [
+        'type' => 'ENUM',
+        'description' => 'Avg',
+        'valueSet' => null,
+    ],
     'type' => [
         'type' => 'ENUM',
         'description' => 'State',

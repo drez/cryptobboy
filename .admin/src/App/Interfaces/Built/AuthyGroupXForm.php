@@ -65,6 +65,7 @@ class AuthyGroupXForm extends AuthyGroupX
     public $hookListSearchTop;
     public $hookListSearchButton;
     public $hookListReadyJs;
+    public $hookListJs;
     public $hookListReadyJsFirst;
     public $setListRemoveDelete;
     public $hookSwHeader;
@@ -426,7 +427,8 @@ class AuthyGroupXForm extends AuthyGroupX
         
         ".$this->orderReadyJsOrder."
         ".$this->hookListReadyJs;
-        $return['js'] .= "";
+        
+        $return['js'] .= script("". $this->hookListJs);
         return $return;
     }
     /*

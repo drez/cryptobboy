@@ -28,6 +28,7 @@ use App\TradeQuery;
  * Trade
  *
  * @method TradeQuery orderByIdTrade($order = Criteria::ASC) Order by the id_trade column
+ * @method TradeQuery orderByStartAvg($order = Criteria::ASC) Order by the start_avg column
  * @method TradeQuery orderByType($order = Criteria::ASC) Order by the type column
  * @method TradeQuery orderByIdExchange($order = Criteria::ASC) Order by the id_exchange column
  * @method TradeQuery orderByIdAsset($order = Criteria::ASC) Order by the id_asset column
@@ -45,6 +46,7 @@ use App\TradeQuery;
  * @method TradeQuery orderByIdModification($order = Criteria::ASC) Order by the id_modification column
  *
  * @method TradeQuery groupByIdTrade() Group by the id_trade column
+ * @method TradeQuery groupByStartAvg() Group by the start_avg column
  * @method TradeQuery groupByType() Group by the type column
  * @method TradeQuery groupByIdExchange() Group by the id_exchange column
  * @method TradeQuery groupByIdAsset() Group by the id_asset column
@@ -96,6 +98,7 @@ use App\TradeQuery;
  * @method Trade findOne(PropelPDO $con = null) Return the first Trade matching the query
  * @method Trade findOneOrCreate(PropelPDO $con = null) Return the first Trade matching the query, or a new Trade object populated from the query conditions when no match is found
  *
+ * @method Trade findOneByStartAvg(int $start_avg) Return the first Trade filtered by the start_avg column
  * @method Trade findOneByType(int $type) Return the first Trade filtered by the type column
  * @method Trade findOneByIdExchange(int $id_exchange) Return the first Trade filtered by the id_exchange column
  * @method Trade findOneByIdAsset(int $id_asset) Return the first Trade filtered by the id_asset column
@@ -113,6 +116,7 @@ use App\TradeQuery;
  * @method Trade findOneByIdModification(int $id_modification) Return the first Trade filtered by the id_modification column
  *
  * @method array findByIdTrade(int $id_trade) Return Trade objects filtered by the id_trade column
+ * @method array findByStartAvg(int $start_avg) Return Trade objects filtered by the start_avg column
  * @method array findByType(int $type) Return Trade objects filtered by the type column
  * @method array findByIdExchange(int $id_exchange) Return Trade objects filtered by the id_exchange column
  * @method array findByIdAsset(int $id_asset) Return Trade objects filtered by the id_asset column
@@ -236,7 +240,7 @@ abstract class BaseTradeQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_trade`, `type`, `id_exchange`, `id_asset`, `id_symbol`, `date`, `qty`, `gross_usd`, `commission`, `commission_asset`, `order_id`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `trade` WHERE `id_trade` = :p0';
+        $sql = 'SELECT `id_trade`, `start_avg`, `type`, `id_exchange`, `id_asset`, `id_symbol`, `date`, `qty`, `gross_usd`, `commission`, `commission_asset`, `order_id`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `trade` WHERE `id_trade` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -368,6 +372,33 @@ abstract class BaseTradeQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(TradePeer::ID_TRADE, $idTrade, $comparison);
+    }
+
+    /**
+     * Filter the query on the start_avg column
+     *
+     * @param     mixed $startAvg The value to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return TradeQuery The current query, for fluid interface
+     * @throws PropelException - if the value is not accepted by the enum.
+     */
+    public function filterByStartAvg($startAvg = null, $comparison = null)
+    {
+        if (is_scalar($startAvg)) {
+            $startAvg = TradePeer::getSqlValueForEnum(TradePeer::START_AVG, $startAvg);
+        } elseif (is_array($startAvg)) {
+            $convertedValues = array();
+            foreach ($startAvg as $value) {
+                $convertedValues[] = TradePeer::getSqlValueForEnum(TradePeer::START_AVG, $value);
+            }
+            $startAvg = $convertedValues;
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(TradePeer::START_AVG, $startAvg, $comparison);
     }
 
     /**

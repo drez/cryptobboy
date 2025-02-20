@@ -129,7 +129,7 @@ class Sync {
         $Asset->save();
     }
 
-    function syncTadeSymbols()
+    function syncTradeSymbols()
     {
 
         $tokens = $this->getLocalTokensMap();

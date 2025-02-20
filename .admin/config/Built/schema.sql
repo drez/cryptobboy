@@ -192,6 +192,7 @@ DROP TABLE IF EXISTS `trade`;
 CREATE TABLE `trade`
 (
     `id_trade` INTEGER(10) NOT NULL AUTO_INCREMENT,
+    `start_avg` TINYINT COMMENT 'Avg',
     `type` TINYINT NOT NULL COMMENT 'State',
     `id_exchange` INTEGER(11) NOT NULL COMMENT 'Exchange',
     `id_asset` INTEGER(11) NOT NULL,

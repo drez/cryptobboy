@@ -64,6 +64,12 @@ abstract class BaseTrade extends BaseObject implements Persistent
     protected $id_trade;
 
     /**
+     * The value for the start_avg field.
+     * @var        int
+     */
+    protected $start_avg;
+
+    /**
      * The value for the type field.
      * @var        int
      */
@@ -218,6 +224,26 @@ abstract class BaseTrade extends BaseObject implements Persistent
     {
 
         return $this->id_trade;
+    }
+
+    /**
+     * @Field()
+     * Get the [start_avg] column value.
+     * Avg
+     * @return int
+     * @throws PropelException - if the stored enum key is unknown.
+     */
+    public function getStartAvg()
+    {
+        if (null === $this->start_avg) {
+            return null;
+        }
+        $valueSet = TradePeer::getValueSet(TradePeer::START_AVG);
+        if (!isset($valueSet[$this->start_avg])) {
+            throw new PropelException('Unknown stored enum key: ' . $this->start_avg);
+        }
+
+        return $valueSet[$this->start_avg];
     }
 
     /**
@@ -515,6 +541,32 @@ abstract class BaseTrade extends BaseObject implements Persistent
 
         return $this;
     } // setIdTrade()
+
+    /**
+     * Set the value of [start_avg] column.
+     * Avg
+     * @param  int $v new value
+     * @return Trade The current object (for fluent API support)
+     * @throws PropelException - if the value is not accepted by this enum.
+     */
+    public function setStartAvg($v)
+    {
+        if ($v !== null) {
+            $valueSet = TradePeer::getValueSet(TradePeer::START_AVG);
+            if (!in_array($v, $valueSet)) {
+                throw new PropelException(sprintf('Value "%s" is not accepted in this enumerated column', $v));
+            }
+            $v = array_search($v, $valueSet);
+        }
+
+        if ($this->start_avg !== $v) {
+            $this->start_avg = $v;
+            $this->modifiedColumns[] = TradePeer::START_AVG;
+        }
+
+
+        return $this;
+    } // setStartAvg()
 
     /**
      * Set the value of [type] column.
@@ -903,21 +955,22 @@ abstract class BaseTrade extends BaseObject implements Persistent
         try {
 
             $this->id_trade = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-            $this->type = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
-            $this->id_exchange = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
-            $this->id_asset = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
-            $this->id_symbol = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
-            $this->date = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
-            $this->qty = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-            $this->gross_usd = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
-            $this->commission = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
-            $this->commission_asset = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
-            $this->order_id = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
-            $this->date_creation = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
-            $this->date_modification = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
-            $this->id_group_creation = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
-            $this->id_creation = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
-            $this->id_modification = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
+            $this->start_avg = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
+            $this->type = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
+            $this->id_exchange = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
+            $this->id_asset = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
+            $this->id_symbol = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
+            $this->date = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+            $this->qty = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
+            $this->gross_usd = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
+            $this->commission = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
+            $this->commission_asset = ($row[$startcol + 10] !== null) ? (int) $row[$startcol + 10] : null;
+            $this->order_id = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
+            $this->date_creation = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+            $this->date_modification = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
+            $this->id_group_creation = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
+            $this->id_creation = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
+            $this->id_modification = ($row[$startcol + 16] !== null) ? (int) $row[$startcol + 16] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -927,7 +980,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 16; // 16 = TradePeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 17; // 17 = TradePeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Trade object", $e);
@@ -1244,6 +1297,9 @@ abstract class BaseTrade extends BaseObject implements Persistent
         if ($this->isColumnModified(TradePeer::ID_TRADE)) {
             $modifiedColumns[':p' . $index++]  = '`id_trade`';
         }
+        if ($this->isColumnModified(TradePeer::START_AVG)) {
+            $modifiedColumns[':p' . $index++]  = '`start_avg`';
+        }
         if ($this->isColumnModified(TradePeer::TYPE)) {
             $modifiedColumns[':p' . $index++]  = '`type`';
         }
@@ -1302,6 +1358,9 @@ abstract class BaseTrade extends BaseObject implements Persistent
                 switch ($columnName) {
                     case '`id_trade`':
                         $stmt->bindValue($identifier, $this->id_trade, PDO::PARAM_INT);
+                        break;
+                    case '`start_avg`':
+                        $stmt->bindValue($identifier, $this->start_avg, PDO::PARAM_INT);
                         break;
                     case '`type`':
                         $stmt->bindValue($identifier, $this->type, PDO::PARAM_INT);
@@ -1544,21 +1603,22 @@ abstract class BaseTrade extends BaseObject implements Persistent
         $keys = TradePeer::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getIdTrade(),
-            $keys[1] => $this->getType(),
-            $keys[2] => $this->getIdExchange(),
-            $keys[3] => $this->getIdAsset(),
-            $keys[4] => $this->getIdSymbol(),
-            $keys[5] => $this->getDate(),
-            $keys[6] => $this->getQty(),
-            $keys[7] => $this->getGrossUsd(),
-            $keys[8] => $this->getCommission(),
-            $keys[9] => $this->getCommissionAsset(),
-            $keys[10] => $this->getOrderId(),
-            $keys[11] => $this->getDateCreation(),
-            $keys[12] => $this->getDateModification(),
-            $keys[13] => $this->getIdGroupCreation(),
-            $keys[14] => $this->getIdCreation(),
-            $keys[15] => $this->getIdModification(),
+            $keys[1] => $this->getStartAvg(),
+            $keys[2] => $this->getType(),
+            $keys[3] => $this->getIdExchange(),
+            $keys[4] => $this->getIdAsset(),
+            $keys[5] => $this->getIdSymbol(),
+            $keys[6] => $this->getDate(),
+            $keys[7] => $this->getQty(),
+            $keys[8] => $this->getGrossUsd(),
+            $keys[9] => $this->getCommission(),
+            $keys[10] => $this->getCommissionAsset(),
+            $keys[11] => $this->getOrderId(),
+            $keys[12] => $this->getDateCreation(),
+            $keys[13] => $this->getDateModification(),
+            $keys[14] => $this->getIdGroupCreation(),
+            $keys[15] => $this->getIdCreation(),
+            $keys[16] => $this->getIdModification(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1625,52 +1685,59 @@ abstract class BaseTrade extends BaseObject implements Persistent
                 $this->setIdTrade($value);
                 break;
             case 1:
+                $valueSet = TradePeer::getValueSet(TradePeer::START_AVG);
+                if (isset($valueSet[$value])) {
+                    $value = $valueSet[$value];
+                }
+                $this->setStartAvg($value);
+                break;
+            case 2:
                 $valueSet = TradePeer::getValueSet(TradePeer::TYPE);
                 if (isset($valueSet[$value])) {
                     $value = $valueSet[$value];
                 }
                 $this->setType($value);
                 break;
-            case 2:
+            case 3:
                 $this->setIdExchange($value);
                 break;
-            case 3:
+            case 4:
                 $this->setIdAsset($value);
                 break;
-            case 4:
+            case 5:
                 $this->setIdSymbol($value);
                 break;
-            case 5:
+            case 6:
                 $this->setDate($value);
                 break;
-            case 6:
+            case 7:
                 $this->setQty($value);
                 break;
-            case 7:
+            case 8:
                 $this->setGrossUsd($value);
                 break;
-            case 8:
+            case 9:
                 $this->setCommission($value);
                 break;
-            case 9:
+            case 10:
                 $this->setCommissionAsset($value);
                 break;
-            case 10:
+            case 11:
                 $this->setOrderId($value);
                 break;
-            case 11:
+            case 12:
                 $this->setDateCreation($value);
                 break;
-            case 12:
+            case 13:
                 $this->setDateModification($value);
                 break;
-            case 13:
+            case 14:
                 $this->setIdGroupCreation($value);
                 break;
-            case 14:
+            case 15:
                 $this->setIdCreation($value);
                 break;
-            case 15:
+            case 16:
                 $this->setIdModification($value);
                 break;
         } // switch()
@@ -1698,21 +1765,22 @@ abstract class BaseTrade extends BaseObject implements Persistent
         $keys = TradePeer::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setIdTrade($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setType($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setIdExchange($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setIdAsset($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setIdSymbol($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setDate($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setQty($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setGrossUsd($arr[$keys[7]]);
-        if (array_key_exists($keys[8], $arr)) $this->setCommission($arr[$keys[8]]);
-        if (array_key_exists($keys[9], $arr)) $this->setCommissionAsset($arr[$keys[9]]);
-        if (array_key_exists($keys[10], $arr)) $this->setOrderId($arr[$keys[10]]);
-        if (array_key_exists($keys[11], $arr)) $this->setDateCreation($arr[$keys[11]]);
-        if (array_key_exists($keys[12], $arr)) $this->setDateModification($arr[$keys[12]]);
-        if (array_key_exists($keys[13], $arr)) $this->setIdGroupCreation($arr[$keys[13]]);
-        if (array_key_exists($keys[14], $arr)) $this->setIdCreation($arr[$keys[14]]);
-        if (array_key_exists($keys[15], $arr)) $this->setIdModification($arr[$keys[15]]);
+        if (array_key_exists($keys[1], $arr)) $this->setStartAvg($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setType($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setIdExchange($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setIdAsset($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setIdSymbol($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setDate($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setQty($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setGrossUsd($arr[$keys[8]]);
+        if (array_key_exists($keys[9], $arr)) $this->setCommission($arr[$keys[9]]);
+        if (array_key_exists($keys[10], $arr)) $this->setCommissionAsset($arr[$keys[10]]);
+        if (array_key_exists($keys[11], $arr)) $this->setOrderId($arr[$keys[11]]);
+        if (array_key_exists($keys[12], $arr)) $this->setDateCreation($arr[$keys[12]]);
+        if (array_key_exists($keys[13], $arr)) $this->setDateModification($arr[$keys[13]]);
+        if (array_key_exists($keys[14], $arr)) $this->setIdGroupCreation($arr[$keys[14]]);
+        if (array_key_exists($keys[15], $arr)) $this->setIdCreation($arr[$keys[15]]);
+        if (array_key_exists($keys[16], $arr)) $this->setIdModification($arr[$keys[16]]);
     }
 
     /**
@@ -1725,6 +1793,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
         $criteria = new Criteria(TradePeer::DATABASE_NAME);
 
         if ($this->isColumnModified(TradePeer::ID_TRADE)) $criteria->add(TradePeer::ID_TRADE, $this->id_trade);
+        if ($this->isColumnModified(TradePeer::START_AVG)) $criteria->add(TradePeer::START_AVG, $this->start_avg);
         if ($this->isColumnModified(TradePeer::TYPE)) $criteria->add(TradePeer::TYPE, $this->type);
         if ($this->isColumnModified(TradePeer::ID_EXCHANGE)) $criteria->add(TradePeer::ID_EXCHANGE, $this->id_exchange);
         if ($this->isColumnModified(TradePeer::ID_ASSET)) $criteria->add(TradePeer::ID_ASSET, $this->id_asset);
@@ -1803,6 +1872,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
+        $copyObj->setStartAvg($this->getStartAvg());
         $copyObj->setType($this->getType());
         $copyObj->setIdExchange($this->getIdExchange());
         $copyObj->setIdAsset($this->getIdAsset());
@@ -2246,6 +2316,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
     public function clear()
     {
         $this->id_trade = null;
+        $this->start_avg = null;
         $this->type = null;
         $this->id_exchange = null;
         $this->id_asset = null;
