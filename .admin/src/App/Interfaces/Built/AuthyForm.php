@@ -1191,6 +1191,7 @@ $('.cntOnglet').parent().tabs();
      * @param array $data
     **/
     public function selectBoxAuthy_IdAuthyGroup(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = AuthyGroupQuery::create();
 
             $q->select(array('Name', 'IdAuthyGroup'));
@@ -1203,10 +1204,15 @@ $('.cntOnglet').parent().tabs();
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for AuthyGroupX_IdAuthyGroup selectBox 
@@ -1215,6 +1221,7 @@ $('.cntOnglet').parent().tabs();
      * @param array $data
     **/
     public function selectBoxAuthyGroupX_IdAuthyGroup(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = AuthyGroupQuery::create();
 
             $q->select(array('Name', 'IdAuthyGroup'));
@@ -1227,10 +1234,15 @@ $('.cntOnglet').parent().tabs();
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }	
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}	
     /**
      * function getAuthyGroupXList
      * @param string $IdAuthy
@@ -1434,13 +1446,14 @@ $('.cntOnglet').parent().tabs();
                 
                 $tr .= 
                         tr(
-                            (isset($hookListColumnsAuthyGroupXFirst)?$hookListColumnsAuthyGroupXFirst:'').
+                            (isset($this->hookListColumnsAuthyGroupXFirst)?$this->hookListColumnsAuthyGroupXFirst:'').
                             
                 td(span((($altValue['IdAuthyGroup']) ? $altValue['IdAuthyGroup'] : $AuthyGroup_Name) ?? ''." "), " crPk = '".(($data->getAuthyGroup())?$data->getAuthyGroup()->getIdAuthyGroup():0)."' i='" . json_encode($data->getPrimaryKey()) . "' c='IdAuthyGroup' class=''  j='editAuthyGroupX'") . 
-                            (isset($hookListColumnsAuthyGroupX)?$hookListColumnsAuthyGroupX:'').
+                            (isset($this->hookListColumnsAuthyGroupX)?$this->hookListColumnsAuthyGroupX:'').
                             $actionRow
-                        ,"id='AuthyGroupXRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='AuthyGroupX'  ")
-                        ;
+                            
+                        ,"id='AuthyGroupXRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='AuthyGroupX'  ");
+                        
                 
                 $i++;
             }
@@ -1750,16 +1763,17 @@ $('.cntOnglet').parent().tabs();
                 
                 $tr .= 
                         tr(
-                            (isset($hookListColumnsAuthyLogFirst)?$hookListColumnsAuthyLogFirst:'').
+                            (isset($this->hookListColumnsAuthyLogFirst)?$this->hookListColumnsAuthyLogFirst:'').
                             
                 td(span((($altValue['Timestamp']) ? $altValue['Timestamp'] : $data->getTimestamp()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Timestamp' class=''  j='editAuthyLog'") . 
                 td(span((($altValue['Login']) ? $altValue['Login'] : $data->getLogin()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Login' class=''  j='editAuthyLog'") . 
                 td(span((($altValue['Ip']) ? $altValue['Ip'] : $data->getIp()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Ip' class=''  j='editAuthyLog'") . 
                 td(span((($altValue['Count']) ? $altValue['Count'] : $data->getCount()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Count' class=''  j='editAuthyLog'") . 
-                            (isset($hookListColumnsAuthyLog)?$hookListColumnsAuthyLog:'').
+                            (isset($this->hookListColumnsAuthyLog)?$this->hookListColumnsAuthyLog:'').
                             $actionRow
-                        ,"id='AuthyLogRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='AuthyLog'  ")
-                        ;
+                            
+                        ,"id='AuthyLogRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='AuthyLog'  ");
+                        
                 
                 $i++;
             }

@@ -3,17 +3,17 @@
     {
       
       "asset('Asset')": {
-        set_menu_priority: 1,
+        set_menu_priority: 100,
         add_search_columns:{
           "Token": [["id_token", "%val", "multiple"]], 
         },
         set_order_list_columns:[["total_token", "DESC"]],
-        "with_child_tables": ["asset_exchange", "trade"],
+        "with_child_tables": ["trade", "asset_exchange"],
         "set_child_colunms":{"id_token":["ticker"]},
         "add_tab_columns": {"Other":"locked_token"},
         "set_list_hide_columns":["locked_token", "freeze_token"],
         "set_readonly_columns":["id_token", "free_token", "staked_token", "total_token", "usd_value",
-         "locked_token", "freeze_token", "last_sync"]
+         "locked_token", "freeze_token", "last_sync", "avg_price", "profit"]
 
         "id_asset()": ["primary()"],
         
@@ -22,6 +22,8 @@
         "staked_token('Staked')": ["decimal(16, 9)"],
         "total_token('Total')": ["decimal(16, 9)"],
         "usd_value('Value USD')": ["decimal(12, 2)"],
+        "avg_price('Avg. price')": ["decimal(14, 4)"],
+        "profit('Profit')": ["decimal(12, 2)"],
 
         "locked_token('Locked')": ["decimal(16, 9)"],
         "freeze_token('Frozen')": ["decimal(16, 9)"],
@@ -72,9 +74,9 @@
         "date('Date')": ["timestamp()"],
         "gross_usd('Price')": ["decimal(16, 9)"],
         "commission('Commission')": ["decimal(16, 9)"],
-        "commission_asset('commissionAsset')":  ["integer()","foreign(token)", 'default:null',"foreign:id_token"],
+        "commission_asset('commissionAsset')":  ["integer()","foreign(token)", 'default:null',"foreign:id_token", "not-required"],
         
-        "order_id()": ["integer()"],
+        "order_id()": ["bigint()"],
         
         "validator": {"qty":{"required":{"msg":"qty_required"}}},
 		  },
@@ -105,5 +107,19 @@
         
         "validator": {"name":{"required":{"msg":"name_required","value":null}}},
       }
+      "import('Import')": {
+        set_menu_priority: 1,
+        is_file_upload_table:{filters : {max_file_size : '10mb',mime_types: [{title : 'csv', extensions : 'csv'}]}},
+        "set_list_hide_columns":["file"],
+        "set_readonly_columns":["file", "items"],
+
+
+        "id_import()": ["primary()"],
+        "name('Name')": ["varchar(100)"],
+        "items('Items')": ["integer()"],
+        "file('File')": ["varchar(100)"],
+        
+        "validator": {"name":{"required":{"msg":"name_required","value":null}}},
+      },
 		}
 }

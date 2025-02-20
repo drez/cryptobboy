@@ -3713,12 +3713,6 @@ abstract class BaseTradePeer
         if ($obj->isNew() || $obj->isColumnModified(TradePeer::COMMISSION_ASSET))
             $columns[TradePeer::COMMISSION_ASSET] = $obj->getCommissionAsset();
 
-        if ($obj->isNew() || $obj->isColumnModified(TradePeer::COMMISSION_ASSET))
-            $columns[TradePeer::COMMISSION_ASSET] = $obj->getCommissionAsset();
-
-        if ($obj->isNew() || $obj->isColumnModified(TradePeer::ORDER_ID))
-            $columns[TradePeer::ORDER_ID] = $obj->getOrderId();
-
         }
 
         return BasePeer::doValidate(TradePeer::DATABASE_NAME, TradePeer::TABLE_NAME, $columns);

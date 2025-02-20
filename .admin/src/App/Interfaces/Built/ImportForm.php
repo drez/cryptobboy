@@ -5,13 +5,13 @@ namespace App;
 
 /**
  *  @version 1.1
- *  Generated Form class on the 'Symbol' table.
+ *  Generated Form class on the 'Import' table.
  *
  */
 use Psr\Http\Message\ServerRequestInterface as Request;
 use ApiGoat\Utility\FormHelper as Helper;
 
-class SymbolForm extends Symbol
+class ImportForm extends Import
 {
 
     use Helper;
@@ -95,8 +95,8 @@ class SymbolForm extends Symbol
     {
         $this->request = $request;
         $this->args = $args;
-        $this->model_name = 'Symbol';
-        $this->virtualClassName = 'Symbol';
+        $this->model_name = 'Import';
+        $this->virtualClassName = 'Import';
         $this->childMaxPerPage = (defined('app_child_max_per_page')) ? app_child_max_per_page : 30;
         $this->maxPerPage = (defined('app_max_per_page')) ? app_max_per_page : 50;
         $this->hookFormBottom = '';
@@ -114,16 +114,14 @@ class SymbolForm extends Symbol
     {
         $this->in = 'getListSearch';
 
-        $q = new SymbolQuery();
+        $q = new ImportQuery();
         $q = $this->setAclFilter($q);
         
 
         if(is_array( $this->searchMs )){
             # main search form
             $q::create()
-                
-                #required symbol
-                ->leftJoinWith('Token');
+                ;
                 
                 
         }else{
@@ -132,9 +130,7 @@ class SymbolForm extends Symbol
             $hasParent = json_decode($IdParent);
             if(empty($hasParent)) {
                 $q::create()
-                
-                #required symbol
-                ->leftJoinWith('Token');
+                ;
                 
             }
         }
@@ -154,7 +150,7 @@ class SymbolForm extends Symbol
                                 $q->orderBy($col,$sens);
                             }
                             $this->orderReadyJsOrder .="
-                                $(\"#SymbolListForm [th='sorted'][c='".$col."']\").attr('sens', '".strtolower($sens)."')
+                                $(\"#ImportListForm [th='sorted'][c='".$col."']\").attr('sens', '".strtolower($sens)."')
                                     .attr('order', 'on').addClass('sorted');
                             ";
                         }
@@ -185,8 +181,8 @@ class SymbolForm extends Symbol
 
         switch($act) {
             case 'head':
-                $trHead = th(_("Symbol"), " th='sorted' c='Name' title='" . _('Symbol')."' ")
-.th(_("Token ticker"), " th='sorted' c='Token.Ticker' title='"._('Token.Ticker')."' ")
+                $trHead = th(_("Name"), " th='sorted' c='Name' title='" . _('Name')."' ")
+.th(_("Items"), " th='sorted' c='Items' title='" . _('Items')."' ")
 . $this->cCmoreColsHeader;
                 if(!$this->setReadOnly){
                     $trHead .= th('&nbsp;',' class="actionrow delete" ');
@@ -202,18 +198,23 @@ class SymbolForm extends Symbol
 
             case 'search':
                 
-        $this->arrayIdTokenOptions = $this->selectBoxSymbol_IdToken($this, $emptyVar, $data);
                 
                 ;
                 return $trSearch;
 
             case 'add':
             ###### ADD
-                if($_SESSION[_AUTH_VAR]->hasRights('Symbol', 'a') && !$this->setReadOnly){
-                
-                                $this->listAddButton = htmlLink(
-                                    _("Add new")
-                                ,_SITE_URL.$this->virtualClassName."/edit/", "id='addSymbol' title='"._('Add')."' class='button-link-blue add-button'");
+                if($_SESSION[_AUTH_VAR]->hasRights('Import', 'a') && !$this->setReadOnly){
+
+                    $this->listAddButton .=
+                                    div(
+                                        htmlLink(
+                                            _("Add new")
+                                        , "Javascript:","id='pickfilesForm' title='"._('Add')."' class='button-link-blue add-button'")
+                                    .div('', 'filelist')
+                                    ,'upload-Import',' class="ac-left-action-buttons" ');
+                                        $add_button=$this->add_button;
+                    ;
             }
 
             return $this->listAddButton;
@@ -242,11 +243,12 @@ class SymbolForm extends Symbol
         $HelpDiv = '';
         $this->in = 'getList';
         $this->isChild = '';
-        $this->TableName = 'Symbol';
+        $this->TableName = 'Import';
         $altValue = array (
-  'IdSymbol' => '',
+  'IdImport' => '',
   'Name' => '',
-  'IdToken' => '',
+  'Items' => '',
+  'File' => '',
   'DateCreation' => '',
   'DateModification' => '',
   'IdGroupCreation' => '',
@@ -267,13 +269,13 @@ class SymbolForm extends Symbol
         $this->IdParent = $IdParent;
 
         // if Search params
-        $this->searchMs = $this->setSearchVar($request['ms'] ?? '', 'Symbol/');
+        $this->searchMs = $this->setSearchVar($request['ms'] ?? '', 'Import/');
 
         // order
-        $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'Symbol/');
+        $this->searchOrder = $this->setOrderVar($request['order'] ?? '', 'Import/');
 
         // page
-        $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Symbol/');
+        $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Import/');
 
         
         
@@ -313,8 +315,8 @@ class SymbolForm extends Symbol
             $i=0;
             
             if(!$this->setReadOnly && !$this->setListRemoveDelete){
-                if($_SESSION[_AUTH_VAR]->hasRights('Symbol', 'd')){
-                    $this->canDelete = htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteSymbol' ");
+                if($_SESSION[_AUTH_VAR]->hasRights('Import', 'd')){
+                    $this->canDelete = htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteImport' ");
                 }
             }
         
@@ -323,27 +325,25 @@ class SymbolForm extends Symbol
                 
                 
                 
-        $altValue['Token_Ticker'] = "";
-        if($data->getToken()){
-            $altValue['Token_Ticker'] = $data->getToken()->getTicker();
-        }
-                
+
+                    $this->listActionCell .=	htmlLink('<i class="ri-window-2-fill"></i>', _SITE_URL.$data->getFile(), "title='Open' j='fileViewImport' i='".$data->getPrimaryKey()."' target='_blank'")
+                                    .htmlLink('<i class="ri-chat-download-line"></i>', _SITE_URL."mod/file/dl.php?e=Import&id=".$data->getPrimaryKey(), "title='Download' j='fileImport' i='".$data->getPrimaryKey()."' target='_blank'");
 
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editSymbol'") . 
-                td(span((($altValue['IdToken']) ? $altValue['IdToken'] : $altValue['Token_Ticker']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdToken' class=''  j='editSymbol'") . $cCmoreCols.$actionCell
+                td(span((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editImport'") . 
+                td(span((($altValue['Items']) ? $altValue['Items'] : $data->getItems()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Items' class=''  j='editImport'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
                         class='".$hook['class']." '
-                        id='SymbolRow".$data->getPrimaryKey()."'")
+                        id='ImportRow".$data->getPrimaryKey()."'")
                 ;
                 $i++;
                 unset($altValue);
             }
-            $tr .= input('hidden', 'rowCountSymbol', $i);
+            $tr .= input('hidden', 'rowCountImport', $i);
         }
 
         
@@ -362,7 +362,7 @@ class SymbolForm extends Symbol
                 href(span(_('Open/close menu')),'javascript:','class="toggle-menu button-link-blue trigger-menu"')
                 .$this->getListHeader('add')
                 
-                .div($controlsContent,'SymbolControlsList', "class='custom-controls'")
+                .div($controlsContent,'ImportControlsList', "class='custom-controls'")
                 .$this->hookSwHeader.$HelpDiv
             ,'','class="sw-header"')
 
@@ -376,23 +376,23 @@ class SymbolForm extends Symbol
                 .input('hidden', 'ip', $IdParent, "s='d'")
                  .div(
                      div(
-                        table($trHead.$tr, "id='SymbolTable' class='tablesorter' style='width:100%;'")
+                        table($trHead.$tr, "id='ImportTable' class='tablesorter' style='width:100%;'")
                      ,'',' class="content" ')
                 ,'listForm',' class="ac-list" ')
                 .$this->hookListBottom
                 .$bottomRow
-            , 'SymbolListForm');
+            , 'ImportListForm');
 
           #no parent
 
     $editUi = (empty($IdParent)) ? 'tabsContain' : 'editDialog';
 
-    $editEvent .= "$(\"#SymbolListForm td[j='editSymbol']\").bindEdit({
+    $editEvent .= "$(\"#ImportListForm td[j='editImport']\").bindEdit({
                     modelName:'" . $this->virtualClassName . "',
                     destUi: '{$editUi}'
                 });
                 
-    $(\"#SymbolListForm [j='deleteSymbol']\").bindDelete({
+    $(\"#ImportListForm [j='deleteImport']\").bindDelete({
         modelName:'" . $this->virtualClassName . "',
         ui:'".$uiTabsId."',
         title: '".addslashes($this->tableDescription)."',
@@ -400,8 +400,8 @@ class SymbolForm extends Symbol
     });";
 
         $editEvent .= "
-        $('#SymbolPager').bindPaging({
-            tableName:'Symbol'
+        $('#ImportPager').bindPaging({
+            tableName:'Import'
             ,uiTabsId:'".$uiTabsId."'
             ,ajaxPageActParent:'".$this->virtualClassName."'
         });
@@ -413,7 +413,66 @@ class SymbolForm extends Symbol
             $HelpDivJs
             
             ."
-        
+
+$(function(){
+    var fileStatus = [];
+    var error = false;
+    $('#alertDialog p').html('');
+    var uploader = new plupload.Uploader({
+        runtimes : 'html5,html4',
+        browse_button : 'pickfilesForm',
+        container: document.getElementById('upload-Import'),
+        url: '"._SITE_URL."Import/upload',
+        drop_element : 'pickfilesForm',
+        filters : {\"max_file_size\":\"10mb\",\"mime_types\":[{\"title\":\"csv\",\"extensions\":\"csv\"}]},
+        init: {
+            PostInit: function() {
+                document.getElementById('filelist').innerHTML = '';
+            },
+            FilesAdded: function(up, files) {
+                $('#alertDialog p').html('Uploading ... (<span></span>%)').show();
+                $('#alertDialog').dialog('open');
+                plupload.each(files, function(file) {
+                    uploader.start();
+                    return false;
+                });
+            },
+            UploadProgress: function(up, file) {
+                $('#alertDialog p span').text(file.percent);
+            },
+            Error: function(up, err) {
+                $('#alertDialog p').html('Error ' + err.code+ '<br>'+err.message).show();
+                $('#alertDialog').dialog('open');
+            },
+            FileUploaded: function(upldr, file, response) {
+                if(response.response){
+                    var resp = JSON.parse(response.response);
+                    console.log(resp);
+                    if(resp.status == 'failure'){
+                        fileStatus.push(resp.messages);
+                        error = true;
+                    }
+                }
+            },
+            UploadComplete: function(up, files) {
+                if(error){
+                    $('#alertDialog p').html('Errors: '+JSON.stringify(fileStatus));
+                }else{
+                    $('#alertDialog').dialog('close');
+                }
+                $('body').css('cursor', 'default');
+                ".$this->hookUploadComplet."
+                document.location = '"._SITE_URL."Import/list/';
+
+            },
+            FileUploaded:function(up, files, object) {
+                ".$this->hookUploadCompletFile."
+            }
+        }
+    });
+    uploader.init();
+});
+
         
         
         $('#tabsContain .js-select-label').SelectBox();
@@ -423,8 +482,8 @@ class SymbolForm extends Symbol
             destUi:'".$uiTabsId."'
         });
 
-        if($('#addSymbolAutoc').length > 0) {
-            $('#addSymbolAutoc').bind('click', function () {
+        if($('#addImportAutoc').length > 0) {
+            $('#addImportAutoc').bind('click', function () {
                 $.post('"._SITE_URL."GuiManager', {a:'ixmemautoc', p:'{$this->virtualClassName}',}, function(data) {
                     document.location = '"._SITE_URL.$this->virtualClassName."/edit/';
                 });
@@ -440,11 +499,11 @@ class SymbolForm extends Symbol
     /*
     *	Make sure default value are set before save
     */
-    public function setCreateDefaultsSymbol($data)
+    public function setCreateDefaultsImport($data)
     {
 
-        unset($data['IdSymbol']);
-        $e = new Symbol();
+        unset($data['IdImport']);
+        $e = new Import();
         
         
         $e->fromArray($data );
@@ -467,11 +526,11 @@ class SymbolForm extends Symbol
     /*
     *	Make sure default value are set before save
     */
-    public function setUpdateDefaultsSymbol($data)
+    public function setUpdateDefaultsImport($data)
     {
 
         
-        $e = SymbolQuery::create()->findPk(json_decode($data['i']));
+        $e = ImportQuery::create()->findPk(json_decode($data['i']));
         
         
         $e->fromArray($data );
@@ -497,7 +556,7 @@ class SymbolForm extends Symbol
         return $e;
     }
     /**
-     * Produce a formated form of Symbol
+     * Produce a formated form of Import
      * @param	string $id			PrimaryKey of the record to show
      * @param	string $uiTabsId	Present everywhere, javascript id of the html container
      * @param	string $data 		If present, will skip the query and show the data
@@ -524,7 +583,7 @@ class SymbolForm extends Symbol
         $uiTabsId = ( $uiTabsId === null ) ? 'tabsContain' : $uiTabsId;
         $jet = 'tr';
 
-        $je = "SymbolTable";
+        $je = "ImportTable";
 
         if($jsElement)	{
             $je = $jsElement;
@@ -543,9 +602,6 @@ class SymbolForm extends Symbol
         if($data['pc']) {
             switch($data['pc']){
                 
-                case 'Token':
-                    $data['IdToken'] = $data['ip'];
-                    break;
                 case 'AuthyGroup':
                     $data['IdGroupCreation'] = $data['ip'];
                     break;
@@ -564,7 +620,7 @@ class SymbolForm extends Symbol
 
         // save button and action
         $this->SaveButtonJs = "";
-        if(($_SESSION[_AUTH_VAR]->hasRights('Symbol', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('Symbol', 'w') and $id) || $this->setReadOnly) {
+        if(($_SESSION[_AUTH_VAR]->hasRights('Import', 'a') and !$id ) || ( $_SESSION[_AUTH_VAR]->hasRights('Import', 'w') and $id) || $this->setReadOnly) {
             $this->SaveButtonJs = "
             $('#form" . $this->virtualClassName . " #save" . $this->virtualClassName . "').bindSave({
                 modelName: '" . $this->virtualClassName . "',
@@ -579,12 +635,12 @@ class SymbolForm extends Symbol
         ";
         }else{
             $this->SaveButtonJs = "
-                $('#formSymbol #saveSymbol').unbind('click.saveSymbol');
-                $('#formSymbol #saveSymbol').remove();";
+                $('#formImport #saveImport').unbind('click.saveImport');
+                $('#formImport #saveImport').remove();";
         }
 
-        if($_SESSION[_AUTH_VAR]->hasRights('Symbol', 'a') && !$this->setReadOnly) {
-            $this->formAddButton = htmlLink(_("Add new"), 'Javascript:;' , "id='addSymbol' title='"._('Add')."' class='button-link-blue add-button'");
+        if($_SESSION[_AUTH_VAR]->hasRights('Import', 'a') && !$this->setReadOnly) {
+            
             $this->bindEditJs = "$('.sw-header #add" . $this->virtualClassName . "').bindEdit({
                 modelName: '" . $this->virtualClassName . "',
                 destUi: '" . $uiTabsId . "',
@@ -598,53 +654,50 @@ class SymbolForm extends Symbol
         if($id && !$data['reload']) {
             
 
-            $q = SymbolQuery::create()
+            $q = ImportQuery::create()
             
-                #required symbol
-                ->leftJoinWith('Token')
             ;
             
 
 
-            $dataObj = $q->filterByIdSymbol($id)->findOne();
+            $dataObj = $q->filterByIdImport($id)->findOne();
             
         }
         
         if($dataObj == null){
-            $this->Symbol['isNew'] = 'yes';
+            $this->Import['isNew'] = 'yes';
         }
     
         
         
         if($dataObj == null){
-            $dataObj = new Symbol();
-            $this->Symbol['isNew'] = 'yes';
+            $dataObj = new Import();
+            $this->Import['isNew'] = 'yes';
             if(is_array($data ))
                $dataObj->fromArray(array_filter($data));
             
         }else{
-                $this->Symbol['isNew'] = 'no';
+                $this->Import['isNew'] = 'no';
         }
         $this->dataObj = $dataObj;
             
         
 
 
-                                    ($dataObj->getToken())?'':$dataObj->setToken( new Token() );
 
         
-        $this->arrayIdTokenOptions = $this->selectBoxSymbol_IdToken($this, $dataObj, $data);
         
         
         
         
         
         
-$this->fields['Symbol']['Name']['html'] = stdFieldRow(_("Symbol"), input('text', 'Name', htmlentities($dataObj->getName()), "   placeholder='".str_replace("'","&#39;",_('Symbol'))."' size='35'  v='NAME' s='d' class='req'  ")."", 'Name', "", $this->commentsName, $this->commentsName_css, '', ' ', 'no');
-$this->fields['Symbol']['IdToken']['html'] = stdFieldRow(_("Base Ticker"), selectboxCustomArray('IdToken', $this->arrayIdTokenOptions, "", "v='ID_TOKEN'  s='d'  val='".$dataObj->getIdToken()."'", $dataObj->getIdToken()), 'IdToken', "", $this->commentsIdToken, $this->commentsIdToken_css, '', ' ', 'no');
+$this->fields['Import']['Name']['html'] = stdFieldRow(_("Name"), input('text', 'Name', htmlentities($dataObj->getName()), "   placeholder='".str_replace("'","&#39;",_('Name'))."' size='35'  v='NAME' s='d' class='req'  ")."", 'Name', "", $this->commentsName, $this->commentsName_css, '', ' ', 'no');
+$this->fields['Import']['Items']['html'] = stdFieldRow(_("Items"), input('number', 'Items', $dataObj->getItems(), " step='1' placeholder='".str_replace("'","&#39;",_('Items'))."' v='ITEMS' size='5' s='d' class=''"), 'Items', "", $this->commentsItems, $this->commentsItems_css, '', ' ', 'no');
+$this->fields['Import']['File']['html'] = stdFieldRow(_("File"), input('text', 'File', htmlentities($dataObj->getFile()), "   placeholder='".str_replace("'","&#39;",_('File'))."' size='35'  v='FILE' s='d' class=''  ")."", 'File', "", $this->commentsFile, $this->commentsFile_css, '', ' ', 'no');
 
 
-        
+        $this->lockFormField(array(0=>'File',1=>'Items',), $dataObj);
 
         // Whole form read only
         if($this->setReadOnly == 'all' ) {
@@ -655,14 +708,14 @@ $this->fields['Symbol']['IdToken']['html'] = stdFieldRow(_("Base Ticker"), selec
         
         
         if(!$this->setReadOnly){
-            $this->formSaveBar = div(	div( input('button', 'saveSymbol', _('Save'),' class="button-link-blue can-save"')
-                                .input('hidden', 'formChangedSymbol','', 'j="formChanged"')
+            $this->formSaveBar = div(	div( input('button', 'saveImport', _('Save'),' class="button-link-blue can-save"')
+                                .input('hidden', 'formChangedImport','', 'j="formChanged"')
                                 .input('hidden', 'idPk', urlencode($id), "s='d'")
-                            .input('hidden', 'IdSymbol', $dataObj->getIdSymbol(), " s='d' pk").input('hidden', 'IdGroupCreation', $dataObj->getIdGroupCreation(), " s='d' nodesc").input('hidden', 'IdCreation', $dataObj->getIdCreation(), " s='d' nodesc").input('hidden', 'IdModification', $dataObj->getIdModification(), " s='d' nodesc")
+                            .input('hidden', 'IdImport', $dataObj->getIdImport(), " s='d' pk").input('hidden', 'IdGroupCreation', $dataObj->getIdGroupCreation(), " s='d' nodesc").input('hidden', 'IdCreation', $dataObj->getIdCreation(), " s='d' nodesc").input('hidden', 'IdModification', $dataObj->getIdModification(), " s='d' nodesc")
                             .$this->hookListSearchButton
                         ,"", " class='divtd' colspan='2' style='text-align:right;'"),""," class='divtr divbut' ");
         }
-        
+        if (method_exists($this, 'afterFormObj')){ $this->afterFormObj($data, $dataObj);}
         
 
         //Form header
@@ -675,8 +728,8 @@ $this->fields['Symbol']['IdToken']['html'] = stdFieldRow(_("Base Ticker"), selec
         $header_top_onglet = $this->formTitle.$ongletf;
 
         /*if(!isMobile()) {
-            $jqueryDatePicker = " $(\"#formSymbol [j='date']\").attr('type', 'text');
-            $(\"#formSymbol [j='date']\").each(function(){
+            $jqueryDatePicker = " $(\"#formImport [j='date']\").attr('type', 'text');
+            $(\"#formImport [j='date']\").each(function(){
                 $(this).datepicker({dateFormat: 'yy-mm-dd ',changeYear: true, changeMonth: true, yearRange: '1940:2040', showOtherMonths: true, selectOtherMonths: true});
             });";
         }*/
@@ -689,31 +742,32 @@ $this->fields['Symbol']['IdToken']['html'] = stdFieldRow(_("Base Ticker"), selec
         .form(
 
             div(
-                div('Symbol', '', "class='panel-heading'").
+                div('Import', '', "class='panel-heading'").
                 $header_top_onglet.
                 
                 $this->hookFormInnerTop
                 
                 .
-$this->fields['Symbol']['Name']['html']
-.$this->fields['Symbol']['IdToken']['html']
+$this->fields['Import']['Name']['html']
+.$this->fields['Import']['Items']['html']
+.$this->fields['Import']['File']['html']
                 
                 .$this->formSaveBar
                 .$this->hookFormInnerBottom
-            ,"divCntSymbol", "class='divStdform' CntTabs=1 ".$this->ccStdFormOptions)
-        , "id='formSymbol' class='mainForm formContent' ")
+            ,"divCntImport", "class='divStdform' CntTabs=1 ".$this->ccStdFormOptions)
+        , "id='formImport' class='mainForm formContent' ")
         .$this->hookFormBottom;
 
 
         
 
-        if($id and $_SESSION['mem']['Symbol']['ogf']) {
-            $tabs_act = "$('[href=\"".$_SESSION['mem']['Symbol']['ogf']."\"]').click();";
+        if($id and $_SESSION['mem']['Import']['ogf']) {
+            $tabs_act = "$('[href=\"".$_SESSION['mem']['Import']['ogf']."\"]').click();";
         }
 
-        if($_SESSION['mem']['Symbol']['ixmemautocapp'] and $_GET['Autocapp'] == 1) {
-            $Autocapp = $_SESSION['mem']['Symbol']['ixmemautocapp'];
-            unset($_SESSION['mem']['Symbol']['ixmemautocapp']);
+        if($_SESSION['mem']['Import']['ixmemautocapp'] and $_GET['Autocapp'] == 1) {
+            $Autocapp = $_SESSION['mem']['Import']['ixmemautocapp'];
+            unset($_SESSION['mem']['Import']['ixmemautocapp']);
         }
 
         $return['data'] .= $data;
@@ -744,9 +798,9 @@ $this->fields['Symbol']['Name']['html']
         .$HelpDivJs."
 
         setTimeout(function() {
-            $(\"#formSymbol [s='d'], #formSymbol .js-select-label, #formSymbol [j='autocomplete']\")
+            $(\"#formImport [s='d'], #formImport .js-select-label, #formImport [j='autocomplete']\")
                 .bindFormKeypress({modelName: '" . $this->virtualClassName . "'});
-            $('#formSymbol .js-select-label').SelectBox();
+            $('#formImport .js-select-label').SelectBox();
         }, 400);
         ";
         return $return;
@@ -755,52 +809,24 @@ $this->fields['Symbol']['Name']['html']
     function lockFormField($fields, $dataObj)
     {
         
-        $this->fieldsRo['Symbol']['Name']['html'] = stdFieldRow(_("Symbol"), div( $dataObj->getName(), 'Name_label' , "class='readonly' s='d'")
+        $this->fieldsRo['Import']['Name']['html'] = stdFieldRow(_("Name"), div( $dataObj->getName(), 'Name_label' , "class='readonly' s='d'")
                 .input('hidden', 'Name', $dataObj->getName(), "s='d'"), 'Name', "", $this->commentsName, $this->commentsName_css, 'readonly', ' ', 'no');
 
-        $this->fieldsRo['Symbol']['IdToken']['html'] = stdFieldRow(_("Base Ticker"), div( ($dataObj->getToken())?$dataObj->getToken()->getTicker():'', 'IdToken_label' , "class='readonly' s='d'")
-                .input('hidden', 'IdToken', $dataObj->getIdToken(), "s='d'"), 'IdToken', "", $this->commentsIdToken, $this->commentsIdToken_css, 'readonly', ' ', 'no');
+        $this->fieldsRo['Import']['Items']['html'] = stdFieldRow(_("Items"), div( $dataObj->getItems(), 'Items_label' , "class='readonly' s='d'")
+                .input('hidden', 'Items', $dataObj->getItems(), "s='d'"), 'Items', "", $this->commentsItems, $this->commentsItems_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['Import']['File']['html'] = stdFieldRow(_("File"), div( $dataObj->getFile(), 'File_label' , "class='readonly' s='d'")
+                .input('hidden', 'File', $dataObj->getFile(), "s='d'"), 'File', "", $this->commentsFile, $this->commentsFile_css, 'readonly', ' ', 'no');
 
 
         if($fields == 'all') {
-            foreach($this->fields['Symbol'] as $field => $ar) {
-                $this->fields['Symbol'][$field]['html'] = $this->fieldsRo['Symbol'][$field]['html'];
+            foreach($this->fields['Import'] as $field => $ar) {
+                $this->fields['Import'][$field]['html'] = $this->fieldsRo['Import'][$field]['html'];
             }
         } elseif(is_array($fields)) {
             foreach($fields as $field) {
-                $this->fields['Symbol'][$field]['html'] = $this->fieldsRo['Symbol'][$field]['html'];
+                $this->fields['Import'][$field]['html'] = $this->fieldsRo['Import'][$field]['html'];
             }
         }
     }
-
-    /**
-     * Query for Symbol_IdToken selectBox 
-     * @param object $obj
-     * @param object $dataObj
-     * @param array $data
-    **/
-    public function selectBoxSymbol_IdToken(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
- $override=false;
-        $q = TokenQuery::create();
-
-            $q->addAsColumn('selDisplay', ''.TokenPeer::TICKER.'');
-            $q->select(array('selDisplay', 'IdToken'));
-            $q->orderBy('selDisplay', 'ASC');
-        
-            if(!$array){
-                return $q;
-            }else{
-                $pcDataO = $q->find();
-            }
-
-
-        
-        if($override === false){
-            $arrayOpt = $pcDataO->toArray();
-
-            return assocToNum($arrayOpt , true);;
-        }else{
-            return $override;
-        }
-}
 }

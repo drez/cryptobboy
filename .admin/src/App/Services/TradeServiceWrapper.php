@@ -24,9 +24,9 @@ class TradeServiceWrapper extends TradeService
         $this->Form = new TradeFormWrapper($request, $args);
     }
 
-    public function syncTrades($request)
+    /*public function syncTrades($request)
     {
         $sync = new \Connector\Binance\Sync();
         return $sync->syncTrades();
-    }
+    }*/
 }

@@ -1022,7 +1022,7 @@ abstract class BaseTokenQuery extends ModelCriteria
      *
      * @return TokenQuery The current query, for fluid interface
      */
-    public function joinTrade($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinTrade($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('Trade');
@@ -1057,7 +1057,7 @@ abstract class BaseTokenQuery extends ModelCriteria
      *
      * @return   \App\TradeQuery A secondary query class using the current class as primary query
      */
-    public function useTradeQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useTradeQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
             ->joinTrade($relationAlias, $joinType)

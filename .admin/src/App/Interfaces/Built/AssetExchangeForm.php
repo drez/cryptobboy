@@ -897,6 +897,7 @@ $this->fields['AssetExchange']['Type']['html']
      * @param array $data
     **/
     public function selectBoxAssetExchange_IdExchange(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = ExchangeQuery::create();
 
             $q->select(array('Name', 'IdExchange'));
@@ -909,8 +910,13 @@ $this->fields['AssetExchange']['Type']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 }

@@ -10,8 +10,8 @@ $omMap = [
         'parent_table' => null,
         'parent_menu' => '',
         'child_table' => [
-            'asset_exchange',
             'trade',
+            'asset_exchange',
         ],
         'display' => 'Asset',
     ],
@@ -30,6 +30,14 @@ $omMap = [
         'parent_menu' => '',
         'child_table' => null,
         'display' => 'Asset - Trade',
+    ],
+    [
+        'name' => 'Import',
+        'desc' => 'Imports',
+        'parent_table' => null,
+        'parent_menu' => '',
+        'child_table' => null,
+        'display' => 'Import',
     ],
     [
         'name' => 'AuthyGroupX',

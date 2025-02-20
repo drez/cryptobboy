@@ -8,7 +8,7 @@
         add_validator:true,
         add_tablestamp:true,
         set_debug_level:3,
-        add_hooks:{ "afterFormObj":["asset"], 
+        add_hooks:{ "afterFormObj":["asset", "import"], 
                     "beforeSave":[], 
                     "afterSave":[],
                     "beforeList":["trade", "asset"],
@@ -49,7 +49,7 @@
             }
         },
         "country('Country')": {
-            set_parent_menu:"Settings",
+        set_parent_menu:"Settings",
 			"id_country()": ["primary()"],
 			"name('Name')": ["varchar(100)"],
 			"code('Code')": ["varchar(3)"],

@@ -25,6 +25,7 @@ use App\AuthyQuery;
 use App\Config;
 use App\Country;
 use App\Exchange;
+use App\Import;
 use App\MessageI18n;
 use App\Symbol;
 use App\Template;
@@ -170,6 +171,14 @@ use App\Trade;
  * @method AuthyQuery leftJoinSymbolRelatedByIdModification($relationAlias = null) Adds a LEFT JOIN clause to the query using the SymbolRelatedByIdModification relation
  * @method AuthyQuery rightJoinSymbolRelatedByIdModification($relationAlias = null) Adds a RIGHT JOIN clause to the query using the SymbolRelatedByIdModification relation
  * @method AuthyQuery innerJoinSymbolRelatedByIdModification($relationAlias = null) Adds a INNER JOIN clause to the query using the SymbolRelatedByIdModification relation
+ *
+ * @method AuthyQuery leftJoinImportRelatedByIdCreation($relationAlias = null) Adds a LEFT JOIN clause to the query using the ImportRelatedByIdCreation relation
+ * @method AuthyQuery rightJoinImportRelatedByIdCreation($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ImportRelatedByIdCreation relation
+ * @method AuthyQuery innerJoinImportRelatedByIdCreation($relationAlias = null) Adds a INNER JOIN clause to the query using the ImportRelatedByIdCreation relation
+ *
+ * @method AuthyQuery leftJoinImportRelatedByIdModification($relationAlias = null) Adds a LEFT JOIN clause to the query using the ImportRelatedByIdModification relation
+ * @method AuthyQuery rightJoinImportRelatedByIdModification($relationAlias = null) Adds a RIGHT JOIN clause to the query using the ImportRelatedByIdModification relation
+ * @method AuthyQuery innerJoinImportRelatedByIdModification($relationAlias = null) Adds a INNER JOIN clause to the query using the ImportRelatedByIdModification relation
  *
  * @method AuthyQuery leftJoinAuthyGroupRelatedByIdCreation($relationAlias = null) Adds a LEFT JOIN clause to the query using the AuthyGroupRelatedByIdCreation relation
  * @method AuthyQuery rightJoinAuthyGroupRelatedByIdCreation($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AuthyGroupRelatedByIdCreation relation
@@ -2789,6 +2798,154 @@ abstract class BaseAuthyQuery extends ModelCriteria
         return $this
             ->joinSymbolRelatedByIdModification($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'SymbolRelatedByIdModification', '\App\SymbolQuery');
+    }
+
+    /**
+     * Filter the query by a related Import object
+     *
+     * @param   Import|PropelObjectCollection $import  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 AuthyQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByImportRelatedByIdCreation($import, $comparison = null)
+    {
+        if ($import instanceof Import) {
+            return $this
+                ->addUsingAlias(AuthyPeer::ID_AUTHY, $import->getIdCreation(), $comparison);
+        } elseif ($import instanceof PropelObjectCollection) {
+            return $this
+                ->useImportRelatedByIdCreationQuery()
+                ->filterByPrimaryKeys($import->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByImportRelatedByIdCreation() only accepts arguments of type Import or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ImportRelatedByIdCreation relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return AuthyQuery The current query, for fluid interface
+     */
+    public function joinImportRelatedByIdCreation($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ImportRelatedByIdCreation');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ImportRelatedByIdCreation');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ImportRelatedByIdCreation relation Import object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\ImportQuery A secondary query class using the current class as primary query
+     */
+    public function useImportRelatedByIdCreationQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinImportRelatedByIdCreation($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ImportRelatedByIdCreation', '\App\ImportQuery');
+    }
+
+    /**
+     * Filter the query by a related Import object
+     *
+     * @param   Import|PropelObjectCollection $import  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 AuthyQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByImportRelatedByIdModification($import, $comparison = null)
+    {
+        if ($import instanceof Import) {
+            return $this
+                ->addUsingAlias(AuthyPeer::ID_AUTHY, $import->getIdModification(), $comparison);
+        } elseif ($import instanceof PropelObjectCollection) {
+            return $this
+                ->useImportRelatedByIdModificationQuery()
+                ->filterByPrimaryKeys($import->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByImportRelatedByIdModification() only accepts arguments of type Import or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the ImportRelatedByIdModification relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return AuthyQuery The current query, for fluid interface
+     */
+    public function joinImportRelatedByIdModification($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('ImportRelatedByIdModification');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'ImportRelatedByIdModification');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the ImportRelatedByIdModification relation Import object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\ImportQuery A secondary query class using the current class as primary query
+     */
+    public function useImportRelatedByIdModificationQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinImportRelatedByIdModification($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'ImportRelatedByIdModification', '\App\ImportQuery');
     }
 
     /**

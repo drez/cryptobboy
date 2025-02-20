@@ -12,6 +12,11 @@ All Your Crypto in One Place – Our platform consolidates your assets and trade
 
 🔹 Secure & Private – We prioritize security with read-only API-based integrations, ensuring your data remains safe and cannot be modified.
 
+## Features so far
+
+* Import binance historical trade + sync recent trades via read-only API
+* Compute Profit/Loss per asset and pessimistic average price
+
 ## Status
 
 So far only binance API has been integrated. Next is Kraken.

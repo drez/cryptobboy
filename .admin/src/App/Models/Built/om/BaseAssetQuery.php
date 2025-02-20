@@ -32,6 +32,8 @@ use App\Trade;
  * @method AssetQuery orderByStakedToken($order = Criteria::ASC) Order by the staked_token column
  * @method AssetQuery orderByTotalToken($order = Criteria::ASC) Order by the total_token column
  * @method AssetQuery orderByUsdValue($order = Criteria::ASC) Order by the usd_value column
+ * @method AssetQuery orderByAvgPrice($order = Criteria::ASC) Order by the avg_price column
+ * @method AssetQuery orderByProfit($order = Criteria::ASC) Order by the profit column
  * @method AssetQuery orderByLockedToken($order = Criteria::ASC) Order by the locked_token column
  * @method AssetQuery orderByFreezeToken($order = Criteria::ASC) Order by the freeze_token column
  * @method AssetQuery orderByLastSync($order = Criteria::ASC) Order by the last_sync column
@@ -47,6 +49,8 @@ use App\Trade;
  * @method AssetQuery groupByStakedToken() Group by the staked_token column
  * @method AssetQuery groupByTotalToken() Group by the total_token column
  * @method AssetQuery groupByUsdValue() Group by the usd_value column
+ * @method AssetQuery groupByAvgPrice() Group by the avg_price column
+ * @method AssetQuery groupByProfit() Group by the profit column
  * @method AssetQuery groupByLockedToken() Group by the locked_token column
  * @method AssetQuery groupByFreezeToken() Group by the freeze_token column
  * @method AssetQuery groupByLastSync() Group by the last_sync column
@@ -92,6 +96,8 @@ use App\Trade;
  * @method Asset findOneByStakedToken(string $staked_token) Return the first Asset filtered by the staked_token column
  * @method Asset findOneByTotalToken(string $total_token) Return the first Asset filtered by the total_token column
  * @method Asset findOneByUsdValue(string $usd_value) Return the first Asset filtered by the usd_value column
+ * @method Asset findOneByAvgPrice(string $avg_price) Return the first Asset filtered by the avg_price column
+ * @method Asset findOneByProfit(string $profit) Return the first Asset filtered by the profit column
  * @method Asset findOneByLockedToken(string $locked_token) Return the first Asset filtered by the locked_token column
  * @method Asset findOneByFreezeToken(string $freeze_token) Return the first Asset filtered by the freeze_token column
  * @method Asset findOneByLastSync(string $last_sync) Return the first Asset filtered by the last_sync column
@@ -107,6 +113,8 @@ use App\Trade;
  * @method array findByStakedToken(string $staked_token) Return Asset objects filtered by the staked_token column
  * @method array findByTotalToken(string $total_token) Return Asset objects filtered by the total_token column
  * @method array findByUsdValue(string $usd_value) Return Asset objects filtered by the usd_value column
+ * @method array findByAvgPrice(string $avg_price) Return Asset objects filtered by the avg_price column
+ * @method array findByProfit(string $profit) Return Asset objects filtered by the profit column
  * @method array findByLockedToken(string $locked_token) Return Asset objects filtered by the locked_token column
  * @method array findByFreezeToken(string $freeze_token) Return Asset objects filtered by the freeze_token column
  * @method array findByLastSync(string $last_sync) Return Asset objects filtered by the last_sync column
@@ -223,7 +231,7 @@ abstract class BaseAssetQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_asset`, `id_token`, `free_token`, `staked_token`, `total_token`, `usd_value`, `locked_token`, `freeze_token`, `last_sync`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `asset` WHERE `id_asset` = :p0';
+        $sql = 'SELECT `id_asset`, `id_token`, `free_token`, `staked_token`, `total_token`, `usd_value`, `avg_price`, `profit`, `locked_token`, `freeze_token`, `last_sync`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `asset` WHERE `id_asset` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -567,6 +575,90 @@ abstract class BaseAssetQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(AssetPeer::USD_VALUE, $usdValue, $comparison);
+    }
+
+    /**
+     * Filter the query on the avg_price column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByAvgPrice(1234); // WHERE avg_price = 1234
+     * $query->filterByAvgPrice(array(12, 34)); // WHERE avg_price IN (12, 34)
+     * $query->filterByAvgPrice(array('min' => 12)); // WHERE avg_price >= 12
+     * $query->filterByAvgPrice(array('max' => 12)); // WHERE avg_price <= 12
+     * </code>
+     *
+     * @param     mixed $avgPrice The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return AssetQuery The current query, for fluid interface
+     */
+    public function filterByAvgPrice($avgPrice = null, $comparison = null)
+    {
+        if (is_array($avgPrice)) {
+            $useMinMax = false;
+            if (isset($avgPrice['min'])) {
+                $this->addUsingAlias(AssetPeer::AVG_PRICE, $avgPrice['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($avgPrice['max'])) {
+                $this->addUsingAlias(AssetPeer::AVG_PRICE, $avgPrice['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(AssetPeer::AVG_PRICE, $avgPrice, $comparison);
+    }
+
+    /**
+     * Filter the query on the profit column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByProfit(1234); // WHERE profit = 1234
+     * $query->filterByProfit(array(12, 34)); // WHERE profit IN (12, 34)
+     * $query->filterByProfit(array('min' => 12)); // WHERE profit >= 12
+     * $query->filterByProfit(array('max' => 12)); // WHERE profit <= 12
+     * </code>
+     *
+     * @param     mixed $profit The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return AssetQuery The current query, for fluid interface
+     */
+    public function filterByProfit($profit = null, $comparison = null)
+    {
+        if (is_array($profit)) {
+            $useMinMax = false;
+            if (isset($profit['min'])) {
+                $this->addUsingAlias(AssetPeer::PROFIT, $profit['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($profit['max'])) {
+                $this->addUsingAlias(AssetPeer::PROFIT, $profit['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(AssetPeer::PROFIT, $profit, $comparison);
     }
 
     /**

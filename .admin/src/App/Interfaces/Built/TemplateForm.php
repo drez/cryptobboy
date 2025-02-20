@@ -1125,16 +1125,17 @@ $this->fields['Template']['Name']['html']
                 
                 $tr .= 
                         tr(
-                            (isset($hookListColumnsTemplateFileFirst)?$hookListColumnsTemplateFileFirst:'').
+                            (isset($this->hookListColumnsTemplateFileFirst)?$this->hookListColumnsTemplateFileFirst:'').
                             
                 td(span((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editTemplateFile'") . 
                 td(span((($altValue['File']) ? $altValue['File'] : $data->getFile()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='File' class=''  j='editTemplateFile'") . 
-                            (isset($hookListColumnsTemplateFile)?$hookListColumnsTemplateFile:'')
+                            (isset($this->hookListColumnsTemplateFile)?$this->hookListColumnsTemplateFile:'')
                 .td(htmlLink(span(addslashes(_('To editor'))),'javascript:', " class='button-link-blue' data-clipboard-text='"._SITE_URL.$data->getFile()."' title='Click to copy me.' i='".$data->getPrimaryKey()."'  j='copy_link' "))
                 .
                             $actionRow
-                        ,"id='TemplateFileRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='TemplateFile'  ")
-                        ;
+                            
+                        ,"id='TemplateFileRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='TemplateFile'  ");
+                        
                 
                 $i++;
             }

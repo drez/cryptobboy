@@ -29,6 +29,12 @@ class AssetFormWrapper extends AssetForm
 
     public function afterFormObj(array $data, Asset &$dataObj)
     {
+
+        $swmessage = "";
+        if($this->args['data']['sw']){
+            $swmessage = "sw_message('".$this->args['data']['sw']."')";
+        }
+
         $this->hookFormIncludeJs = "
         var last_value=0;
         let color='#000';
@@ -59,15 +65,38 @@ class AssetFormWrapper extends AssetForm
             getTicker();
             $('#ogf_Asset [for=IdToken]').parent().hide();
             $('#saveAsset').remove();
-        ";
+        ".$swmessage;
+
+        $avgPrice = ['qty' => 0, 'amount' => 0];
+        $Trades = TradeQuery::create()->filterByIdAsset($dataObj->getPrimaryKey())->orderByDate('ASC')->find();
+        foreach($Trades as $Trade){
+                if($Trade->getType() == 'Buy'){
+                    $avgPrice['qty'] += $Trade->getQty();
+                    $avgPrice['amount'] += $Trade->getQty()*$Trade->getGrossUsd();
+                }elseif($avgPrice['qty'] > 0){
+                    $curavg = $avgPrice['amount'] / $avgPrice['qty'];
+                    $profit += ($Trade->getGrossUsd() - $curavg) * $Trade->getQty();
+
+                    $avgPrice['amount'] -= $Trade->getQty()*$curavg;
+                    $avgPrice['qty'] -= $Trade->getQty();
+                }
+            }
+
+            if($avgPrice['amount'] || $curavg){
+                if($avgPrice['qty'] > 0){
+                    $avg = $avgPrice['amount'] / $avgPrice['qty'];
+                }
+                $dataObj->setAvgPrice(($avgPrice['qty'] > 0)?$avg:$curavg);
+                $dataObj->setProfit($profit);
+                $dataObj->save();
+            }
+        
     }
 
     public function beforeList(&$request, &$pmpoData)
     {
 
         $this->hookListReadyJs = "
-            
-
             $('.sw-header .custom-controls').append( $('<a>').html('Sync assets').addClass('button-link-blue header-controls').attr('href', 'Javascript:;').attr('id', 'syncAssets') );
            /*
             $('.sw-header .custom-controls').append( $('<a>').html('Sync trades').addClass('button-link-blue header-controls').attr('href', 'Javascript:;').attr('id', 'syncTrades') );
@@ -81,24 +110,39 @@ class AssetFormWrapper extends AssetForm
                 });
             });
             $('#syncTrades').click(()=>{
+                sw_message('Synchronizing...', false, 'sync_load', true);
                 $.post('" . _SITE_URL . $this->virtualClassName . "/syncTrades/', {ui:'list'}, (data)=>{
                     $('#editPopupDialog').html(data);
                     $('#editPopupDialog').dialog('open');
+                    sw_message(true, false, 'sync_load');
                 });
             });
         ";
     }
 
     public function beforeChildListTrade(){
-        $sync = new \Connector\Binance\Sync();
-        $Asset = AssetQuery::create()->findPk($this->IdPk);
-        $result = $sync->syncAccountTrades($Asset->getToken()->getTicker(), $this->IdPk);
-        $this->hookListReadyJsFirstTrade = "
-            sw_message('$result');
+        if (empty($this->args['pg']) && empty($this->args['order']) && empty($this->args['ms'])) {
+            $sync = new \Connector\Binance\Sync();
+            $Asset = AssetQuery::create()->findPk($this->IdPk);
+            $result = $sync->syncAccountTrades($Asset->getToken()->getTicker(), $this->IdPk);
+
+            $refresh = "";
+            if($result != 'Up to date'){
+                $refresh = "
+                sw_message('Recalculating');
+                document.location = '"._SITE_URL."Asset/edit/".$this->IdPk."?sw=".urlencode($result)."';";
+            }else{
+                $refresh = "sw_message('$result');";
+            }
+
+            $this->hookListReadyJsFirstTrade = "
+            
+            ".$refresh."
         ";
+        }
     }
 
-    public function beforeListTrTrade(&$altValue, $data, $i, $param, $hookListColumnsTrade, $actionRow){
+    public function beforeListTrTrade(&$altValue, $data, $i, $param, $actionRow){
         if ($data->getType() == "Buy") {
             $altValue['Type'] = span($data->getType(), "style='color:#00c411;'");
         }

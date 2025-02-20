@@ -769,6 +769,7 @@ $this->fields['ApiLog']['IdApiRbac']['html']
      * @param array $data
     **/
     public function selectBoxApiLog_IdApiRbac(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = ApiRbacQuery::create();
 
             $q->addAsColumn('selDisplay', 'CONCAT_WS ( ", ", '.ApiRbacPeer::MODEL.', '.ApiRbacPeer::ACTION.', '.ApiRbacPeer::QUERY.' )');
@@ -782,8 +783,13 @@ $this->fields['ApiLog']['IdApiRbac']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 }

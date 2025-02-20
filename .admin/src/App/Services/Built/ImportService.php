@@ -17,7 +17,7 @@ use ApiGoat\Api\ApiResponse;
 use ApiGoat\Api\Api;
 
 
-class AssetService
+class ImportService
 {
 
     /**
@@ -94,22 +94,16 @@ class AssetService
                 $this->content = $this->deleteOne();
                 return $this->BuilderLayout->renderXHR($this->content);
 
+            case 'upload':
+                return $this->file();
+            break;
+            case 'file':
+            case 'open':
+                return $this->getFileContent();
+            break;
 
 
 
-                /**
-                *   Child table
-                **/
-                case 'Trade':
-                    $this->content = $this->Form->getTradeList($this->request['i'], $this->request);
-                break;
-
-                /**
-                *   Child table
-                **/
-                case 'AssetExchange':
-                    $this->content = $this->Form->getAssetExchangeList($this->request['i'], $this->request);
-                break;
 
 
             default:
@@ -135,7 +129,7 @@ class AssetService
     public function getApiResponse()
     {
         $this->body = ['status' => 'failure', 'errors' => ['Unknown method'], 'data' => null, 'messages' => null];
-        $Api = new Api('Asset', $this);
+        $Api = new Api('Import', $this);
 
         if (isset($this->customActions[$this->request['a']]) && method_exists($this, $this->customActions[$this->request['a']])) {
             $callable = $this->customActions[$this->request['a']];
@@ -174,6 +168,111 @@ class AssetService
 
 
 
+    public function getFileContent()
+    {
+        if($this->request['i']) {
+            $pc = ImportQuery::create()->findPk($this->request['i']);
+            //echo _BASE_DIR.$pc->getFile();
+            if(file_exists(_BASE_DIR.$pc->getFile())) {
+                $this->Name = $pc->getName();
+                $this->length = filesize(_BASE_DIR.$pc->getFile());
+                $this->contentType = mime_content_type(_BASE_DIR.$pc->getFile());
+                return file_get_contents(_BASE_DIR.$pc->getFile());
+            } else {
+                return false;
+            }
+        }
+    }
+
+    public function file()
+    {
+        $this->contentType = "application/json";
+
+        if (!isset($_FILES["file"]) || !is_uploaded_file($_FILES["file"]["tmp_name"]) || $_FILES["file"]["error"] != 0) {
+            $ret['status'] = 'failure';
+            $ret['messages'][] = "File missing";
+            return json_encode($ret);
+        } else {
+            $size = round($_FILES["file"]["size"] / 1024, 2);
+
+            $allowedSize = intval('10mb')*1024; /* assumes Mb*/
+            if($size > $allowedSize){ /* Size in Kb */
+                $ret['status'] = 'error';
+                $ret['messages'][] = "File too big";
+                return json_encode($ret);
+            }
+
+            $tab_style = getimagesize($_FILES['file']['tmp_name']);
+            $path_info = pathinfo($_FILES['file']['name']);
+            $path_info["extension"] = strtolower($path_info["extension"]);
+
+            if($path_info["extension"]) {
+
+                $data = array(
+                                'data' => [
+                                    'name' => $_FILES['file']['name'],
+                                    'size' => $size,
+                                    'extension' => $path_info['extension'],
+                                    'ip' => $this->request['data']['ip']
+                                ]
+                        );
+                $tabIp = explode(',', $this->request['data']['ip']);
+                if($tabIp) {
+                    foreach(array_unique($tabIp) as $ip) {
+                        $e = $this->Form->setCreateDefaultsImport($data['data']);
+
+                        $e->setName($_FILES['file']['name']);
+                        $path_dest = 'public/file/';
+                        $path_file= 'public/file/Import/';
+
+
+                        if($data['error'] == '') {
+
+                            if(!is_dir(_INSTALL_PATH.'/'.$path_dest)) {
+                                mkdir(_INSTALL_PATH.'/'.$path_dest);
+                                $fp = fopen(_INSTALL_PATH.'/'."public/file/index.php", "w");
+                                fwrite($fp, '<?php header(\'Location:'._SITE_URL.'\'); ');
+                                fclose($fp);
+                            }
+                            if(!is_dir(_INSTALL_PATH.'/'.$path_file)) {
+                                mkdir(_INSTALL_PATH.'/'.$path_file);
+                                $fp = fopen(_INSTALL_PATH.'/'.$path_file."/index.php", "w");
+                                fwrite($fp, '<?php header(\'Location:'._SITE_URL.'\'); ');
+                                fclose($fp);
+                            }
+
+                            $e->setFile('tmp-placeholder');
+
+                            if ($e->validate()) {
+                                $e->save();
+                                $data['idPk'] = $e->getPrimaryKey();
+                                copy($_FILES['file']['tmp_name'], _INSTALL_PATH.'/'.$path_file.md5($data['idPk']) . "." . $path_info["extension"] . "");
+                                $data['File'] = $path_file.md5($data['idPk']) . "." . $path_info["extension"];
+
+                                $e->setFile($data['File']);
+                                $e->save();
+                                $data['data']['IdImportFile'] = $e->getPrimaryKey();
+
+                                $data['status'] = 'success';
+                            } else {
+                                $data['messages'][] = "Db error";
+                                $msg = handleValidationError($e, ((isset($this->request['data']['ui']) ? $this->request['data']['ui'] : '')), _('User'), $extValidationErr);
+                                $data['messages'][] = $msg['txt'];
+                                $data['status'] = 'failure';
+                            }
+                        }
+                    }
+
+                    if(is_file($_FILES['file']['tmp_name'])) {
+                        unlink($_FILES['file']['tmp_name']);
+                    }
+                }
+
+            }
+
+            return json_encode($data);
+        }
+    }
 
 
 
@@ -182,17 +281,16 @@ class AssetService
         $error = [];
         $messages = '';
 
-        $obj = AssetQuery::create()->findPk(json_decode($this->request['i']));
+        $obj = ImportQuery::create()->findPk(json_decode($this->request['i']));
 
 
-            if($obj->countAssetExchanges()){
-                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Wallet'. ", '', true,'Asset'); die( $error['onReadyJs'] );
-            }
-            if($obj->countTrades()){
-                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Trade'. ", '', true,'Asset'); die( $error['onReadyJs'] );
-            }
 
         $obj->delete();
+
+            if(is_file(_INSTALL_PATH.$obj->getFile())) {
+                unlink(_INSTALL_PATH.$obj->getFile());
+            }
+
 
 
 
@@ -208,15 +306,15 @@ class AssetService
         $extValidationErr = false;
         parse_str ($this->request['d'], $data );
 
-        $data['i'] = ( $data['IdAsset'] ) ? $data['IdAsset'] : $this->request['i'];
+        $data['i'] = ( $data['IdImport'] ) ? $data['IdImport'] : $this->request['i'];
         $data['ip'] = urldecode($this->request['data']['ip']);
         $data['pc'] = urldecode($this->request['data']['pc']);
-        $this->Asset['request'] = $this->request;
+        $this->Import['request'] = $this->request;
 
         if(!empty($data['i'])) {
             ## Save
 
-            $e = $this->Form->setUpdateDefaultsAsset($data);
+            $e = $this->Form->setUpdateDefaultsImport($data);
 
 
             if ($e->validate() && !$extValidationErr) {
@@ -232,7 +330,7 @@ class AssetService
             ## Create
 
 
-            $e = $this->Form->setCreateDefaultsAsset($data);
+            $e = $this->Form->setCreateDefaultsImport($data);
 
             if ($e->validate() && !$extValidationErr) {
                 $e->save();
@@ -258,8 +356,8 @@ class AssetService
     */
     private function edit()
     {
-        $this->Asset['request'] = $this->request;
-        $this->Asset['parentId'] = $this->request['data']['ip'];
+        $this->Import['request'] = $this->request;
+        $this->Import['parentId'] = $this->request['data']['ip'];
 
 
         $relData = $this->request;

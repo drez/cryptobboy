@@ -158,6 +158,14 @@ $table['asset'] = [
         'type' => 'DECIMAL',
         'description' => 'Value USD',
     ],
+    'avg_price' => [
+        'type' => 'DECIMAL',
+        'description' => 'Avg. price',
+    ],
+    'profit' => [
+        'type' => 'DECIMAL',
+        'description' => 'Profit',
+    ],
     'locked_token' => [
         'type' => 'DECIMAL',
         'description' => 'Locked',
@@ -292,7 +300,7 @@ $table['trade'] = [
         'description' => 'commissionAsset',
     ],
     'order_id' => [
-        'type' => 'INTEGER',
+        'type' => 'BIGINT',
     ],
     'date_creation' => [
         'type' => 'TIMESTAMP',
@@ -423,6 +431,47 @@ $table['symbol'] = [
 
 $query['symbol'] = [
     'select' => $table['symbol'],
+    'filter' => [],
+    'join' => [],
+    'limit' => [],
+    'order' => [],
+    'page' => [],
+];
+$table['import'] = [
+    'id_import' => [
+        'type' => 'INTEGER',
+    ],
+    'name' => [
+        'type' => 'VARCHAR',
+        'description' => 'Name',
+    ],
+    'items' => [
+        'type' => 'INTEGER',
+        'description' => 'Items',
+    ],
+    'file' => [
+        'type' => 'VARCHAR',
+        'description' => 'File',
+    ],
+    'date_creation' => [
+        'type' => 'TIMESTAMP',
+    ],
+    'date_modification' => [
+        'type' => 'TIMESTAMP',
+    ],
+    'id_group_creation' => [
+        'type' => 'INTEGER',
+    ],
+    'id_creation' => [
+        'type' => 'INTEGER',
+    ],
+    'id_modification' => [
+        'type' => 'INTEGER',
+    ],
+];
+
+$query['import'] = [
+    'select' => $table['import'],
     'filter' => [],
     'join' => [],
     'limit' => [],
@@ -1204,6 +1253,40 @@ return [
             'request' => [
                         'type' => 'INTEGER',
                         'name' => 'id_symbol'
+            ]
+        ],
+    ],
+    'import[/{id}]' => [
+        'description' => 'Import',
+        'type' => 'custom',
+        'GET' => [
+            'request' => [
+                'id' => [
+                    'type' => 'INTEGER',
+                    'name' => 'id_import'
+                ]
+            ],
+            'response' => [
+                'data' => $table['import']
+            ]
+        ],
+        'POST' =>  [
+            'request' => [
+                'fields' => $table['import'],
+                'query' => $query
+            ],
+            'response' => [
+                'ids' => [],
+                'count' => []
+            ]
+        ],
+        'PATCH' =>  [
+            'request' => $table['import']
+            ],
+        'DELETE' =>  [
+            'request' => [
+                        'type' => 'INTEGER',
+                        'name' => 'id_import'
             ]
         ],
     ],

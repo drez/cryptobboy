@@ -46,7 +46,7 @@ class AssetServiceWrapper extends AssetService
     public function syncAccountTrades($request)
     {
         $sync = new \Connector\Binance\Sync();
-        return $sync->syncAccountTrades();
+        return $sync->syncAccountTrades($request['data']['IdToken'], ['data']['IdAsset']);
     }
 
 

@@ -100,6 +100,8 @@ CREATE TABLE `asset`
     `staked_token` DECIMAL(16, 9) COMMENT 'Staked',
     `total_token` DECIMAL(16, 9) COMMENT 'Total',
     `usd_value` DECIMAL(12, 2) COMMENT 'Value USD',
+    `avg_price` DECIMAL(14, 4) COMMENT 'Avg. price',
+    `profit` DECIMAL(12, 2) COMMENT 'Profit',
     `locked_token` DECIMAL(16, 9) COMMENT 'Locked',
     `freeze_token` DECIMAL(16, 9) COMMENT 'Frozen',
     `last_sync` DATETIME COMMENT 'Last sync',
@@ -192,8 +194,8 @@ CREATE TABLE `trade`
     `date` DATETIME COMMENT 'Date',
     `gross_usd` DECIMAL(16, 9) COMMENT 'Price',
     `commission` DECIMAL(16, 9) COMMENT 'Commission',
-    `commission_asset` INTEGER(11) NOT NULL COMMENT 'commissionAsset',
-    `order_id` INTEGER(10),
+    `commission_asset` INTEGER(11) COMMENT 'commissionAsset',
+    `order_id` BIGINT(10),
     `date_creation` DATETIME,
     `date_modification` DATETIME,
     `id_group_creation` INTEGER,
@@ -326,6 +328,38 @@ CREATE TABLE `symbol`
         FOREIGN KEY (`id_modification`)
         REFERENCES `authy` (`id_authy`)
 ) ENGINE=InnoDB COMMENT='Symbol';
+
+-- ---------------------------------------------------------------------
+-- import
+-- ---------------------------------------------------------------------
+
+DROP TABLE IF EXISTS `import`;
+
+CREATE TABLE `import`
+(
+    `id_import` INTEGER(10) NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(100) COMMENT 'Name',
+    `items` INTEGER(10) COMMENT 'Items',
+    `file` VARCHAR(100) COMMENT 'File',
+    `date_creation` DATETIME,
+    `date_modification` DATETIME,
+    `id_group_creation` INTEGER,
+    `id_creation` INTEGER,
+    `id_modification` INTEGER,
+    PRIMARY KEY (`id_import`),
+    INDEX `import_FI_1` (`id_group_creation`),
+    INDEX `import_FI_2` (`id_creation`),
+    INDEX `import_FI_3` (`id_modification`),
+    CONSTRAINT `import_FK_1`
+        FOREIGN KEY (`id_group_creation`)
+        REFERENCES `authy_group` (`id_authy_group`),
+    CONSTRAINT `import_FK_2`
+        FOREIGN KEY (`id_creation`)
+        REFERENCES `authy` (`id_authy`),
+    CONSTRAINT `import_FK_3`
+        FOREIGN KEY (`id_modification`)
+        REFERENCES `authy` (`id_authy`)
+) ENGINE=InnoDB COMMENT='Import';
 
 -- ---------------------------------------------------------------------
 -- authy_group

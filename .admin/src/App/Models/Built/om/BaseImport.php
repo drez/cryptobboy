@@ -13,41 +13,33 @@ use \Propel;
 use \PropelDateTime;
 use \PropelException;
 use \PropelPDO;
-use App\Asset;
-use App\AssetQuery;
 use App\Authy;
 use App\AuthyGroup;
 use App\AuthyGroupQuery;
 use App\AuthyQuery;
-use App\Exchange;
-use App\ExchangeQuery;
-use App\Symbol;
-use App\SymbolQuery;
-use App\Token;
-use App\TokenQuery;
-use App\Trade;
-use App\TradePeer;
-use App\TradeQuery;
+use App\Import;
+use App\ImportPeer;
+use App\ImportQuery;
 
 /**
- * Base class that represents a row from the 'trade' table.
+ * Base class that represents a row from the 'import' table.
  *
- * Trade
+ * Import
  *
  * @package    propel.generator..om
  */
-abstract class BaseTrade extends BaseObject implements Persistent
+abstract class BaseImport extends BaseObject implements Persistent
 {
     /**
      * Peer class name
      */
-    const PEER = 'App\\TradePeer';
+    const PEER = 'App\\ImportPeer';
 
     /**
      * The Peer class.
      * Instance provides a convenient way of calling static methods on a class
      * that calling code may not be able to identify.
-     * @var        TradePeer
+     * @var        ImportPeer
      */
     protected static $peer;
 
@@ -58,70 +50,28 @@ abstract class BaseTrade extends BaseObject implements Persistent
     protected $startCopy = false;
 
     /**
-     * The value for the id_trade field.
+     * The value for the id_import field.
      * @var        int
      */
-    protected $id_trade;
+    protected $id_import;
 
     /**
-     * The value for the type field.
-     * @var        int
-     */
-    protected $type;
-
-    /**
-     * The value for the id_exchange field.
-     * @var        int
-     */
-    protected $id_exchange;
-
-    /**
-     * The value for the id_asset field.
-     * @var        int
-     */
-    protected $id_asset;
-
-    /**
-     * The value for the qty field.
+     * The value for the name field.
      * @var        string
      */
-    protected $qty;
+    protected $name;
 
     /**
-     * The value for the id_symbol field.
+     * The value for the items field.
      * @var        int
      */
-    protected $id_symbol;
+    protected $items;
 
     /**
-     * The value for the date field.
+     * The value for the file field.
      * @var        string
      */
-    protected $date;
-
-    /**
-     * The value for the gross_usd field.
-     * @var        string
-     */
-    protected $gross_usd;
-
-    /**
-     * The value for the commission field.
-     * @var        string
-     */
-    protected $commission;
-
-    /**
-     * The value for the commission_asset field.
-     * @var        int
-     */
-    protected $commission_asset;
-
-    /**
-     * The value for the order_id field.
-     * @var        string
-     */
-    protected $order_id;
+    protected $file;
 
     /**
      * The value for the date_creation field.
@@ -152,26 +102,6 @@ abstract class BaseTrade extends BaseObject implements Persistent
      * @var        int
      */
     protected $id_modification;
-
-    /**
-     * @var        Exchange
-     */
-    protected $aExchange;
-
-    /**
-     * @var        Asset
-     */
-    protected $aAsset;
-
-    /**
-     * @var        Symbol
-     */
-    protected $aSymbol;
-
-    /**
-     * @var        Token
-     */
-    protected $aToken;
 
     /**
      * @var        AuthyGroup
@@ -210,171 +140,50 @@ abstract class BaseTrade extends BaseObject implements Persistent
 
     /**
      * @Field()
-     * Get the [id_trade] column value.
+     * Get the [id_import] column value.
      *
      * @return int
      */
-    public function getIdTrade()
+    public function getIdImport()
     {
 
-        return $this->id_trade;
+        return $this->id_import;
     }
 
     /**
      * @Field()
-     * Get the [type] column value.
-     * State
-     * @return int
-     * @throws PropelException - if the stored enum key is unknown.
-     */
-    public function getType()
-    {
-        if (null === $this->type) {
-            return null;
-        }
-        $valueSet = TradePeer::getValueSet(TradePeer::TYPE);
-        if (!isset($valueSet[$this->type])) {
-            throw new PropelException('Unknown stored enum key: ' . $this->type);
-        }
-
-        return $valueSet[$this->type];
-    }
-
-    /**
-     * @Field()
-     * Get the [id_exchange] column value.
-     * Exchange
-     * @return int
-     */
-    public function getIdExchange()
-    {
-
-        return $this->id_exchange;
-    }
-
-    /**
-     * @Field()
-     * Get the [id_asset] column value.
-     *
-     * @return int
-     */
-    public function getIdAsset()
-    {
-
-        return $this->id_asset;
-    }
-
-    /**
-     * @Field()
-     * Get the [qty] column value.
-     * Qty
+     * Get the [name] column value.
+     * Name
      * @return string
      */
-    public function getQty()
+    public function getName()
     {
 
-        return $this->qty;
+        return $this->name;
     }
 
     /**
      * @Field()
-     * Get the [id_symbol] column value.
-     * Symbol
+     * Get the [items] column value.
+     * Items
      * @return int
      */
-    public function getIdSymbol()
+    public function getItems()
     {
 
-        return $this->id_symbol;
+        return $this->items;
     }
 
     /**
      * @Field()
-     * Get the [optionally formatted] temporal [date] column value.
-     * Date
-     *
-     * @param string $format The date/time format string (either date()-style or strftime()-style).
-     *				 If format is null, then the raw DateTime object will be returned.
-     * @return mixed Formatted date/time value as string or DateTime object (if format is null), null if column is null, and 0 if column value is 0000-00-00 00:00:00
-     * @throws PropelException - if unable to parse/validate the date/time value.
-     */
-    public function getDate($format = 'Y-m-d H:i:s')
-    {
-        if ($this->date === null) {
-            return null;
-        }
-
-        if ($this->date === '0000-00-00 00:00:00') {
-            // while technically this is not a default value of null,
-            // this seems to be closest in meaning.
-            return null;
-        }
-
-        try {
-            $dt = new DateTime($this->date);
-        } catch (Exception $x) {
-            throw new PropelException("Internally stored date/time/timestamp value could not be converted to DateTime: " . var_export($this->date, true), $x);
-        }
-
-        if ($format === null) {
-            // Because propel.useDateTimeClass is true, we return a DateTime object.
-            return $dt;
-        }
-
-        if (strpos($format, '%') !== false) {
-            return strftime($format, $dt->format('U'));
-        }
-
-        return $dt->format($format);
-
-    }
-
-    /**
-     * @Field()
-     * Get the [gross_usd] column value.
-     * Price
+     * Get the [file] column value.
+     * File
      * @return string
      */
-    public function getGrossUsd()
+    public function getFile()
     {
 
-        return $this->gross_usd;
-    }
-
-    /**
-     * @Field()
-     * Get the [commission] column value.
-     * Commission
-     * @return string
-     */
-    public function getCommission()
-    {
-
-        return $this->commission;
-    }
-
-    /**
-     * @Field()
-     * Get the [commission_asset] column value.
-     * commissionAsset
-     * @return int
-     */
-    public function getCommissionAsset()
-    {
-
-        return $this->commission_asset;
-    }
-
-    /**
-     * @Field()
-     * Get the [order_id] column value.
-     *
-     * @return string
-     */
-    public function getOrderId()
-    {
-
-        return $this->order_id;
+        return $this->file;
     }
 
     /**
@@ -496,265 +305,95 @@ abstract class BaseTrade extends BaseObject implements Persistent
     }
 
     /**
-     * Set the value of [id_trade] column.
+     * Set the value of [id_import] column.
      *
      * @param  int $v new value
-     * @return Trade The current object (for fluent API support)
+     * @return Import The current object (for fluent API support)
      */
-    public function setIdTrade($v)
+    public function setIdImport($v)
     {
         if ($v !== null && is_numeric($v)) {
             $v = (int) $v;
         }
 
-        if ($this->id_trade !== $v) {
-            $this->id_trade = $v;
-            $this->modifiedColumns[] = TradePeer::ID_TRADE;
+        if ($this->id_import !== $v) {
+            $this->id_import = $v;
+            $this->modifiedColumns[] = ImportPeer::ID_IMPORT;
         }
 
 
         return $this;
-    } // setIdTrade()
+    } // setIdImport()
 
     /**
-     * Set the value of [type] column.
-     * State
-     * @param  int $v new value
-     * @return Trade The current object (for fluent API support)
-     * @throws PropelException - if the value is not accepted by this enum.
+     * Set the value of [name] column.
+     * Name
+     * @param  string $v new value
+     * @return Import The current object (for fluent API support)
      */
-    public function setType($v)
+    public function setName($v)
     {
         if ($v !== null) {
-            $valueSet = TradePeer::getValueSet(TradePeer::TYPE);
-            if (!in_array($v, $valueSet)) {
-                throw new PropelException(sprintf('Value "%s" is not accepted in this enumerated column', $v));
-            }
-            $v = array_search($v, $valueSet);
+            $v = (string) $v;
         }
 
-        if ($this->type !== $v) {
-            $this->type = $v;
-            $this->modifiedColumns[] = TradePeer::TYPE;
+        if ($this->name !== $v) {
+            $this->name = $v;
+            $this->modifiedColumns[] = ImportPeer::NAME;
         }
 
 
         return $this;
-    } // setType()
+    } // setName()
 
     /**
-     * Set the value of [id_exchange] column.
-     * Exchange
+     * Set the value of [items] column.
+     * Items
      * @param  int $v new value
-     * @return Trade The current object (for fluent API support)
+     * @return Import The current object (for fluent API support)
      */
-    public function setIdExchange($v)
+    public function setItems($v)
     {
         if ($v !== null && is_numeric($v)) {
             $v = (int) $v;
         }
 
-        if ($this->id_exchange !== $v) {
-            $this->id_exchange = $v;
-            $this->modifiedColumns[] = TradePeer::ID_EXCHANGE;
-        }
-
-        if ($this->aExchange !== null && $this->aExchange->getIdExchange() !== $v) {
-            $this->aExchange = null;
+        if ($this->items !== $v) {
+            $this->items = $v;
+            $this->modifiedColumns[] = ImportPeer::ITEMS;
         }
 
 
         return $this;
-    } // setIdExchange()
+    } // setItems()
 
     /**
-     * Set the value of [id_asset] column.
-     *
-     * @param  int $v new value
-     * @return Trade The current object (for fluent API support)
-     */
-    public function setIdAsset($v)
-    {
-        if ($v !== null && is_numeric($v)) {
-            $v = (int) $v;
-        }
-
-        if ($this->id_asset !== $v) {
-            $this->id_asset = $v;
-            $this->modifiedColumns[] = TradePeer::ID_ASSET;
-        }
-
-        if ($this->aAsset !== null && $this->aAsset->getIdAsset() !== $v) {
-            $this->aAsset = null;
-        }
-
-
-        return $this;
-    } // setIdAsset()
-
-    /**
-     * Set the value of [qty] column.
-     * Qty
+     * Set the value of [file] column.
+     * File
      * @param  string $v new value
-     * @return Trade The current object (for fluent API support)
+     * @return Import The current object (for fluent API support)
      */
-    public function setQty($v)
+    public function setFile($v)
     {
-        if ($v !== null && is_numeric($v)) {
+        if ($v !== null) {
             $v = (string) $v;
         }
 
-        if ($this->qty !== $v) {
-            $this->qty = $v;
-            $this->modifiedColumns[] = TradePeer::QTY;
+        if ($this->file !== $v) {
+            $this->file = $v;
+            $this->modifiedColumns[] = ImportPeer::FILE;
         }
 
 
         return $this;
-    } // setQty()
-
-    /**
-     * Set the value of [id_symbol] column.
-     * Symbol
-     * @param  int $v new value
-     * @return Trade The current object (for fluent API support)
-     */
-    public function setIdSymbol($v)
-    {
-        if ($v !== null && is_numeric($v)) {
-            $v = (int) $v;
-        }
-
-        if ($this->id_symbol !== $v) {
-            $this->id_symbol = $v;
-            $this->modifiedColumns[] = TradePeer::ID_SYMBOL;
-        }
-
-        if ($this->aSymbol !== null && $this->aSymbol->getIdSymbol() !== $v) {
-            $this->aSymbol = null;
-        }
-
-
-        return $this;
-    } // setIdSymbol()
-
-    /**
-     * Sets the value of [date] column to a normalized version of the date/time value specified.
-     * Date
-     * @param mixed $v string, integer (timestamp), or DateTime value.
-     *               Empty strings are treated as null.
-     * @return Trade The current object (for fluent API support)
-     */
-    public function setDate($v)
-    {
-        $dt = PropelDateTime::newInstance($v, null, 'DateTime');
-        if ($this->date !== null || $dt !== null) {
-            $currentDateAsString = ($this->date !== null && $tmpDt = new DateTime($this->date)) ? $tmpDt->format('Y-m-d H:i:s') : null;
-            $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
-            if ($currentDateAsString !== $newDateAsString) {
-                $this->date = $newDateAsString;
-                $this->modifiedColumns[] = TradePeer::DATE;
-            }
-        } // if either are not null
-
-
-        return $this;
-    } // setDate()
-
-    /**
-     * Set the value of [gross_usd] column.
-     * Price
-     * @param  string $v new value
-     * @return Trade The current object (for fluent API support)
-     */
-    public function setGrossUsd($v)
-    {
-        if ($v !== null && is_numeric($v)) {
-            $v = (string) $v;
-        }
-
-        if ($this->gross_usd !== $v) {
-            $this->gross_usd = $v;
-            $this->modifiedColumns[] = TradePeer::GROSS_USD;
-        }
-
-
-        return $this;
-    } // setGrossUsd()
-
-    /**
-     * Set the value of [commission] column.
-     * Commission
-     * @param  string $v new value
-     * @return Trade The current object (for fluent API support)
-     */
-    public function setCommission($v)
-    {
-        if ($v !== null && is_numeric($v)) {
-            $v = (string) $v;
-        }
-
-        if ($this->commission !== $v) {
-            $this->commission = $v;
-            $this->modifiedColumns[] = TradePeer::COMMISSION;
-        }
-
-
-        return $this;
-    } // setCommission()
-
-    /**
-     * Set the value of [commission_asset] column.
-     * commissionAsset
-     * @param  int $v new value
-     * @return Trade The current object (for fluent API support)
-     */
-    public function setCommissionAsset($v)
-    {
-        if ($v !== null && is_numeric($v)) {
-            $v = (int) $v;
-        }
-
-        if ($this->commission_asset !== $v) {
-            $this->commission_asset = $v;
-            $this->modifiedColumns[] = TradePeer::COMMISSION_ASSET;
-        }
-
-        if ($this->aToken !== null && $this->aToken->getIdToken() !== $v) {
-            $this->aToken = null;
-        }
-
-
-        return $this;
-    } // setCommissionAsset()
-
-    /**
-     * Set the value of [order_id] column.
-     *
-     * @param  string $v new value
-     * @return Trade The current object (for fluent API support)
-     */
-    public function setOrderId($v)
-    {
-        if ($v !== null && is_numeric($v)) {
-            $v = (string) $v;
-        }
-
-        if ($this->order_id !== $v) {
-            $this->order_id = $v;
-            $this->modifiedColumns[] = TradePeer::ORDER_ID;
-        }
-
-
-        return $this;
-    } // setOrderId()
+    } // setFile()
 
     /**
      * Sets the value of [date_creation] column to a normalized version of the date/time value specified.
      *
      * @param mixed $v string, integer (timestamp), or DateTime value.
      *               Empty strings are treated as null.
-     * @return Trade The current object (for fluent API support)
+     * @return Import The current object (for fluent API support)
      */
     public function setDateCreation($v)
     {
@@ -764,7 +403,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
             $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
             if ($currentDateAsString !== $newDateAsString) {
                 $this->date_creation = $newDateAsString;
-                $this->modifiedColumns[] = TradePeer::DATE_CREATION;
+                $this->modifiedColumns[] = ImportPeer::DATE_CREATION;
             }
         } // if either are not null
 
@@ -777,7 +416,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
      *
      * @param mixed $v string, integer (timestamp), or DateTime value.
      *               Empty strings are treated as null.
-     * @return Trade The current object (for fluent API support)
+     * @return Import The current object (for fluent API support)
      */
     public function setDateModification($v)
     {
@@ -787,7 +426,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
             $newDateAsString = $dt ? $dt->format('Y-m-d H:i:s') : null;
             if ($currentDateAsString !== $newDateAsString) {
                 $this->date_modification = $newDateAsString;
-                $this->modifiedColumns[] = TradePeer::DATE_MODIFICATION;
+                $this->modifiedColumns[] = ImportPeer::DATE_MODIFICATION;
             }
         } // if either are not null
 
@@ -799,7 +438,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
      * Set the value of [id_group_creation] column.
      *
      * @param  int $v new value
-     * @return Trade The current object (for fluent API support)
+     * @return Import The current object (for fluent API support)
      */
     public function setIdGroupCreation($v)
     {
@@ -809,7 +448,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
 
         if ($this->id_group_creation !== $v) {
             $this->id_group_creation = $v;
-            $this->modifiedColumns[] = TradePeer::ID_GROUP_CREATION;
+            $this->modifiedColumns[] = ImportPeer::ID_GROUP_CREATION;
         }
 
         if ($this->aAuthyGroup !== null && $this->aAuthyGroup->getIdAuthyGroup() !== $v) {
@@ -824,7 +463,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
      * Set the value of [id_creation] column.
      *
      * @param  int $v new value
-     * @return Trade The current object (for fluent API support)
+     * @return Import The current object (for fluent API support)
      */
     public function setIdCreation($v)
     {
@@ -834,7 +473,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
 
         if ($this->id_creation !== $v) {
             $this->id_creation = $v;
-            $this->modifiedColumns[] = TradePeer::ID_CREATION;
+            $this->modifiedColumns[] = ImportPeer::ID_CREATION;
         }
 
         if ($this->aAuthyRelatedByIdCreation !== null && $this->aAuthyRelatedByIdCreation->getIdAuthy() !== $v) {
@@ -849,7 +488,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
      * Set the value of [id_modification] column.
      *
      * @param  int $v new value
-     * @return Trade The current object (for fluent API support)
+     * @return Import The current object (for fluent API support)
      */
     public function setIdModification($v)
     {
@@ -859,7 +498,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
 
         if ($this->id_modification !== $v) {
             $this->id_modification = $v;
-            $this->modifiedColumns[] = TradePeer::ID_MODIFICATION;
+            $this->modifiedColumns[] = ImportPeer::ID_MODIFICATION;
         }
 
         if ($this->aAuthyRelatedByIdModification !== null && $this->aAuthyRelatedByIdModification->getIdAuthy() !== $v) {
@@ -902,22 +541,15 @@ abstract class BaseTrade extends BaseObject implements Persistent
     {
         try {
 
-            $this->id_trade = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-            $this->type = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
-            $this->id_exchange = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
-            $this->id_asset = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
-            $this->qty = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-            $this->id_symbol = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-            $this->date = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-            $this->gross_usd = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
-            $this->commission = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
-            $this->commission_asset = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
-            $this->order_id = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
-            $this->date_creation = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
-            $this->date_modification = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
-            $this->id_group_creation = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
-            $this->id_creation = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
-            $this->id_modification = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
+            $this->id_import = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
+            $this->name = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
+            $this->items = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
+            $this->file = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
+            $this->date_creation = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+            $this->date_modification = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+            $this->id_group_creation = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+            $this->id_creation = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
+            $this->id_modification = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -927,10 +559,10 @@ abstract class BaseTrade extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 16; // 16 = TradePeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 9; // 9 = ImportPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
-            throw new PropelException("Error populating Trade object", $e);
+            throw new PropelException("Error populating Import object", $e);
         }
     }
 
@@ -950,18 +582,6 @@ abstract class BaseTrade extends BaseObject implements Persistent
     public function ensureConsistency()
     {
 
-        if ($this->aExchange !== null && $this->id_exchange !== $this->aExchange->getIdExchange()) {
-            $this->aExchange = null;
-        }
-        if ($this->aAsset !== null && $this->id_asset !== $this->aAsset->getIdAsset()) {
-            $this->aAsset = null;
-        }
-        if ($this->aSymbol !== null && $this->id_symbol !== $this->aSymbol->getIdSymbol()) {
-            $this->aSymbol = null;
-        }
-        if ($this->aToken !== null && $this->commission_asset !== $this->aToken->getIdToken()) {
-            $this->aToken = null;
-        }
         if ($this->aAuthyGroup !== null && $this->id_group_creation !== $this->aAuthyGroup->getIdAuthyGroup()) {
             $this->aAuthyGroup = null;
         }
@@ -994,13 +614,13 @@ abstract class BaseTrade extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(TradePeer::DATABASE_NAME, Propel::CONNECTION_READ);
+            $con = Propel::getConnection(ImportPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
 
         // We don't need to alter the object instance pool; we're just modifying this instance
         // already in the pool.
 
-        $stmt = TradePeer::doSelectStmt($this->buildPkeyCriteria(), $con);
+        $stmt = ImportPeer::doSelectStmt($this->buildPkeyCriteria(), $con);
         $row = $stmt->fetch(PDO::FETCH_NUM);
         $stmt->closeCursor();
         if (!$row) {
@@ -1010,10 +630,6 @@ abstract class BaseTrade extends BaseObject implements Persistent
 
         if ($deep) {  // also de-associate any related objects?
 
-            $this->aExchange = null;
-            $this->aAsset = null;
-            $this->aSymbol = null;
-            $this->aToken = null;
             $this->aAuthyGroup = null;
             $this->aAuthyRelatedByIdCreation = null;
             $this->aAuthyRelatedByIdModification = null;
@@ -1037,12 +653,12 @@ abstract class BaseTrade extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(TradePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(ImportPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
         try {
-            $deleteQuery = TradeQuery::create()
+            $deleteQuery = ImportQuery::create()
                 ->filterByPrimaryKey($this->getPrimaryKey());
             $ret = $this->preDelete($con);
             if ($ret) {
@@ -1080,7 +696,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
         }
 
         if ($con === null) {
-            $con = Propel::getConnection(TradePeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
+            $con = Propel::getConnection(ImportPeer::DATABASE_NAME, Propel::CONNECTION_WRITE);
         }
 
         $con->beginTransaction();
@@ -1120,7 +736,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
                     $this->postUpdate($con);
                 }
                 $this->postSave($con);
-                TradePeer::addInstanceToPool($this);
+                ImportPeer::addInstanceToPool($this);
             } else {
                 $affectedRows = 0;
             }
@@ -1154,34 +770,6 @@ abstract class BaseTrade extends BaseObject implements Persistent
             // were passed to this object by their corresponding set
             // method.  This object relates to these object(s) by a
             // foreign key reference.
-
-            if ($this->aExchange !== null) {
-                if ($this->aExchange->isModified() || $this->aExchange->isNew()) {
-                    $affectedRows += $this->aExchange->save($con);
-                }
-                $this->setExchange($this->aExchange);
-            }
-
-            if ($this->aAsset !== null) {
-                if ($this->aAsset->isModified() || $this->aAsset->isNew()) {
-                    $affectedRows += $this->aAsset->save($con);
-                }
-                $this->setAsset($this->aAsset);
-            }
-
-            if ($this->aSymbol !== null) {
-                if ($this->aSymbol->isModified() || $this->aSymbol->isNew()) {
-                    $affectedRows += $this->aSymbol->save($con);
-                }
-                $this->setSymbol($this->aSymbol);
-            }
-
-            if ($this->aToken !== null) {
-                if ($this->aToken->isModified() || $this->aToken->isNew()) {
-                    $affectedRows += $this->aToken->save($con);
-                }
-                $this->setToken($this->aToken);
-            }
 
             if ($this->aAuthyGroup !== null) {
                 if ($this->aAuthyGroup->isModified() || $this->aAuthyGroup->isNew()) {
@@ -1235,63 +823,42 @@ abstract class BaseTrade extends BaseObject implements Persistent
         $modifiedColumns = array();
         $index = 0;
 
-        $this->modifiedColumns[] = TradePeer::ID_TRADE;
-        if (null !== $this->id_trade) {
-            throw new PropelException('Cannot insert a value for auto-increment primary key (' . TradePeer::ID_TRADE . ')');
+        $this->modifiedColumns[] = ImportPeer::ID_IMPORT;
+        if (null !== $this->id_import) {
+            throw new PropelException('Cannot insert a value for auto-increment primary key (' . ImportPeer::ID_IMPORT . ')');
         }
 
          // check the columns in natural order for more readable SQL queries
-        if ($this->isColumnModified(TradePeer::ID_TRADE)) {
-            $modifiedColumns[':p' . $index++]  = '`id_trade`';
+        if ($this->isColumnModified(ImportPeer::ID_IMPORT)) {
+            $modifiedColumns[':p' . $index++]  = '`id_import`';
         }
-        if ($this->isColumnModified(TradePeer::TYPE)) {
-            $modifiedColumns[':p' . $index++]  = '`type`';
+        if ($this->isColumnModified(ImportPeer::NAME)) {
+            $modifiedColumns[':p' . $index++]  = '`name`';
         }
-        if ($this->isColumnModified(TradePeer::ID_EXCHANGE)) {
-            $modifiedColumns[':p' . $index++]  = '`id_exchange`';
+        if ($this->isColumnModified(ImportPeer::ITEMS)) {
+            $modifiedColumns[':p' . $index++]  = '`items`';
         }
-        if ($this->isColumnModified(TradePeer::ID_ASSET)) {
-            $modifiedColumns[':p' . $index++]  = '`id_asset`';
+        if ($this->isColumnModified(ImportPeer::FILE)) {
+            $modifiedColumns[':p' . $index++]  = '`file`';
         }
-        if ($this->isColumnModified(TradePeer::QTY)) {
-            $modifiedColumns[':p' . $index++]  = '`qty`';
-        }
-        if ($this->isColumnModified(TradePeer::ID_SYMBOL)) {
-            $modifiedColumns[':p' . $index++]  = '`id_symbol`';
-        }
-        if ($this->isColumnModified(TradePeer::DATE)) {
-            $modifiedColumns[':p' . $index++]  = '`date`';
-        }
-        if ($this->isColumnModified(TradePeer::GROSS_USD)) {
-            $modifiedColumns[':p' . $index++]  = '`gross_usd`';
-        }
-        if ($this->isColumnModified(TradePeer::COMMISSION)) {
-            $modifiedColumns[':p' . $index++]  = '`commission`';
-        }
-        if ($this->isColumnModified(TradePeer::COMMISSION_ASSET)) {
-            $modifiedColumns[':p' . $index++]  = '`commission_asset`';
-        }
-        if ($this->isColumnModified(TradePeer::ORDER_ID)) {
-            $modifiedColumns[':p' . $index++]  = '`order_id`';
-        }
-        if ($this->isColumnModified(TradePeer::DATE_CREATION)) {
+        if ($this->isColumnModified(ImportPeer::DATE_CREATION)) {
             $modifiedColumns[':p' . $index++]  = '`date_creation`';
         }
-        if ($this->isColumnModified(TradePeer::DATE_MODIFICATION)) {
+        if ($this->isColumnModified(ImportPeer::DATE_MODIFICATION)) {
             $modifiedColumns[':p' . $index++]  = '`date_modification`';
         }
-        if ($this->isColumnModified(TradePeer::ID_GROUP_CREATION)) {
+        if ($this->isColumnModified(ImportPeer::ID_GROUP_CREATION)) {
             $modifiedColumns[':p' . $index++]  = '`id_group_creation`';
         }
-        if ($this->isColumnModified(TradePeer::ID_CREATION)) {
+        if ($this->isColumnModified(ImportPeer::ID_CREATION)) {
             $modifiedColumns[':p' . $index++]  = '`id_creation`';
         }
-        if ($this->isColumnModified(TradePeer::ID_MODIFICATION)) {
+        if ($this->isColumnModified(ImportPeer::ID_MODIFICATION)) {
             $modifiedColumns[':p' . $index++]  = '`id_modification`';
         }
 
         $sql = sprintf(
-            'INSERT INTO `trade` (%s) VALUES (%s)',
+            'INSERT INTO `import` (%s) VALUES (%s)',
             implode(', ', $modifiedColumns),
             implode(', ', array_keys($modifiedColumns))
         );
@@ -1300,38 +867,17 @@ abstract class BaseTrade extends BaseObject implements Persistent
             $stmt = $con->prepare($sql);
             foreach ($modifiedColumns as $identifier => $columnName) {
                 switch ($columnName) {
-                    case '`id_trade`':
-                        $stmt->bindValue($identifier, $this->id_trade, PDO::PARAM_INT);
+                    case '`id_import`':
+                        $stmt->bindValue($identifier, $this->id_import, PDO::PARAM_INT);
                         break;
-                    case '`type`':
-                        $stmt->bindValue($identifier, $this->type, PDO::PARAM_INT);
+                    case '`name`':
+                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
-                    case '`id_exchange`':
-                        $stmt->bindValue($identifier, $this->id_exchange, PDO::PARAM_INT);
+                    case '`items`':
+                        $stmt->bindValue($identifier, $this->items, PDO::PARAM_INT);
                         break;
-                    case '`id_asset`':
-                        $stmt->bindValue($identifier, $this->id_asset, PDO::PARAM_INT);
-                        break;
-                    case '`qty`':
-                        $stmt->bindValue($identifier, $this->qty, PDO::PARAM_STR);
-                        break;
-                    case '`id_symbol`':
-                        $stmt->bindValue($identifier, $this->id_symbol, PDO::PARAM_INT);
-                        break;
-                    case '`date`':
-                        $stmt->bindValue($identifier, $this->date, PDO::PARAM_STR);
-                        break;
-                    case '`gross_usd`':
-                        $stmt->bindValue($identifier, $this->gross_usd, PDO::PARAM_STR);
-                        break;
-                    case '`commission`':
-                        $stmt->bindValue($identifier, $this->commission, PDO::PARAM_STR);
-                        break;
-                    case '`commission_asset`':
-                        $stmt->bindValue($identifier, $this->commission_asset, PDO::PARAM_INT);
-                        break;
-                    case '`order_id`':
-                        $stmt->bindValue($identifier, $this->order_id, PDO::PARAM_STR);
+                    case '`file`':
+                        $stmt->bindValue($identifier, $this->file, PDO::PARAM_STR);
                         break;
                     case '`date_creation`':
                         $stmt->bindValue($identifier, $this->date_creation, PDO::PARAM_STR);
@@ -1361,7 +907,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
         } catch (Exception $e) {
             throw new PropelException('Unable to get autoincrement id.', $e);
         }
-        $this->setIdTrade($pk);
+        $this->setIdImport($pk);
 
         $this->setNew(false);
     }
@@ -1447,30 +993,6 @@ abstract class BaseTrade extends BaseObject implements Persistent
             // method.  This object relates to these object(s) by a
             // foreign key reference.
 
-            if ($this->aExchange !== null) {
-                if (!$this->aExchange->validate($columns)) {
-                    $failureMap = array_merge($failureMap, $this->aExchange->getValidationFailures());
-                }
-            }
-
-            if ($this->aAsset !== null) {
-                if (!$this->aAsset->validate($columns)) {
-                    $failureMap = array_merge($failureMap, $this->aAsset->getValidationFailures());
-                }
-            }
-
-            if ($this->aSymbol !== null) {
-                if (!$this->aSymbol->validate($columns)) {
-                    $failureMap = array_merge($failureMap, $this->aSymbol->getValidationFailures());
-                }
-            }
-
-            if ($this->aToken !== null) {
-                if (!$this->aToken->validate($columns)) {
-                    $failureMap = array_merge($failureMap, $this->aToken->getValidationFailures());
-                }
-            }
-
             if ($this->aAuthyGroup !== null) {
                 if (!$this->aAuthyGroup->validate($columns)) {
                     $failureMap = array_merge($failureMap, $this->aAuthyGroup->getValidationFailures());
@@ -1490,7 +1012,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
             }
 
 
-            if (($retval = TradePeer::doValidate($this, $columns)) !== true) {
+            if (($retval = ImportPeer::doValidate($this, $columns)) !== true) {
                 $failureMap = array_merge($failureMap, $retval);
             }
 
@@ -1514,7 +1036,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
      */
     public function getByName($name, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = TradePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = ImportPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
         $field = $this->getByPosition($pos);
 
         return $field;
@@ -1537,28 +1059,21 @@ abstract class BaseTrade extends BaseObject implements Persistent
      */
     public function toArray($keyType = BasePeer::TYPE_PHPNAME, $includeLazyLoadColumns = true, $alreadyDumpedObjects = array(), $includeForeignObjects = false)
     {
-        if (isset($alreadyDumpedObjects['Trade'][$this->getPrimaryKey()])) {
+        if (isset($alreadyDumpedObjects['Import'][$this->getPrimaryKey()])) {
             return '*RECURSION*';
         }
-        $alreadyDumpedObjects['Trade'][$this->getPrimaryKey()] = true;
-        $keys = TradePeer::getFieldNames($keyType);
+        $alreadyDumpedObjects['Import'][$this->getPrimaryKey()] = true;
+        $keys = ImportPeer::getFieldNames($keyType);
         $result = array(
-            $keys[0] => $this->getIdTrade(),
-            $keys[1] => $this->getType(),
-            $keys[2] => $this->getIdExchange(),
-            $keys[3] => $this->getIdAsset(),
-            $keys[4] => $this->getQty(),
-            $keys[5] => $this->getIdSymbol(),
-            $keys[6] => $this->getDate(),
-            $keys[7] => $this->getGrossUsd(),
-            $keys[8] => $this->getCommission(),
-            $keys[9] => $this->getCommissionAsset(),
-            $keys[10] => $this->getOrderId(),
-            $keys[11] => $this->getDateCreation(),
-            $keys[12] => $this->getDateModification(),
-            $keys[13] => $this->getIdGroupCreation(),
-            $keys[14] => $this->getIdCreation(),
-            $keys[15] => $this->getIdModification(),
+            $keys[0] => $this->getIdImport(),
+            $keys[1] => $this->getName(),
+            $keys[2] => $this->getItems(),
+            $keys[3] => $this->getFile(),
+            $keys[4] => $this->getDateCreation(),
+            $keys[5] => $this->getDateModification(),
+            $keys[6] => $this->getIdGroupCreation(),
+            $keys[7] => $this->getIdCreation(),
+            $keys[8] => $this->getIdModification(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1566,18 +1081,6 @@ abstract class BaseTrade extends BaseObject implements Persistent
         }
 
         if ($includeForeignObjects) {
-            if (null !== $this->aExchange) {
-                $result['Exchange'] = $this->aExchange->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->aAsset) {
-                $result['Asset'] = $this->aAsset->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->aSymbol) {
-                $result['Symbol'] = $this->aSymbol->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
-            if (null !== $this->aToken) {
-                $result['Token'] = $this->aToken->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
-            }
             if (null !== $this->aAuthyGroup) {
                 $result['AuthyGroup'] = $this->aAuthyGroup->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
@@ -1605,7 +1108,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
      */
     public function setByName($name, $value, $type = BasePeer::TYPE_PHPNAME)
     {
-        $pos = TradePeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
+        $pos = ImportPeer::translateFieldName($name, $type, BasePeer::TYPE_NUM);
 
         $this->setByPosition($pos, $value);
     }
@@ -1622,55 +1125,30 @@ abstract class BaseTrade extends BaseObject implements Persistent
     {
         switch ($pos) {
             case 0:
-                $this->setIdTrade($value);
+                $this->setIdImport($value);
                 break;
             case 1:
-                $valueSet = TradePeer::getValueSet(TradePeer::TYPE);
-                if (isset($valueSet[$value])) {
-                    $value = $valueSet[$value];
-                }
-                $this->setType($value);
+                $this->setName($value);
                 break;
             case 2:
-                $this->setIdExchange($value);
+                $this->setItems($value);
                 break;
             case 3:
-                $this->setIdAsset($value);
+                $this->setFile($value);
                 break;
             case 4:
-                $this->setQty($value);
-                break;
-            case 5:
-                $this->setIdSymbol($value);
-                break;
-            case 6:
-                $this->setDate($value);
-                break;
-            case 7:
-                $this->setGrossUsd($value);
-                break;
-            case 8:
-                $this->setCommission($value);
-                break;
-            case 9:
-                $this->setCommissionAsset($value);
-                break;
-            case 10:
-                $this->setOrderId($value);
-                break;
-            case 11:
                 $this->setDateCreation($value);
                 break;
-            case 12:
+            case 5:
                 $this->setDateModification($value);
                 break;
-            case 13:
+            case 6:
                 $this->setIdGroupCreation($value);
                 break;
-            case 14:
+            case 7:
                 $this->setIdCreation($value);
                 break;
-            case 15:
+            case 8:
                 $this->setIdModification($value);
                 break;
         } // switch()
@@ -1695,24 +1173,17 @@ abstract class BaseTrade extends BaseObject implements Persistent
      */
     public function fromArray($arr, $keyType = BasePeer::TYPE_PHPNAME)
     {
-        $keys = TradePeer::getFieldNames($keyType);
+        $keys = ImportPeer::getFieldNames($keyType);
 
-        if (array_key_exists($keys[0], $arr)) $this->setIdTrade($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setType($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setIdExchange($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setIdAsset($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setQty($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setIdSymbol($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setDate($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setGrossUsd($arr[$keys[7]]);
-        if (array_key_exists($keys[8], $arr)) $this->setCommission($arr[$keys[8]]);
-        if (array_key_exists($keys[9], $arr)) $this->setCommissionAsset($arr[$keys[9]]);
-        if (array_key_exists($keys[10], $arr)) $this->setOrderId($arr[$keys[10]]);
-        if (array_key_exists($keys[11], $arr)) $this->setDateCreation($arr[$keys[11]]);
-        if (array_key_exists($keys[12], $arr)) $this->setDateModification($arr[$keys[12]]);
-        if (array_key_exists($keys[13], $arr)) $this->setIdGroupCreation($arr[$keys[13]]);
-        if (array_key_exists($keys[14], $arr)) $this->setIdCreation($arr[$keys[14]]);
-        if (array_key_exists($keys[15], $arr)) $this->setIdModification($arr[$keys[15]]);
+        if (array_key_exists($keys[0], $arr)) $this->setIdImport($arr[$keys[0]]);
+        if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setItems($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setFile($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setDateCreation($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setDateModification($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setIdGroupCreation($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setIdCreation($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setIdModification($arr[$keys[8]]);
     }
 
     /**
@@ -1722,24 +1193,17 @@ abstract class BaseTrade extends BaseObject implements Persistent
      */
     public function buildCriteria()
     {
-        $criteria = new Criteria(TradePeer::DATABASE_NAME);
+        $criteria = new Criteria(ImportPeer::DATABASE_NAME);
 
-        if ($this->isColumnModified(TradePeer::ID_TRADE)) $criteria->add(TradePeer::ID_TRADE, $this->id_trade);
-        if ($this->isColumnModified(TradePeer::TYPE)) $criteria->add(TradePeer::TYPE, $this->type);
-        if ($this->isColumnModified(TradePeer::ID_EXCHANGE)) $criteria->add(TradePeer::ID_EXCHANGE, $this->id_exchange);
-        if ($this->isColumnModified(TradePeer::ID_ASSET)) $criteria->add(TradePeer::ID_ASSET, $this->id_asset);
-        if ($this->isColumnModified(TradePeer::QTY)) $criteria->add(TradePeer::QTY, $this->qty);
-        if ($this->isColumnModified(TradePeer::ID_SYMBOL)) $criteria->add(TradePeer::ID_SYMBOL, $this->id_symbol);
-        if ($this->isColumnModified(TradePeer::DATE)) $criteria->add(TradePeer::DATE, $this->date);
-        if ($this->isColumnModified(TradePeer::GROSS_USD)) $criteria->add(TradePeer::GROSS_USD, $this->gross_usd);
-        if ($this->isColumnModified(TradePeer::COMMISSION)) $criteria->add(TradePeer::COMMISSION, $this->commission);
-        if ($this->isColumnModified(TradePeer::COMMISSION_ASSET)) $criteria->add(TradePeer::COMMISSION_ASSET, $this->commission_asset);
-        if ($this->isColumnModified(TradePeer::ORDER_ID)) $criteria->add(TradePeer::ORDER_ID, $this->order_id);
-        if ($this->isColumnModified(TradePeer::DATE_CREATION)) $criteria->add(TradePeer::DATE_CREATION, $this->date_creation);
-        if ($this->isColumnModified(TradePeer::DATE_MODIFICATION)) $criteria->add(TradePeer::DATE_MODIFICATION, $this->date_modification);
-        if ($this->isColumnModified(TradePeer::ID_GROUP_CREATION)) $criteria->add(TradePeer::ID_GROUP_CREATION, $this->id_group_creation);
-        if ($this->isColumnModified(TradePeer::ID_CREATION)) $criteria->add(TradePeer::ID_CREATION, $this->id_creation);
-        if ($this->isColumnModified(TradePeer::ID_MODIFICATION)) $criteria->add(TradePeer::ID_MODIFICATION, $this->id_modification);
+        if ($this->isColumnModified(ImportPeer::ID_IMPORT)) $criteria->add(ImportPeer::ID_IMPORT, $this->id_import);
+        if ($this->isColumnModified(ImportPeer::NAME)) $criteria->add(ImportPeer::NAME, $this->name);
+        if ($this->isColumnModified(ImportPeer::ITEMS)) $criteria->add(ImportPeer::ITEMS, $this->items);
+        if ($this->isColumnModified(ImportPeer::FILE)) $criteria->add(ImportPeer::FILE, $this->file);
+        if ($this->isColumnModified(ImportPeer::DATE_CREATION)) $criteria->add(ImportPeer::DATE_CREATION, $this->date_creation);
+        if ($this->isColumnModified(ImportPeer::DATE_MODIFICATION)) $criteria->add(ImportPeer::DATE_MODIFICATION, $this->date_modification);
+        if ($this->isColumnModified(ImportPeer::ID_GROUP_CREATION)) $criteria->add(ImportPeer::ID_GROUP_CREATION, $this->id_group_creation);
+        if ($this->isColumnModified(ImportPeer::ID_CREATION)) $criteria->add(ImportPeer::ID_CREATION, $this->id_creation);
+        if ($this->isColumnModified(ImportPeer::ID_MODIFICATION)) $criteria->add(ImportPeer::ID_MODIFICATION, $this->id_modification);
 
         return $criteria;
     }
@@ -1754,8 +1218,8 @@ abstract class BaseTrade extends BaseObject implements Persistent
      */
     public function buildPkeyCriteria()
     {
-        $criteria = new Criteria(TradePeer::DATABASE_NAME);
-        $criteria->add(TradePeer::ID_TRADE, $this->id_trade);
+        $criteria = new Criteria(ImportPeer::DATABASE_NAME);
+        $criteria->add(ImportPeer::ID_IMPORT, $this->id_import);
 
         return $criteria;
     }
@@ -1766,18 +1230,18 @@ abstract class BaseTrade extends BaseObject implements Persistent
      */
     public function getPrimaryKey()
     {
-        return $this->getIdTrade();
+        return $this->getIdImport();
     }
 
     /**
-     * Generic method to set the primary key (id_trade column).
+     * Generic method to set the primary key (id_import column).
      *
      * @param  int $key Primary key.
      * @return void
      */
     public function setPrimaryKey($key)
     {
-        $this->setIdTrade($key);
+        $this->setIdImport($key);
     }
 
     /**
@@ -1787,7 +1251,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
     public function isPrimaryKeyNull()
     {
 
-        return null === $this->getIdTrade();
+        return null === $this->getIdImport();
     }
 
     /**
@@ -1796,23 +1260,16 @@ abstract class BaseTrade extends BaseObject implements Persistent
      * If desired, this method can also make copies of all associated (fkey referrers)
      * objects.
      *
-     * @param object $copyObj An object of Trade (or compatible) type.
+     * @param object $copyObj An object of Import (or compatible) type.
      * @param boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
      * @param boolean $makeNew Whether to reset autoincrement PKs and make the object new.
      * @throws PropelException
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setType($this->getType());
-        $copyObj->setIdExchange($this->getIdExchange());
-        $copyObj->setIdAsset($this->getIdAsset());
-        $copyObj->setQty($this->getQty());
-        $copyObj->setIdSymbol($this->getIdSymbol());
-        $copyObj->setDate($this->getDate());
-        $copyObj->setGrossUsd($this->getGrossUsd());
-        $copyObj->setCommission($this->getCommission());
-        $copyObj->setCommissionAsset($this->getCommissionAsset());
-        $copyObj->setOrderId($this->getOrderId());
+        $copyObj->setName($this->getName());
+        $copyObj->setItems($this->getItems());
+        $copyObj->setFile($this->getFile());
         $copyObj->setDateCreation($this->getDateCreation());
         $copyObj->setDateModification($this->getDateModification());
         $copyObj->setIdGroupCreation($this->getIdGroupCreation());
@@ -1832,7 +1289,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
 
         if ($makeNew) {
             $copyObj->setNew(true);
-            $copyObj->setIdTrade(NULL); // this is a auto-increment column, so set to default value
+            $copyObj->setIdImport(NULL); // this is a auto-increment column, so set to default value
         }
     }
 
@@ -1845,7 +1302,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
      * objects.
      *
      * @param boolean $deepCopy Whether to also copy all rows that refer (by fkey) to the current row.
-     * @return Trade Clone of current object.
+     * @return Import Clone of current object.
      * @throws PropelException
      */
     public function copy($deepCopy = false)
@@ -1865,230 +1322,22 @@ abstract class BaseTrade extends BaseObject implements Persistent
      * same instance for all member of this class. The method could therefore
      * be static, but this would prevent one from overriding the behavior.
      *
-     * @return TradePeer
+     * @return ImportPeer
      */
     public function getPeer()
     {
         if (self::$peer === null) {
-            self::$peer = new TradePeer();
+            self::$peer = new ImportPeer();
         }
 
         return self::$peer;
     }
 
     /**
-     * Declares an association between this object and a Exchange object.
-     *
-     * @param                  Exchange $v
-     * @return Trade The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setExchange(Exchange $v = null)
-    {
-        if ($v === null) {
-            $this->setIdExchange(NULL);
-        } else {
-            $this->setIdExchange($v->getIdExchange());
-        }
-
-        $this->aExchange = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the Exchange object, it will not be re-added.
-        if ($v !== null) {
-            $v->addTrade($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated Exchange object
-     *
-     * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
-     * @return Exchange The associated Exchange object.
-     * @throws PropelException
-     */
-    public function getExchange(PropelPDO $con = null, $doQuery = true)
-    {
-        if ($this->aExchange === null && ($this->id_exchange !== null) && $doQuery) {
-            $this->aExchange = ExchangeQuery::create()->findPk($this->id_exchange, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aExchange->addTrades($this);
-             */
-        }
-
-        return $this->aExchange;
-    }
-
-    /**
-     * Declares an association between this object and a Asset object.
-     *
-     * @param                  Asset $v
-     * @return Trade The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setAsset(Asset $v = null)
-    {
-        if ($v === null) {
-            $this->setIdAsset(NULL);
-        } else {
-            $this->setIdAsset($v->getIdAsset());
-        }
-
-        $this->aAsset = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the Asset object, it will not be re-added.
-        if ($v !== null) {
-            $v->addTrade($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated Asset object
-     *
-     * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
-     * @return Asset The associated Asset object.
-     * @throws PropelException
-     */
-    public function getAsset(PropelPDO $con = null, $doQuery = true)
-    {
-        if ($this->aAsset === null && ($this->id_asset !== null) && $doQuery) {
-            $this->aAsset = AssetQuery::create()->findPk($this->id_asset, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aAsset->addTrades($this);
-             */
-        }
-
-        return $this->aAsset;
-    }
-
-    /**
-     * Declares an association between this object and a Symbol object.
-     *
-     * @param                  Symbol $v
-     * @return Trade The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setSymbol(Symbol $v = null)
-    {
-        if ($v === null) {
-            $this->setIdSymbol(NULL);
-        } else {
-            $this->setIdSymbol($v->getIdSymbol());
-        }
-
-        $this->aSymbol = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the Symbol object, it will not be re-added.
-        if ($v !== null) {
-            $v->addTrade($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated Symbol object
-     *
-     * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
-     * @return Symbol The associated Symbol object.
-     * @throws PropelException
-     */
-    public function getSymbol(PropelPDO $con = null, $doQuery = true)
-    {
-        if ($this->aSymbol === null && ($this->id_symbol !== null) && $doQuery) {
-            $this->aSymbol = SymbolQuery::create()->findPk($this->id_symbol, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aSymbol->addTrades($this);
-             */
-        }
-
-        return $this->aSymbol;
-    }
-
-    /**
-     * Declares an association between this object and a Token object.
-     *
-     * @param                  Token $v
-     * @return Trade The current object (for fluent API support)
-     * @throws PropelException
-     */
-    public function setToken(Token $v = null)
-    {
-        if ($v === null) {
-            $this->setCommissionAsset(NULL);
-        } else {
-            $this->setCommissionAsset($v->getIdToken());
-        }
-
-        $this->aToken = $v;
-
-        // Add binding for other direction of this n:n relationship.
-        // If this object has already been added to the Token object, it will not be re-added.
-        if ($v !== null) {
-            $v->addTrade($this);
-        }
-
-
-        return $this;
-    }
-
-
-    /**
-     * Get the associated Token object
-     *
-     * @param PropelPDO $con Optional Connection object.
-     * @param $doQuery Executes a query to get the object if required
-     * @return Token The associated Token object.
-     * @throws PropelException
-     */
-    public function getToken(PropelPDO $con = null, $doQuery = true)
-    {
-        if ($this->aToken === null && ($this->commission_asset !== null) && $doQuery) {
-            $this->aToken = TokenQuery::create()->findPk($this->commission_asset, $con);
-            /* The following can be used additionally to
-                guarantee the related object contains a reference
-                to this object.  This level of coupling may, however, be
-                undesirable since it could result in an only partially populated collection
-                in the referenced object.
-                $this->aToken->addTrades($this);
-             */
-        }
-
-        return $this->aToken;
-    }
-
-    /**
      * Declares an association between this object and a AuthyGroup object.
      *
      * @param                  AuthyGroup $v
-     * @return Trade The current object (for fluent API support)
+     * @return Import The current object (for fluent API support)
      * @throws PropelException
      */
     public function setAuthyGroup(AuthyGroup $v = null)
@@ -2104,7 +1353,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the AuthyGroup object, it will not be re-added.
         if ($v !== null) {
-            $v->addTrade($this);
+            $v->addImport($this);
         }
 
 
@@ -2129,7 +1378,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aAuthyGroup->addTrades($this);
+                $this->aAuthyGroup->addImports($this);
              */
         }
 
@@ -2140,7 +1389,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
      * Declares an association between this object and a Authy object.
      *
      * @param                  Authy $v
-     * @return Trade The current object (for fluent API support)
+     * @return Import The current object (for fluent API support)
      * @throws PropelException
      */
     public function setAuthyRelatedByIdCreation(Authy $v = null)
@@ -2156,7 +1405,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the Authy object, it will not be re-added.
         if ($v !== null) {
-            $v->addTradeRelatedByIdCreation($this);
+            $v->addImportRelatedByIdCreation($this);
         }
 
 
@@ -2181,7 +1430,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aAuthyRelatedByIdCreation->addTradesRelatedByIdCreation($this);
+                $this->aAuthyRelatedByIdCreation->addImportsRelatedByIdCreation($this);
              */
         }
 
@@ -2192,7 +1441,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
      * Declares an association between this object and a Authy object.
      *
      * @param                  Authy $v
-     * @return Trade The current object (for fluent API support)
+     * @return Import The current object (for fluent API support)
      * @throws PropelException
      */
     public function setAuthyRelatedByIdModification(Authy $v = null)
@@ -2208,7 +1457,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
         // Add binding for other direction of this n:n relationship.
         // If this object has already been added to the Authy object, it will not be re-added.
         if ($v !== null) {
-            $v->addTradeRelatedByIdModification($this);
+            $v->addImportRelatedByIdModification($this);
         }
 
 
@@ -2233,7 +1482,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
                 to this object.  This level of coupling may, however, be
                 undesirable since it could result in an only partially populated collection
                 in the referenced object.
-                $this->aAuthyRelatedByIdModification->addTradesRelatedByIdModification($this);
+                $this->aAuthyRelatedByIdModification->addImportsRelatedByIdModification($this);
              */
         }
 
@@ -2245,17 +1494,10 @@ abstract class BaseTrade extends BaseObject implements Persistent
      */
     public function clear()
     {
-        $this->id_trade = null;
-        $this->type = null;
-        $this->id_exchange = null;
-        $this->id_asset = null;
-        $this->qty = null;
-        $this->id_symbol = null;
-        $this->date = null;
-        $this->gross_usd = null;
-        $this->commission = null;
-        $this->commission_asset = null;
-        $this->order_id = null;
+        $this->id_import = null;
+        $this->name = null;
+        $this->items = null;
+        $this->file = null;
         $this->date_creation = null;
         $this->date_modification = null;
         $this->id_group_creation = null;
@@ -2283,18 +1525,6 @@ abstract class BaseTrade extends BaseObject implements Persistent
     {
         if ($deep && !$this->alreadyInClearAllReferencesDeep) {
             $this->alreadyInClearAllReferencesDeep = true;
-            if ($this->aExchange instanceof Persistent) {
-              $this->aExchange->clearAllReferences($deep);
-            }
-            if ($this->aAsset instanceof Persistent) {
-              $this->aAsset->clearAllReferences($deep);
-            }
-            if ($this->aSymbol instanceof Persistent) {
-              $this->aSymbol->clearAllReferences($deep);
-            }
-            if ($this->aToken instanceof Persistent) {
-              $this->aToken->clearAllReferences($deep);
-            }
             if ($this->aAuthyGroup instanceof Persistent) {
               $this->aAuthyGroup->clearAllReferences($deep);
             }
@@ -2308,10 +1538,6 @@ abstract class BaseTrade extends BaseObject implements Persistent
             $this->alreadyInClearAllReferencesDeep = false;
         } // if ($deep)
 
-        $this->aExchange = null;
-        $this->aAsset = null;
-        $this->aSymbol = null;
-        $this->aToken = null;
         $this->aAuthyGroup = null;
         $this->aAuthyRelatedByIdCreation = null;
         $this->aAuthyRelatedByIdModification = null;
@@ -2324,7 +1550,7 @@ abstract class BaseTrade extends BaseObject implements Persistent
      */
     public function __toString()
     {
-        return (string) $this->exportTo(TradePeer::DEFAULT_STRING_FORMAT);
+        return (string) $this->exportTo(ImportPeer::DEFAULT_STRING_FORMAT);
     }
 
     /**
@@ -2342,10 +1568,10 @@ abstract class BaseTrade extends BaseObject implements Persistent
     /**
      * Mark the current object so that the update date doesn't get updated during next save
      *
-     * @return     Trade The current object (for fluent API support)
+     * @return     Import The current object (for fluent API support)
      */
     public function keepUpdateDateUnchanged(){
-        $this->modifiedColumns[] = TradePeer::DATE_MODIFICATION;
+        $this->modifiedColumns[] = ImportPeer::DATE_MODIFICATION;
 
         return $this;
     }

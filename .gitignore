@@ -15,3 +15,4 @@ patch
 !.admin/build.xml
 .admin/tmp/db-backup.sql
 .admin/tmp/.db-back*
+.admin/public/file/*

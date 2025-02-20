@@ -23,6 +23,7 @@ use App\AuthyGroupX;
 use App\Config;
 use App\Country;
 use App\Exchange;
+use App\Import;
 use App\MessageI18n;
 use App\Symbol;
 use App\Template;
@@ -118,6 +119,10 @@ use App\Trade;
  * @method AuthyGroupQuery leftJoinSymbol($relationAlias = null) Adds a LEFT JOIN clause to the query using the Symbol relation
  * @method AuthyGroupQuery rightJoinSymbol($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Symbol relation
  * @method AuthyGroupQuery innerJoinSymbol($relationAlias = null) Adds a INNER JOIN clause to the query using the Symbol relation
+ *
+ * @method AuthyGroupQuery leftJoinImport($relationAlias = null) Adds a LEFT JOIN clause to the query using the Import relation
+ * @method AuthyGroupQuery rightJoinImport($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Import relation
+ * @method AuthyGroupQuery innerJoinImport($relationAlias = null) Adds a INNER JOIN clause to the query using the Import relation
  *
  * @method AuthyGroupQuery leftJoinAuthyGroupRelatedByIdAuthyGroup($relationAlias = null) Adds a LEFT JOIN clause to the query using the AuthyGroupRelatedByIdAuthyGroup relation
  * @method AuthyGroupQuery rightJoinAuthyGroupRelatedByIdAuthyGroup($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AuthyGroupRelatedByIdAuthyGroup relation
@@ -1797,6 +1802,80 @@ abstract class BaseAuthyGroupQuery extends ModelCriteria
         return $this
             ->joinSymbol($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Symbol', '\App\SymbolQuery');
+    }
+
+    /**
+     * Filter the query by a related Import object
+     *
+     * @param   Import|PropelObjectCollection $import  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 AuthyGroupQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByImport($import, $comparison = null)
+    {
+        if ($import instanceof Import) {
+            return $this
+                ->addUsingAlias(AuthyGroupPeer::ID_AUTHY_GROUP, $import->getIdGroupCreation(), $comparison);
+        } elseif ($import instanceof PropelObjectCollection) {
+            return $this
+                ->useImportQuery()
+                ->filterByPrimaryKeys($import->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByImport() only accepts arguments of type Import or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Import relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return AuthyGroupQuery The current query, for fluid interface
+     */
+    public function joinImport($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Import');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Import');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Import relation Import object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\ImportQuery A secondary query class using the current class as primary query
+     */
+    public function useImportQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinImport($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Import', '\App\ImportQuery');
     }
 
     /**

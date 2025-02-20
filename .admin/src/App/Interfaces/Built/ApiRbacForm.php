@@ -978,6 +978,7 @@ $this->fields['ApiRbac']['DateCreation']['html']
      * @param array $data
     **/
     public function selectBoxApiLog_IdApiRbac(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = ApiRbacQuery::create();
 
             $q->addAsColumn('selDisplay', 'CONCAT_WS ( ", ", '.ApiRbacPeer::MODEL.', '.ApiRbacPeer::ACTION.', '.ApiRbacPeer::QUERY.' )');
@@ -991,10 +992,15 @@ $this->fields['ApiRbac']['DateCreation']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }	
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}	
     /**
      * function getApiLogList
      * @param string $IdApiRbac
@@ -1204,16 +1210,17 @@ $this->fields['ApiRbac']['DateCreation']['html']
                 
                 $tr .= 
                         tr(
-                            (isset($hookListColumnsApiLogFirst)?$hookListColumnsApiLogFirst:'').
+                            (isset($this->hookListColumnsApiLogFirst)?$this->hookListColumnsApiLogFirst:'').
                             
                 td(span((($altValue['IdApiRbac']) ? $altValue['IdApiRbac'] : $altValue['ApiRbac_Model']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdApiRbac' class=''  j='editApiLog'") . td(span($altValue['ApiRbac_Action'].""), " c='ApiRbac__Action' j='editApiLog' i='".json_encode($data->getPrimaryKey())."'").
                             td(span($altValue['ApiRbac_Query'].""), " c='ApiRbac__Query' j='editApiLog' i='".json_encode($data->getPrimaryKey())."'").
                             
                 td(span((($altValue['Time']) ? $altValue['Time'] : $data->getTime()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Time' class=''  j='editApiLog'") . 
-                            (isset($hookListColumnsApiLog)?$hookListColumnsApiLog:'').
+                            (isset($this->hookListColumnsApiLog)?$this->hookListColumnsApiLog:'').
                             $actionRow
-                        ,"id='ApiLogRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='ApiLog'  ")
-                        ;
+                            
+                        ,"id='ApiLogRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='ApiLog'  ");
+                        
                 
                 $i++;
             }

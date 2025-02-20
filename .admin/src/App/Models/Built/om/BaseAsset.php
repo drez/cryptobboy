@@ -94,6 +94,18 @@ abstract class BaseAsset extends BaseObject implements Persistent
     protected $usd_value;
 
     /**
+     * The value for the avg_price field.
+     * @var        string
+     */
+    protected $avg_price;
+
+    /**
+     * The value for the profit field.
+     * @var        string
+     */
+    protected $profit;
+
+    /**
      * The value for the locked_token field.
      * @var        string
      */
@@ -275,6 +287,30 @@ abstract class BaseAsset extends BaseObject implements Persistent
     {
 
         return $this->usd_value;
+    }
+
+    /**
+     * @Field()
+     * Get the [avg_price] column value.
+     * Avg. price
+     * @return string
+     */
+    public function getAvgPrice()
+    {
+
+        return $this->avg_price;
+    }
+
+    /**
+     * @Field()
+     * Get the [profit] column value.
+     * Profit
+     * @return string
+     */
+    public function getProfit()
+    {
+
+        return $this->profit;
     }
 
     /**
@@ -591,6 +627,48 @@ abstract class BaseAsset extends BaseObject implements Persistent
     } // setUsdValue()
 
     /**
+     * Set the value of [avg_price] column.
+     * Avg. price
+     * @param  string $v new value
+     * @return Asset The current object (for fluent API support)
+     */
+    public function setAvgPrice($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (string) $v;
+        }
+
+        if ($this->avg_price !== $v) {
+            $this->avg_price = $v;
+            $this->modifiedColumns[] = AssetPeer::AVG_PRICE;
+        }
+
+
+        return $this;
+    } // setAvgPrice()
+
+    /**
+     * Set the value of [profit] column.
+     * Profit
+     * @param  string $v new value
+     * @return Asset The current object (for fluent API support)
+     */
+    public function setProfit($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (string) $v;
+        }
+
+        if ($this->profit !== $v) {
+            $this->profit = $v;
+            $this->modifiedColumns[] = AssetPeer::PROFIT;
+        }
+
+
+        return $this;
+    } // setProfit()
+
+    /**
      * Set the value of [locked_token] column.
      * Locked
      * @param  string $v new value
@@ -814,14 +892,16 @@ abstract class BaseAsset extends BaseObject implements Persistent
             $this->staked_token = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
             $this->total_token = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
             $this->usd_value = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
-            $this->locked_token = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-            $this->freeze_token = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
-            $this->last_sync = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
-            $this->date_creation = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
-            $this->date_modification = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
-            $this->id_group_creation = ($row[$startcol + 11] !== null) ? (int) $row[$startcol + 11] : null;
-            $this->id_creation = ($row[$startcol + 12] !== null) ? (int) $row[$startcol + 12] : null;
-            $this->id_modification = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
+            $this->avg_price = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+            $this->profit = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
+            $this->locked_token = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
+            $this->freeze_token = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
+            $this->last_sync = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
+            $this->date_creation = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
+            $this->date_modification = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+            $this->id_group_creation = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
+            $this->id_creation = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
+            $this->id_modification = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -831,7 +911,7 @@ abstract class BaseAsset extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 14; // 14 = AssetPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 16; // 16 = AssetPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Asset object", $e);
@@ -1168,6 +1248,12 @@ abstract class BaseAsset extends BaseObject implements Persistent
         if ($this->isColumnModified(AssetPeer::USD_VALUE)) {
             $modifiedColumns[':p' . $index++]  = '`usd_value`';
         }
+        if ($this->isColumnModified(AssetPeer::AVG_PRICE)) {
+            $modifiedColumns[':p' . $index++]  = '`avg_price`';
+        }
+        if ($this->isColumnModified(AssetPeer::PROFIT)) {
+            $modifiedColumns[':p' . $index++]  = '`profit`';
+        }
         if ($this->isColumnModified(AssetPeer::LOCKED_TOKEN)) {
             $modifiedColumns[':p' . $index++]  = '`locked_token`';
         }
@@ -1220,6 +1306,12 @@ abstract class BaseAsset extends BaseObject implements Persistent
                         break;
                     case '`usd_value`':
                         $stmt->bindValue($identifier, $this->usd_value, PDO::PARAM_STR);
+                        break;
+                    case '`avg_price`':
+                        $stmt->bindValue($identifier, $this->avg_price, PDO::PARAM_STR);
+                        break;
+                    case '`profit`':
+                        $stmt->bindValue($identifier, $this->profit, PDO::PARAM_STR);
                         break;
                     case '`locked_token`':
                         $stmt->bindValue($identifier, $this->locked_token, PDO::PARAM_STR);
@@ -1444,14 +1536,16 @@ abstract class BaseAsset extends BaseObject implements Persistent
             $keys[3] => $this->getStakedToken(),
             $keys[4] => $this->getTotalToken(),
             $keys[5] => $this->getUsdValue(),
-            $keys[6] => $this->getLockedToken(),
-            $keys[7] => $this->getFreezeToken(),
-            $keys[8] => $this->getLastSync(),
-            $keys[9] => $this->getDateCreation(),
-            $keys[10] => $this->getDateModification(),
-            $keys[11] => $this->getIdGroupCreation(),
-            $keys[12] => $this->getIdCreation(),
-            $keys[13] => $this->getIdModification(),
+            $keys[6] => $this->getAvgPrice(),
+            $keys[7] => $this->getProfit(),
+            $keys[8] => $this->getLockedToken(),
+            $keys[9] => $this->getFreezeToken(),
+            $keys[10] => $this->getLastSync(),
+            $keys[11] => $this->getDateCreation(),
+            $keys[12] => $this->getDateModification(),
+            $keys[13] => $this->getIdGroupCreation(),
+            $keys[14] => $this->getIdCreation(),
+            $keys[15] => $this->getIdModification(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1530,27 +1624,33 @@ abstract class BaseAsset extends BaseObject implements Persistent
                 $this->setUsdValue($value);
                 break;
             case 6:
-                $this->setLockedToken($value);
+                $this->setAvgPrice($value);
                 break;
             case 7:
-                $this->setFreezeToken($value);
+                $this->setProfit($value);
                 break;
             case 8:
-                $this->setLastSync($value);
+                $this->setLockedToken($value);
                 break;
             case 9:
-                $this->setDateCreation($value);
+                $this->setFreezeToken($value);
                 break;
             case 10:
-                $this->setDateModification($value);
+                $this->setLastSync($value);
                 break;
             case 11:
-                $this->setIdGroupCreation($value);
+                $this->setDateCreation($value);
                 break;
             case 12:
-                $this->setIdCreation($value);
+                $this->setDateModification($value);
                 break;
             case 13:
+                $this->setIdGroupCreation($value);
+                break;
+            case 14:
+                $this->setIdCreation($value);
+                break;
+            case 15:
                 $this->setIdModification($value);
                 break;
         } // switch()
@@ -1583,14 +1683,16 @@ abstract class BaseAsset extends BaseObject implements Persistent
         if (array_key_exists($keys[3], $arr)) $this->setStakedToken($arr[$keys[3]]);
         if (array_key_exists($keys[4], $arr)) $this->setTotalToken($arr[$keys[4]]);
         if (array_key_exists($keys[5], $arr)) $this->setUsdValue($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setLockedToken($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setFreezeToken($arr[$keys[7]]);
-        if (array_key_exists($keys[8], $arr)) $this->setLastSync($arr[$keys[8]]);
-        if (array_key_exists($keys[9], $arr)) $this->setDateCreation($arr[$keys[9]]);
-        if (array_key_exists($keys[10], $arr)) $this->setDateModification($arr[$keys[10]]);
-        if (array_key_exists($keys[11], $arr)) $this->setIdGroupCreation($arr[$keys[11]]);
-        if (array_key_exists($keys[12], $arr)) $this->setIdCreation($arr[$keys[12]]);
-        if (array_key_exists($keys[13], $arr)) $this->setIdModification($arr[$keys[13]]);
+        if (array_key_exists($keys[6], $arr)) $this->setAvgPrice($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setProfit($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setLockedToken($arr[$keys[8]]);
+        if (array_key_exists($keys[9], $arr)) $this->setFreezeToken($arr[$keys[9]]);
+        if (array_key_exists($keys[10], $arr)) $this->setLastSync($arr[$keys[10]]);
+        if (array_key_exists($keys[11], $arr)) $this->setDateCreation($arr[$keys[11]]);
+        if (array_key_exists($keys[12], $arr)) $this->setDateModification($arr[$keys[12]]);
+        if (array_key_exists($keys[13], $arr)) $this->setIdGroupCreation($arr[$keys[13]]);
+        if (array_key_exists($keys[14], $arr)) $this->setIdCreation($arr[$keys[14]]);
+        if (array_key_exists($keys[15], $arr)) $this->setIdModification($arr[$keys[15]]);
     }
 
     /**
@@ -1608,6 +1710,8 @@ abstract class BaseAsset extends BaseObject implements Persistent
         if ($this->isColumnModified(AssetPeer::STAKED_TOKEN)) $criteria->add(AssetPeer::STAKED_TOKEN, $this->staked_token);
         if ($this->isColumnModified(AssetPeer::TOTAL_TOKEN)) $criteria->add(AssetPeer::TOTAL_TOKEN, $this->total_token);
         if ($this->isColumnModified(AssetPeer::USD_VALUE)) $criteria->add(AssetPeer::USD_VALUE, $this->usd_value);
+        if ($this->isColumnModified(AssetPeer::AVG_PRICE)) $criteria->add(AssetPeer::AVG_PRICE, $this->avg_price);
+        if ($this->isColumnModified(AssetPeer::PROFIT)) $criteria->add(AssetPeer::PROFIT, $this->profit);
         if ($this->isColumnModified(AssetPeer::LOCKED_TOKEN)) $criteria->add(AssetPeer::LOCKED_TOKEN, $this->locked_token);
         if ($this->isColumnModified(AssetPeer::FREEZE_TOKEN)) $criteria->add(AssetPeer::FREEZE_TOKEN, $this->freeze_token);
         if ($this->isColumnModified(AssetPeer::LAST_SYNC)) $criteria->add(AssetPeer::LAST_SYNC, $this->last_sync);
@@ -1684,6 +1788,8 @@ abstract class BaseAsset extends BaseObject implements Persistent
         $copyObj->setStakedToken($this->getStakedToken());
         $copyObj->setTotalToken($this->getTotalToken());
         $copyObj->setUsdValue($this->getUsdValue());
+        $copyObj->setAvgPrice($this->getAvgPrice());
+        $copyObj->setProfit($this->getProfit());
         $copyObj->setLockedToken($this->getLockedToken());
         $copyObj->setFreezeToken($this->getFreezeToken());
         $copyObj->setLastSync($this->getLastSync());
@@ -2637,6 +2743,8 @@ abstract class BaseAsset extends BaseObject implements Persistent
         $this->staked_token = null;
         $this->total_token = null;
         $this->usd_value = null;
+        $this->avg_price = null;
+        $this->profit = null;
         $this->locked_token = null;
         $this->freeze_token = null;
         $this->last_sync = null;

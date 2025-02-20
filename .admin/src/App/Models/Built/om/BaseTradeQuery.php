@@ -105,7 +105,7 @@ use App\TradeQuery;
  * @method Trade findOneByGrossUsd(string $gross_usd) Return the first Trade filtered by the gross_usd column
  * @method Trade findOneByCommission(string $commission) Return the first Trade filtered by the commission column
  * @method Trade findOneByCommissionAsset(int $commission_asset) Return the first Trade filtered by the commission_asset column
- * @method Trade findOneByOrderId(int $order_id) Return the first Trade filtered by the order_id column
+ * @method Trade findOneByOrderId(string $order_id) Return the first Trade filtered by the order_id column
  * @method Trade findOneByDateCreation(string $date_creation) Return the first Trade filtered by the date_creation column
  * @method Trade findOneByDateModification(string $date_modification) Return the first Trade filtered by the date_modification column
  * @method Trade findOneByIdGroupCreation(int $id_group_creation) Return the first Trade filtered by the id_group_creation column
@@ -122,7 +122,7 @@ use App\TradeQuery;
  * @method array findByGrossUsd(string $gross_usd) Return Trade objects filtered by the gross_usd column
  * @method array findByCommission(string $commission) Return Trade objects filtered by the commission column
  * @method array findByCommissionAsset(int $commission_asset) Return Trade objects filtered by the commission_asset column
- * @method array findByOrderId(int $order_id) Return Trade objects filtered by the order_id column
+ * @method array findByOrderId(string $order_id) Return Trade objects filtered by the order_id column
  * @method array findByDateCreation(string $date_creation) Return Trade objects filtered by the date_creation column
  * @method array findByDateModification(string $date_modification) Return Trade objects filtered by the date_modification column
  * @method array findByIdGroupCreation(int $id_group_creation) Return Trade objects filtered by the id_group_creation column
@@ -1264,7 +1264,7 @@ abstract class BaseTradeQuery extends ModelCriteria
      *
      * @return TradeQuery The current query, for fluid interface
      */
-    public function joinToken($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function joinToken($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         $tableMap = $this->getTableMap();
         $relationMap = $tableMap->getRelation('Token');
@@ -1299,7 +1299,7 @@ abstract class BaseTradeQuery extends ModelCriteria
      *
      * @return   \App\TokenQuery A secondary query class using the current class as primary query
      */
-    public function useTokenQuery($relationAlias = null, $joinType = Criteria::INNER_JOIN)
+    public function useTokenQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
     {
         return $this
             ->joinToken($relationAlias, $joinType)

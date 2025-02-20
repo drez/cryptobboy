@@ -865,9 +865,10 @@ abstract class BaseToken extends BaseObject implements Persistent
 
             if ($this->tradesScheduledForDeletion !== null) {
                 if (!$this->tradesScheduledForDeletion->isEmpty()) {
-                    TradeQuery::create()
-                        ->filterByPrimaryKeys($this->tradesScheduledForDeletion->getPrimaryKeys(false))
-                        ->delete($con);
+                    foreach ($this->tradesScheduledForDeletion as $trade) {
+                        // need to save related object because we set the relation to null
+                        $trade->save($con);
+                    }
                     $this->tradesScheduledForDeletion = null;
                 }
             }
@@ -2467,7 +2468,7 @@ abstract class BaseToken extends BaseObject implements Persistent
                 $this->tradesScheduledForDeletion = clone $this->collTrades;
                 $this->tradesScheduledForDeletion->clear();
             }
-            $this->tradesScheduledForDeletion[]= clone $trade;
+            $this->tradesScheduledForDeletion[]= $trade;
             $trade->setToken(null);
         }
 

@@ -7,6 +7,12 @@ return [
     [
         'name' => 'Asset',
         'desc' => 'Assets',
+        'index' => 100,
+        'parent_menu' => null,
+    ],
+    [
+        'name' => 'Import',
+        'desc' => 'Imports',
         'index' => 1,
         'parent_menu' => null,
     ],

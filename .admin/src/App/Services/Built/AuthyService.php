@@ -291,6 +291,12 @@ class AuthyService
             if($obj->countSymbolsRelatedByIdModification()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Symbol'. ", '', true,'User'); die( $error['onReadyJs'] );
             }
+            if($obj->countImportsRelatedByIdCreation()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Import'. ", '', true,'User'); die( $error['onReadyJs'] );
+            }
+            if($obj->countImportsRelatedByIdModification()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Import'. ", '', true,'User'); die( $error['onReadyJs'] );
+            }
             if($obj->countAuthyGroupsRelatedByIdCreation()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Group'. ", '', true,'User'); die( $error['onReadyJs'] );
             }

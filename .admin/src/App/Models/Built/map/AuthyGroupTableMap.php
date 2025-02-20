@@ -94,6 +94,7 @@ class AuthyGroupTableMap extends TableMap
         $this->addRelation('Exchange', 'App\\Exchange', RelationMap::ONE_TO_MANY, array('id_authy_group' => 'id_group_creation', ), null, null, 'Exchanges');
         $this->addRelation('Token', 'App\\Token', RelationMap::ONE_TO_MANY, array('id_authy_group' => 'id_group_creation', ), null, null, 'Tokens');
         $this->addRelation('Symbol', 'App\\Symbol', RelationMap::ONE_TO_MANY, array('id_authy_group' => 'id_group_creation', ), null, null, 'Symbols');
+        $this->addRelation('Import', 'App\\Import', RelationMap::ONE_TO_MANY, array('id_authy_group' => 'id_group_creation', ), null, null, 'Imports');
         $this->addRelation('AuthyGroupRelatedByIdAuthyGroup', 'App\\AuthyGroup', RelationMap::ONE_TO_MANY, array('id_authy_group' => 'id_group_creation', ), null, null, 'AuthyGroupsRelatedByIdAuthyGroup');
         $this->addRelation('Config', 'App\\Config', RelationMap::ONE_TO_MANY, array('id_authy_group' => 'id_group_creation', ), null, null, 'Configs');
         $this->addRelation('ApiRbac', 'App\\ApiRbac', RelationMap::ONE_TO_MANY, array('id_authy_group' => 'id_group_creation', ), null, null, 'ApiRbacs');

@@ -48,6 +48,8 @@ class AssetTableMap extends TableMap
         $this->addColumn('staked_token', 'StakedToken', 'DECIMAL', false, 16, null);
         $this->addColumn('total_token', 'TotalToken', 'DECIMAL', false, 16, null);
         $this->addColumn('usd_value', 'UsdValue', 'DECIMAL', false, 12, null);
+        $this->addColumn('avg_price', 'AvgPrice', 'DECIMAL', false, 14, null);
+        $this->addColumn('profit', 'Profit', 'DECIMAL', false, 12, null);
         $this->addColumn('locked_token', 'LockedToken', 'DECIMAL', false, 16, null);
         $this->addColumn('freeze_token', 'FreezeToken', 'DECIMAL', false, 16, null);
         $this->addColumn('last_sync', 'LastSync', 'TIMESTAMP', false, null, null);
@@ -89,14 +91,14 @@ class AssetTableMap extends TableMap
         return array(
             'GoatCheese' =>  array (
   'i18n_langs' => '["en_US"]',
-  'set_menu_priority' => '1',
+  'set_menu_priority' => '100',
   'add_search_columns' => '{"Token":[["id_token","%val","multiple"]]}',
   'set_order_list_columns' => '[["total_token","DESC"]]',
-  'with_child_tables' => '["asset_exchange","trade"]',
+  'with_child_tables' => '["trade","asset_exchange"]',
   'set_child_colunms' => '{"id_token":["ticker"]}',
   'add_tab_columns' => '{"Other":"locked_token"}',
   'set_list_hide_columns' => '["locked_token","freeze_token"]',
-  'set_readonly_columns' => '["id_token","free_token","staked_token","total_token","usd_value","locked_token","freeze_token","last_sync"]',
+  'set_readonly_columns' => '["id_token","free_token","staked_token","total_token","usd_value","locked_token","freeze_token","last_sync","avg_price","profit"]',
 ),
             'add_validator' =>  array (
 ),

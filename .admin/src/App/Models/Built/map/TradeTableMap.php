@@ -55,8 +55,8 @@ class TradeTableMap extends TableMap
         $this->addColumn('date', 'Date', 'TIMESTAMP', false, null, null);
         $this->addColumn('gross_usd', 'GrossUsd', 'DECIMAL', false, 16, null);
         $this->addColumn('commission', 'Commission', 'DECIMAL', false, 16, null);
-        $this->addForeignKey('commission_asset', 'CommissionAsset', 'INTEGER', 'token', 'id_token', true, 11, null);
-        $this->addColumn('order_id', 'OrderId', 'INTEGER', false, 10, null);
+        $this->addForeignKey('commission_asset', 'CommissionAsset', 'INTEGER', 'token', 'id_token', false, 11, null);
+        $this->addColumn('order_id', 'OrderId', 'BIGINT', false, 10, null);
         $this->addColumn('date_creation', 'DateCreation', 'TIMESTAMP', false, null, null);
         $this->addColumn('date_modification', 'DateModification', 'TIMESTAMP', false, null, null);
         $this->addForeignKey('id_group_creation', 'IdGroupCreation', 'INTEGER', 'authy_group', 'id_authy_group', false, null, null);
@@ -75,9 +75,7 @@ class TradeTableMap extends TableMap
         $this->addValidator('id_symbol', 'required', 'propel.validator.RequiredValidator', '', ('Trade_IdSymbol_required'));
         $this->addValidator('id_symbol', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Trade_IdSymbol_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('date', 'match', 'propel.validator.MatchValidator', '', ('Trade_Date_match'));
-        $this->addValidator('commission_asset', 'required', 'propel.validator.RequiredValidator', '', ('Trade_CommissionAsset_required'));
         $this->addValidator('commission_asset', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Trade_CommissionAsset_match_/^(?:[0-9]*|null)$/'));
-        $this->addValidator('order_id', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Trade_OrderId_match_/^(?:[0-9]*|null)$/'));
     } // initialize()
 
     /**

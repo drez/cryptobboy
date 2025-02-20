@@ -34,6 +34,8 @@ use App\Country;
 use App\CountryQuery;
 use App\Exchange;
 use App\ExchangeQuery;
+use App\Import;
+use App\ImportQuery;
 use App\MessageI18n;
 use App\MessageI18nQuery;
 use App\Symbol;
@@ -229,6 +231,12 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
     protected $collSymbolsPartial;
 
     /**
+     * @var        PropelObjectCollection|Import[] Collection to store aggregation of Import objects.
+     */
+    protected $collImports;
+    protected $collImportsPartial;
+
+    /**
      * @var        PropelObjectCollection|AuthyGroup[] Collection to store aggregation of AuthyGroup objects.
      */
     protected $collAuthyGroupsRelatedByIdAuthyGroup;
@@ -343,6 +351,12 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
      * @var		PropelObjectCollection
      */
     protected $symbolsScheduledForDeletion = null;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $importsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -1057,6 +1071,8 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
 
             $this->collSymbols = null;
 
+            $this->collImports = null;
+
             $this->collAuthyGroupsRelatedByIdAuthyGroup = null;
 
             $this->collConfigs = null;
@@ -1438,6 +1454,24 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
 
             if ($this->collSymbols !== null) {
                 foreach ($this->collSymbols as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
+            }
+
+            if ($this->importsScheduledForDeletion !== null) {
+                if (!$this->importsScheduledForDeletion->isEmpty()) {
+                    foreach ($this->importsScheduledForDeletion as $import) {
+                        // need to save related object because we set the relation to null
+                        $import->save($con);
+                    }
+                    $this->importsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collImports !== null) {
+                foreach ($this->collImports as $referrerFK) {
                     if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
                         $affectedRows += $referrerFK->save($con);
                     }
@@ -1870,6 +1904,14 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
                     }
                 }
 
+                if ($this->collImports !== null) {
+                    foreach ($this->collImports as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
                 if ($this->collAuthyGroupsRelatedByIdAuthyGroup !== null) {
                     foreach ($this->collAuthyGroupsRelatedByIdAuthyGroup as $referrerFK) {
                         if (!$referrerFK->validate($columns)) {
@@ -2024,6 +2066,9 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
             }
             if (null !== $this->collSymbols) {
                 $result['Symbols'] = $this->collSymbols->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
+            }
+            if (null !== $this->collImports) {
+                $result['Imports'] = $this->collImports->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collAuthyGroupsRelatedByIdAuthyGroup) {
                 $result['AuthyGroupsRelatedByIdAuthyGroup'] = $this->collAuthyGroupsRelatedByIdAuthyGroup->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
@@ -2328,6 +2373,12 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
                 }
             }
 
+            foreach ($this->getImports() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addImport($relObj->copy($deepCopy));
+                }
+            }
+
             foreach ($this->getAuthyGroupsRelatedByIdAuthyGroup() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
                     $copyObj->addAuthyGroupRelatedByIdAuthyGroup($relObj->copy($deepCopy));
@@ -2610,6 +2661,9 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
         }
         if ('Symbol' == $relationName) {
             $this->initSymbols();
+        }
+        if ('Import' == $relationName) {
+            $this->initImports();
         }
         if ('AuthyGroupRelatedByIdAuthyGroup' == $relationName) {
             $this->initAuthyGroupsRelatedByIdAuthyGroup();
@@ -5361,6 +5415,265 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
     }
 
     /**
+     * Clears out the collImports collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return AuthyGroup The current object (for fluent API support)
+     * @see        addImports()
+     */
+    public function clearImports()
+    {
+        $this->collImports = null; // important to set this to null since that means it is uninitialized
+        $this->collImportsPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collImports collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialImports($v = true)
+    {
+        $this->collImportsPartial = $v;
+    }
+
+    /**
+     * Initializes the collImports collection.
+     *
+     * By default this just sets the collImports collection to an empty array (like clearcollImports());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initImports($overrideExisting = true)
+    {
+        if (null !== $this->collImports && !$overrideExisting) {
+            return;
+        }
+        $this->collImports = new PropelObjectCollection();
+        $this->collImports->setModel('Import');
+    }
+
+    /**
+     * Gets an array of Import objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this AuthyGroup is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Import[] List of Import objects
+     * @throws PropelException
+     */
+    public function getImports($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collImportsPartial && !$this->isNew();
+        if (null === $this->collImports || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collImports) {
+                // return empty collection
+                $this->initImports();
+            } else {
+                $collImports = ImportQuery::create(null, $criteria)
+                    ->filterByAuthyGroup($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collImportsPartial && count($collImports)) {
+                      $this->initImports(false);
+
+                      foreach ($collImports as $obj) {
+                        if (false == $this->collImports->contains($obj)) {
+                          $this->collImports->append($obj);
+                        }
+                      }
+
+                      $this->collImportsPartial = true;
+                    }
+
+                    $collImports->getInternalIterator()->rewind();
+
+                    return $collImports;
+                }
+
+                if ($partial && $this->collImports) {
+                    foreach ($this->collImports as $obj) {
+                        if ($obj->isNew()) {
+                            $collImports[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collImports = $collImports;
+                $this->collImportsPartial = false;
+            }
+        }
+
+        return $this->collImports;
+    }
+
+    /**
+     * Sets a collection of Import objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $imports A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return AuthyGroup The current object (for fluent API support)
+     */
+    public function setImports(PropelCollection $imports, PropelPDO $con = null)
+    {
+        $importsToDelete = $this->getImports(new Criteria(), $con)->diff($imports);
+
+
+        $this->importsScheduledForDeletion = $importsToDelete;
+
+        foreach ($importsToDelete as $importRemoved) {
+            $importRemoved->setAuthyGroup(null);
+        }
+
+        $this->collImports = null;
+        foreach ($imports as $import) {
+            $this->addImport($import);
+        }
+
+        $this->collImports = $imports;
+        $this->collImportsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Import objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related Import objects.
+     * @throws PropelException
+     */
+    public function countImports(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collImportsPartial && !$this->isNew();
+        if (null === $this->collImports || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collImports) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getImports());
+            }
+            $query = ImportQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterByAuthyGroup($this)
+                ->count($con);
+        }
+
+        return count($this->collImports);
+    }
+
+    /**
+     * Method called to associate a Import object to this object
+     * through the Import foreign key attribute.
+     *
+     * @param    Import $l Import
+     * @return AuthyGroup The current object (for fluent API support)
+     */
+    public function addImport(Import $l)
+    {
+        if ($this->collImports === null) {
+            $this->initImports();
+            $this->collImportsPartial = true;
+        }
+
+        if (!in_array($l, $this->collImports->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddImport($l);
+
+            if ($this->importsScheduledForDeletion and $this->importsScheduledForDeletion->contains($l)) {
+                $this->importsScheduledForDeletion->remove($this->importsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	Import $import The import object to add.
+     */
+    protected function doAddImport($import)
+    {
+        $this->collImports[]= $import;
+        $import->setAuthyGroup($this);
+    }
+
+    /**
+     * @param	Import $import The import object to remove.
+     * @return AuthyGroup The current object (for fluent API support)
+     */
+    public function removeImport($import)
+    {
+        if ($this->getImports()->contains($import)) {
+            $this->collImports->remove($this->collImports->search($import));
+            if (null === $this->importsScheduledForDeletion) {
+                $this->importsScheduledForDeletion = clone $this->collImports;
+                $this->importsScheduledForDeletion->clear();
+            }
+            $this->importsScheduledForDeletion[]= $import;
+            $import->setAuthyGroup(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Import[] List of Import objects
+     */
+    public function getImportsJoinAuthyRelatedByIdCreation($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = ImportQuery::create(null, $criteria);
+        $query->joinWith('AuthyRelatedByIdCreation', $join_behavior);
+
+        return $this->getImports($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Import[] List of Import objects
+     */
+    public function getImportsJoinAuthyRelatedByIdModification($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = ImportQuery::create(null, $criteria);
+        $query->joinWith('AuthyRelatedByIdModification', $join_behavior);
+
+        return $this->getImports($query, $con);
+    }
+
+    /**
      * Clears out the collAuthyGroupsRelatedByIdAuthyGroup collection
      *
      * This does not modify the database; however, it will remove any associated objects, causing
@@ -7038,6 +7351,11 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
                     $o->clearAllReferences($deep);
                 }
             }
+            if ($this->collImports) {
+                foreach ($this->collImports as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collAuthyGroupsRelatedByIdAuthyGroup) {
                 foreach ($this->collAuthyGroupsRelatedByIdAuthyGroup as $o) {
                     $o->clearAllReferences($deep);
@@ -7126,6 +7444,10 @@ abstract class BaseAuthyGroup extends BaseObject implements Persistent
             $this->collSymbols->clearIterator();
         }
         $this->collSymbols = null;
+        if ($this->collImports instanceof PropelCollection) {
+            $this->collImports->clearIterator();
+        }
+        $this->collImports = null;
         if ($this->collAuthyGroupsRelatedByIdAuthyGroup instanceof PropelCollection) {
             $this->collAuthyGroupsRelatedByIdAuthyGroup->clearIterator();
         }

@@ -66,8 +66,13 @@ class Sync {
             $return = "Resynced";
             $symbols = $this->getTradeSymbolForTicker($IdToken);
             $trades = [];
+            $avgPrice = ['qty' => 0, 'amount' => 0];
+            $startTime = strtotime("-3 years")*1000;
+            $endTime = time()*1000;
+
             foreach($symbols as $symbol => $IdSymbol){
-                $results = $this->binance->user()->getMyTrades(['symbol' => $symbol]);
+                $results = $this->binance->user()->getMyTrades(['symbol' => $symbol, 'recvWindow' => '10000']);
+               //echo pre(print_r($results, true));
                 if($results){
                     foreach($results as $result){
                         if(isset($trades[$result['orderId']])){
@@ -87,18 +92,21 @@ class Sync {
                 }
             }
 
-           // echo pre(print_r($trades));
-
-            foreach($trades as $trade){
+            foreach($trades as $orderId => $trade){
                 $Trade = \App\TradeQuery::create()
                             ->filterByIdExchange($this->exchangeId)
                             ->filterByIdAsset($IdAsset)
-                            ->filterByDate($trade['Date'])
+                            ->filterByOrderId($orderId)
                             ->findOneOrCreate();
 
-                        $Trade->fromArray($trade);
-                        $Trade->save();
+                if($Trade->isNew()){
+                    $Trade->fromArray($trade);
+                    $Trade->save();
+                }
             }
+
+            //$results = $this->binance->system()->getHistoricalTrades(['symbol' => $symbol]);
+            //echo pre(print_r($results, true));
 
             $this->setAssetLastSync($IdAsset);
         }
@@ -110,7 +118,7 @@ class Sync {
     function assetNeedSync($IdAsset):bool{
         $Asset = AssetQuery::create()->findPk($IdAsset);
         $LastSync = $Asset->getLastSync();
-        $trade_sync_interval = defined('trade_sync_interval') ? trade_sync_interval : 600;
+        $trade_sync_interval = 1200; defined('trade_sync_interval') ? trade_sync_interval : 600;
 
         return ($LastSync)?(strtotime($LastSync) < (strtotime(date('Y-m-d H:i:s'))-$trade_sync_interval)):true;
     }

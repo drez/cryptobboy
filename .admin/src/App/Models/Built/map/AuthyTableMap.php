@@ -124,6 +124,8 @@ class AuthyTableMap extends TableMap
         $this->addRelation('TokenRelatedByIdModification', 'App\\Token', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_modification', ), null, null, 'TokensRelatedByIdModification');
         $this->addRelation('SymbolRelatedByIdCreation', 'App\\Symbol', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_creation', ), null, null, 'SymbolsRelatedByIdCreation');
         $this->addRelation('SymbolRelatedByIdModification', 'App\\Symbol', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_modification', ), null, null, 'SymbolsRelatedByIdModification');
+        $this->addRelation('ImportRelatedByIdCreation', 'App\\Import', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_creation', ), null, null, 'ImportsRelatedByIdCreation');
+        $this->addRelation('ImportRelatedByIdModification', 'App\\Import', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_modification', ), null, null, 'ImportsRelatedByIdModification');
         $this->addRelation('AuthyGroupRelatedByIdCreation', 'App\\AuthyGroup', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_creation', ), null, null, 'AuthyGroupsRelatedByIdCreation');
         $this->addRelation('AuthyGroupRelatedByIdModification', 'App\\AuthyGroup', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_modification', ), null, null, 'AuthyGroupsRelatedByIdModification');
         $this->addRelation('ConfigRelatedByIdCreation', 'App\\Config', RelationMap::ONE_TO_MANY, array('id_authy' => 'id_creation', ), null, null, 'ConfigsRelatedByIdCreation');

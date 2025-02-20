@@ -197,6 +197,8 @@ class AssetForm extends Asset
 .th(_("Staked"), " th='sorted' c='StakedToken' title='" . _('Staked')."' ")
 .th(_("Total"), " th='sorted' c='TotalToken' title='" . _('Total')."' ")
 .th(_("Value USD"), " th='sorted' c='UsdValue' title='" . _('Value USD')."' ")
+.th(_("Avg. price"), " th='sorted' c='AvgPrice' title='" . _('Avg. price')."' ")
+.th(_("Profit"), " th='sorted' c='Profit' title='" . _('Profit')."' ")
 .th(_("Last sync"), " th='sorted' c='LastSync' title='" . _('Last sync')."' ")
 . $this->cCmoreColsHeader;
                 if(!$this->setReadOnly){
@@ -272,6 +274,8 @@ class AssetForm extends Asset
   'StakedToken' => '',
   'TotalToken' => '',
   'UsdValue' => '',
+  'AvgPrice' => '',
+  'Profit' => '',
   'LockedToken' => '',
   'FreezeToken' => '',
   'LastSync' => '',
@@ -369,6 +373,8 @@ class AssetForm extends Asset
                 td(span((($altValue['StakedToken']) ? $altValue['StakedToken'] : str_replace(',', '.', $data->getStakedToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='StakedToken' class='right'  j='editAsset'") . 
                 td(span((($altValue['TotalToken']) ? $altValue['TotalToken'] : str_replace(',', '.', $data->getTotalToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='TotalToken' class='right'  j='editAsset'") . 
                 td(span((($altValue['UsdValue']) ? $altValue['UsdValue'] : str_replace(',', '.', $data->getUsdValue())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='UsdValue' class='right'  j='editAsset'") . 
+                td(span((($altValue['AvgPrice']) ? $altValue['AvgPrice'] : str_replace(',', '.', $data->getAvgPrice())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='AvgPrice' class='right'  j='editAsset'") . 
+                td(span((($altValue['Profit']) ? $altValue['Profit'] : str_replace(',', '.', $data->getProfit())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Profit' class='right'  j='editAsset'") . 
                 td(span((($altValue['LastSync']) ? $altValue['LastSync'] : $data->getLastSync()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='LastSync' class=''  j='editAsset'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
@@ -530,6 +536,10 @@ class AssetForm extends Asset
         //integer not required
         $e->setUsdValue( ($data['UsdValue'] == '' ) ? null : $data['UsdValue']);
         //integer not required
+        $e->setAvgPrice( ($data['AvgPrice'] == '' ) ? null : $data['AvgPrice']);
+        //integer not required
+        $e->setProfit( ($data['Profit'] == '' ) ? null : $data['Profit']);
+        //integer not required
         $e->setLockedToken( ($data['LockedToken'] == '' ) ? null : $data['LockedToken']);
         //integer not required
         $e->setFreezeToken( ($data['FreezeToken'] == '' ) ? null : $data['FreezeToken']);
@@ -571,6 +581,12 @@ class AssetForm extends Asset
         }
         if(isset($data['UsdValue'])){
             $e->setUsdValue( ($data['UsdValue'] == '' ) ? null : $data['UsdValue']);
+        }
+        if(isset($data['AvgPrice'])){
+            $e->setAvgPrice( ($data['AvgPrice'] == '' ) ? null : $data['AvgPrice']);
+        }
+        if(isset($data['Profit'])){
+            $e->setProfit( ($data['Profit'] == '' ) ? null : $data['Profit']);
         }
         if(isset($data['LockedToken'])){
             $e->setLockedToken( ($data['LockedToken'] == '' ) ? null : $data['LockedToken']);
@@ -744,12 +760,14 @@ $this->fields['Asset']['FreeToken']['html'] = stdFieldRow(_("Free"), input('text
 $this->fields['Asset']['StakedToken']['html'] = stdFieldRow(_("Staked"), input('text', 'StakedToken', $dataObj->getStakedToken(), "  placeholder='".str_replace("'","&#39;",_('Staked'))."'  v='STAKED_TOKEN' size='10' s='d' class=''"), 'StakedToken', "", $this->commentsStakedToken, $this->commentsStakedToken_css, '', ' ', 'no');
 $this->fields['Asset']['TotalToken']['html'] = stdFieldRow(_("Total"), input('text', 'TotalToken', $dataObj->getTotalToken(), "  placeholder='".str_replace("'","&#39;",_('Total'))."'  v='TOTAL_TOKEN' size='10' s='d' class=''"), 'TotalToken', "", $this->commentsTotalToken, $this->commentsTotalToken_css, '', ' ', 'no');
 $this->fields['Asset']['UsdValue']['html'] = stdFieldRow(_("Value USD"), input('text', 'UsdValue', $dataObj->getUsdValue(), "  placeholder='".str_replace("'","&#39;",_('Value USD'))."'  v='USD_VALUE' size='10' s='d' class=''"), 'UsdValue', "", $this->commentsUsdValue, $this->commentsUsdValue_css, '', ' ', 'no');
+$this->fields['Asset']['AvgPrice']['html'] = stdFieldRow(_("Avg. price"), input('text', 'AvgPrice', $dataObj->getAvgPrice(), "  placeholder='".str_replace("'","&#39;",_('Avg. price'))."'  v='AVG_PRICE' size='10' s='d' class=''"), 'AvgPrice', "", $this->commentsAvgPrice, $this->commentsAvgPrice_css, '', ' ', 'no');
+$this->fields['Asset']['Profit']['html'] = stdFieldRow(_("Profit"), input('text', 'Profit', $dataObj->getProfit(), "  placeholder='".str_replace("'","&#39;",_('Profit'))."'  v='PROFIT' size='10' s='d' class=''"), 'Profit', "", $this->commentsProfit, $this->commentsProfit_css, '', ' ', 'no');
 $this->fields['Asset']['LockedToken']['html'] = stdFieldRow(_("Locked"), input('text', 'LockedToken', $dataObj->getLockedToken(), "  placeholder='".str_replace("'","&#39;",_('Locked'))."'  v='LOCKED_TOKEN' size='10' s='d' class=''"), 'LockedToken', "", $this->commentsLockedToken, $this->commentsLockedToken_css, '', ' ', 'no');
 $this->fields['Asset']['FreezeToken']['html'] = stdFieldRow(_("Frozen"), input('text', 'FreezeToken', $dataObj->getFreezeToken(), "  placeholder='".str_replace("'","&#39;",_('Frozen'))."'  v='FREEZE_TOKEN' size='10' s='d' class=''"), 'FreezeToken', "", $this->commentsFreezeToken, $this->commentsFreezeToken_css, '', ' ', 'no');
 $this->fields['Asset']['LastSync']['html'] = stdFieldRow(_("Last sync"), input('datetime-local', 'LastSync', $dataObj->getLastSync(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD hh:mm:ss' size='30'  s='d' class='' title='Last sync'"), 'LastSync', "", $this->commentsLastSync, $this->commentsLastSync_css, '', ' ', 'no');
 
 
-        $this->lockFormField(array(0=>'IdToken',1=>'FreeToken',2=>'StakedToken',3=>'TotalToken',4=>'UsdValue',5=>'LockedToken',6=>'FreezeToken',7=>'LastSync',), $dataObj);
+        $this->lockFormField(array(0=>'IdToken',1=>'FreeToken',2=>'StakedToken',3=>'TotalToken',4=>'UsdValue',5=>'LockedToken',6=>'FreezeToken',7=>'LastSync',8=>'AvgPrice',9=>'Profit',), $dataObj);
 
         // Whole form read only
         if($this->setReadOnly == 'all' ) {
@@ -759,14 +777,14 @@ $this->fields['Asset']['LastSync']['html'] = stdFieldRow(_("Last sync"), input('
 
         if( !isset($this->Asset['request']['ChildHide']) ) {
 
-            # define child lists 'Wallet'
-            $ongletTab['0']['t'] = _('Wallet');
-            $ongletTab['0']['p'] = 'AssetExchange';
+            # define child lists 'Trade'
+            $ongletTab['0']['t'] = _('Trade');
+            $ongletTab['0']['p'] = 'Trade';
             $ongletTab['0']['lkey'] = 'IdAsset';
             $ongletTab['0']['fkey'] = 'IdAsset';
-            # define child lists 'Trade'
-            $ongletTab['1']['t'] = _('Trade');
-            $ongletTab['1']['p'] = 'Trade';
+            # define child lists 'Wallet'
+            $ongletTab['1']['t'] = _('Wallet');
+            $ongletTab['1']['p'] = 'AssetExchange';
             $ongletTab['1']['lkey'] = 'IdAsset';
             $ongletTab['1']['fkey'] = 'IdAsset';
         if(!empty($ongletTab) and $dataObj->getIdAsset()){
@@ -861,6 +879,8 @@ $this->fields['Asset']['IdToken']['html']
 .$this->fields['Asset']['StakedToken']['html']
 .$this->fields['Asset']['TotalToken']['html']
 .$this->fields['Asset']['UsdValue']['html']
+.$this->fields['Asset']['AvgPrice']['html']
+.$this->fields['Asset']['Profit']['html']
 .'</div><div id="ogf_locked_token"  class=" ui-tabs-panel">'
 .$this->fields['Asset']['LockedToken']['html']
 .$this->fields['Asset']['FreezeToken']['html']
@@ -947,6 +967,12 @@ $this->fields['Asset']['IdToken']['html']
         $this->fieldsRo['Asset']['UsdValue']['html'] = stdFieldRow(_("Value USD"), div( $dataObj->getUsdValue(), 'UsdValue_label' , "class='readonly' s='d'")
                 .input('hidden', 'UsdValue', $dataObj->getUsdValue(), "s='d'"), 'UsdValue', "", $this->commentsUsdValue, $this->commentsUsdValue_css, 'readonly', ' ', 'no');
 
+        $this->fieldsRo['Asset']['AvgPrice']['html'] = stdFieldRow(_("Avg. price"), div( $dataObj->getAvgPrice(), 'AvgPrice_label' , "class='readonly' s='d'")
+                .input('hidden', 'AvgPrice', $dataObj->getAvgPrice(), "s='d'"), 'AvgPrice', "", $this->commentsAvgPrice, $this->commentsAvgPrice_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['Asset']['Profit']['html'] = stdFieldRow(_("Profit"), div( $dataObj->getProfit(), 'Profit_label' , "class='readonly' s='d'")
+                .input('hidden', 'Profit', $dataObj->getProfit(), "s='d'"), 'Profit', "", $this->commentsProfit, $this->commentsProfit_css, 'readonly', ' ', 'no');
+
         $this->fieldsRo['Asset']['LockedToken']['html'] = stdFieldRow(_("Locked"), div( $dataObj->getLockedToken(), 'LockedToken_label' , "class='readonly' s='d'")
                 .input('hidden', 'LockedToken', $dataObj->getLockedToken(), "s='d'"), 'LockedToken', "", $this->commentsLockedToken, $this->commentsLockedToken_css, 'readonly', ' ', 'no');
 
@@ -969,12 +995,13 @@ $this->fields['Asset']['IdToken']['html']
     }
 
     /**
-     * Query for AssetExchange_IdExchange selectBox 
+     * Query for Trade_IdExchange selectBox 
      * @param object $obj
      * @param object $dataObj
      * @param array $data
     **/
-    public function selectBoxAssetExchange_IdExchange(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+    public function selectBoxTrade_IdExchange(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = ExchangeQuery::create();
 
             $q->select(array('Name', 'IdExchange'));
@@ -987,10 +1014,445 @@ $this->fields['Asset']['IdToken']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }	
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
+
+    /**
+     * Query for Trade_IdSymbol selectBox 
+     * @param object $obj
+     * @param object $dataObj
+     * @param array $data
+    **/
+    public function selectBoxTrade_IdSymbol(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
+        $q = SymbolQuery::create();
+
+            $q->select(array('Name', 'IdSymbol'));
+            $q->orderBy('Name', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
+
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
+
+    /**
+     * Query for Trade_CommissionAsset selectBox 
+     * @param object $obj
+     * @param object $dataObj
+     * @param array $data
+    **/
+    public function selectBoxTrade_CommissionAsset(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
+        $q = TokenQuery::create();
+
+            $q->addAsColumn('selDisplay', ''.TokenPeer::TICKER.'');
+            $q->select(array('selDisplay', 'IdToken'));
+            $q->orderBy('selDisplay', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
+
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}	
+    /**
+     * function getTradeList
+     * @param string $IdAsset
+     * @param integer $page
+     * @param string $uiTabsId
+     * @param string $parentContainer
+     * @param string $mja_list
+     * @param array $search
+     * @param array $params
+     * @return string
+     */
+    public function getTradeList(String $IdAsset, array $request)
+    {
+
+        $this->TableName = 'Trade';
+        $altValue = array (
+  'IdTrade' => '',
+  'Type' => '',
+  'IdExchange' => '',
+  'IdAsset' => '',
+  'Qty' => '',
+  'IdSymbol' => '',
+  'Date' => '',
+  'GrossUsd' => '',
+  'Commission' => '',
+  'CommissionAsset' => '',
+  'OrderId' => '',
+  'DateCreation' => '',
+  'DateModification' => '',
+  'IdGroupCreation' => '',
+  'IdCreation' => '',
+  'IdModification' => '',
+);
+        $dataObj = null;
+        $search = ['order' => null, 'page' => null, ];
+        $uiTabsId = (empty($request['cui'])) ? 'cntAssetChild' : $request['cui'];
+        $parentContainer = $request['pc'];
+        $orderReadyJs = '';
+        $param = [];
+        $total_child = '';
+
+        // if Search params
+        $this->searchMs = $this->setSearchVar($request['ms'] ?? '', 'Asset/Trade');
+
+        // order
+        $search['order'] = $this->setOrderVar($request['order'] ?? '', 'Asset/Trade');
+        
+        // page
+        $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Asset/Trade');
+       
+        
+        
+
+        /*column hide*/
+        
+        if($parentContainer == 'editDialog'){
+            $diagNoClose = "diag:\"noclose\", ";
+            $diagNoCloseEscaped = "diag:\\\"noclose\\\", ";
+        }
+        
+        if(isset($this->Asset['request']['noHeader']) && $this->Asset['request']['noHeader'] == 'true'){
+            $noHeader = "'noHeader':'true',";
+        }
+        
+        $data['IdAsset'] = $IdAsset;
+        if($dataObj == null){
+            $dataObj = new Asset();
+            $dataObj->setIdAsset($IdAsset);
+        }
+
+        $this->Trade['list_add'] = "
+        $('#TradeListForm #addTrade').bindEdit({
+                modelName: 'Trade',
+                destUi: 'editDialog',
+                pc:'{$this->virtualClassName}',
+                ip:'".$IdAsset."',
+                jet:'refreshChild',
+                tp:'Trade',
+                description: 'Trade'
+        });
+        ";
+        $this->Trade['list_delete'] = "
+        $(\"[j='deleteTrade']\").bindDelete({
+            modelName:'Trade',
+            ui:'cntTradedivChild',
+            title: 'Trade',
+            message: '".addslashes(message_label('delete_row_confirm_msg') ?? '')."'
+        });";
+
+        if($_SESSION[_AUTH_VAR]->hasRights('Trade', 'r')){
+            $this->Trade['list_edit'] = "
+        $(\"#TradeTable tr td[j='editTrade']\").bind('click', function (){
+            
+        $('#editDialog').html( $('<div>').append( $('<img>').attr('src', '"._SITE_URL."public/img/Ellipsis-3.9s-200px.svg').css('width', '300px')).css('width', '300px').css('margin', 'auto') );
+        $('#editDialog').dialog({width:'auto'}).dialog('open');
+        $.get('"._SITE_URL."Trade/edit/'+$(this).attr('i'),
+                { ip:'".$IdAsset."', ui:'editDialog', pc:'{$this->virtualClassName}', je:'TradeTableCntnr', jet:'refreshChild', 'it-pos':$(this).data('iterator-pos') },
+            function(data){ 
+                dialogWidthClass($('#editDialog')); 
+                $('#editDialog').html(data).dialog({width:'auto'});  
+        });
+        });";
+        }
+
+        #filters validation
+        
+        $filterKey = $IdAsset;
+        $this->IdPk = $IdAsset;
+        
+        
+        #main query
+        
+        // Normal query
+        $maxPerPage = ( $request['maxperpage'] ) ? $request['maxperpage'] : $this->childMaxPerPage;
+        $q = TradeQuery::create();
+        
+        
+        $q
+                #required trade
+                ->leftJoinWith('Exchange')
+                #required trade
+                ->leftJoinWith('Symbol')
+                #default
+                ->leftJoinWith('Token') 
+            
+            ->filterByIdAsset( $filterKey );; 
+               // Search
+        
+               // orderring
+           
+        if( is_array( $search['order'] ) ) {
+            foreach ($search['order'] as $order) {
+                foreach ($order as $col => $sens) {
+                    if( $sens ) {
+                        $tOrd = explode('.', $col);
+                        $orderBy = "use" . $tOrd[0] . "Query";
+                        if( $tOrd[1] && method_exists( $q, $orderBy )) {
+                            $q->$orderBy( '', \Criteria::LEFT_JOIN )->orderBy( $tOrd[1], $sens )->endUse();
+                        }elseif( method_exists( $q, 'filterBy' . $col )) {
+                            $q->orderBy( $col, $sens );
+                        }
+
+                        $orderReadyJs .= "
+                            $(\"#{$uiTabsId} [th='sorted'][c='".$col."'], #{$uiTabsId} [th='sorted'][rc='".$col."']\").attr('sens','".$sens."');
+                            $(\"#{$uiTabsId} [th='sorted'][c='".$col."'], #{$uiTabsId} [th='sorted'][rc='".$col."']\").attr('order','on');
+                        ";
+                    }
+                }
+            }
+        }
+            // group by
+           
+        
+        $this->queryObjTrade = $q;
+        
+        $pmpoData =$q->paginate($search['page'], $maxPerPage);
+        $resultsCount = $pmpoData->getNbResults();
+        
+        //custom hook
+        if (method_exists($this, 'beforeChildListTrade')){
+            $this->beforeChildListTrade();
+        }
+         
+        #options building
+        
+        $this->arrayIdExchangeOptions = $this->selectBoxTrade_IdExchange($this, $dataObj, $data);
+        $this->arrayIdSymbolOptions = $this->selectBoxTrade_IdSymbol($this, $dataObj, $data);
+        $this->arrayCommissionAssetOptions = $this->selectBoxTrade_CommissionAsset($this, $dataObj, $data);
+        
+        
+          
+        
+        if(isset($this->Asset['request']['noHeader']) && $this->Asset['request']['noHeader'] == 'true'){
+            $trSearch = "";
+        }
+
+        $actionRowHeader ='';
+        if($_SESSION[_AUTH_VAR]->hasRights('Trade', 'd')){
+            $actionRowHeader = th('&nbsp;', " r='delrow' class='actionrow' ");
+        }
+
+        $header = tr( th(_("State"), " th='sorted' c='Type' title='" . _('State')."' ")
+.th(_("Exchange"), " th='sorted' c='Exchange.Name' title='"._('Exchange.Name')."' ")
+.th(_("Qty"), " th='sorted' c='Qty' title='" . _('Qty')."' ")
+.th(_("Symbol"), " th='sorted' c='Symbol.Name' title='"._('Symbol.Name')."' ")
+.th(_("Date"), " th='sorted' c='Date' title='" . _('Date')."' ")
+.th(_("Price"), " th='sorted' c='GrossUsd' title='" . _('Price')."' ")
+.th(_("Commission"), " th='sorted' c='Commission' title='" . _('Commission')."' ")
+.th(_("Token ticker"), " th='sorted' c='Token.Ticker' title='"._('Token.Ticker')."' ")
+.'' . $actionRowHeader, " ln='Trade' class=''");
+
+        
+
+        $i=0;
+        $tr = '';
+        if( $pmpoData->isEmpty() ){
+            $tr .= tr(	td(p(span(_("No Trade found")),'class="no-results"'), "style='font-size:16px;' t='empty' ln='Trade' colspan='100%' "));
+            
+        }else{
+            //$pcData = $pmpoData->getResults();
+            foreach($pmpoData as $data){
+                $this->listActionCellTrade = '';
+                $actionRow = '';
+                
+                
+                
+                if($_SESSION[_AUTH_VAR]->hasRights('Trade', 'd')){
+                    $actionRow = htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteTrade' i='".json_encode($data->getPrimaryKey())."'");
+                }
+                
+                
+                
+                
+                
+                $actionRow = $actionRow;
+                $actionRow = (!empty($actionRow)) ? td($this->listActionCellTrade.$actionRow," class='actionrow'") : "";
+                
+                                    $Exchange_Name = "";
+                                    if($data->getExchange()){
+                                        $Exchange_Name = $data->getExchange()->getName();
+                                    }
+                                    $Symbol_Name = "";
+                                    if($data->getSymbol()){
+                                        $Symbol_Name = $data->getSymbol()->getName();
+                                    }
+        $altValue['Token_Ticker'] = "";
+        if($data->getToken()){
+            $altValue['Token_Ticker'] = $data->getToken()->getTicker();
+        }
+                
+                
+                ;
+                
+                
+                
+                // custom hooks
+                if (method_exists($this, 'beforeListTrTrade')){ 
+                    $this->beforeListTrTrade($altValue, $data, $i, $param, $actionRow);
+                }
+                
+                $tr .= $param['tr_before'].
+                        tr(
+                            (isset($this->hookListColumnsTradeFirst)?$this->hookListColumnsTradeFirst:'').
+                            
+                td(span((($altValue['Type']) ? $altValue['Type'] : isntPo($data->getType())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editTrade'") . 
+                td(span((($altValue['IdExchange']) ? $altValue['IdExchange'] : $Exchange_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdExchange' class=''  j='editTrade'") . 
+                td(span((($altValue['Qty']) ? $altValue['Qty'] : str_replace(',', '.', $data->getQty())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Qty' class='right'  j='editTrade'") . 
+                td(span((($altValue['IdSymbol']) ? $altValue['IdSymbol'] : $Symbol_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdSymbol' class=''  j='editTrade'") . 
+                td(span((($altValue['Date']) ? $altValue['Date'] : $data->getDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class=''  j='editTrade'") . 
+                td(span((($altValue['GrossUsd']) ? $altValue['GrossUsd'] : str_replace(',', '.', $data->getGrossUsd())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='GrossUsd' class='right'  j='editTrade'") . 
+                td(span((($altValue['Commission']) ? $altValue['Commission'] : str_replace(',', '.', $data->getCommission())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Commission' class='right'  j='editTrade'") . 
+                td(span((($altValue['CommissionAsset']) ? $altValue['CommissionAsset'] : $altValue['Token_Ticker']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='CommissionAsset' class=''  j='editTrade'") . 
+                            (isset($this->hookListColumnsTrade)?$this->hookListColumnsTrade:'').
+                            $actionRow
+                            .$param['tr_after']
+                        ,"id='TradeRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='Trade' ".$param['tr']." ");
+                        
+                
+                $i++;
+            }
+            
+            
+        }
+
+    $add_button_child = 
+                            div(
+                                div(
+                                    div($total_child,'','class="nolink"')
+                            ,'trTrade'," ln='Trade' class=''").$this->cCMainTableHeader, '', "class='listHeaderItem' ");
+    if(($_SESSION[_AUTH_VAR]->hasRights('Trade', 'a')) ){
+        $add_button_child = htmlLink(span(_("Add")), "Javascript:","title='Add "._('Trade')."' id='addTrade' class='button-link-blue add-button'");
+    }
+
+    //@PAGINATION
+    $pagerRow = $this->getPager($pmpoData, $resultsCount, $search, true);
+
+    $return['html'] =
+            div(
+                 $this->hookTradeListTop
+                .div(
+                    div($add_button_child
+                    .$trSearch, '' ,'class="ac-list-form-header-child"')
+                    .div(
+                        div(
+                            div(
+                                table(	
+                                    thead($header)
+                                    .$tr
+                                    .$this->hookTradeTableFooter
+                                , "id='TradeTable' class='tablesorter'")
+                            , 'childlistTrade')
+                            .$this->hookTradeListBottom
+                        ,'',' class="content" ')
+                    ,'listFormChild',' class="ac-list" ')
+                    .$pagerRow
+                ,'TradeListForm')
+            ,'cntTradedivChild', "class='childListWrapper'");
+
+            
+            
+
+            $return['onReadyJs'] =
+                $this->hookListReadyJsFirstTrade
+                .""
+                .$this->Trade['list_add']
+                .$this->Trade['list_delete']
+                .$this->Trade['list_edit']
+            ."
+            
+            
+            
+            /*checkboxes*/
+            
+                
+        /* PAGINATION */
+        $('#TradePager').bindPaging({
+            tableName:'Trade'
+            , parentId:'".$IdAsset."'
+            , uiTabsId:'{$uiTabsId}'
+            , ajaxPageActParent:'".$this->virtualClassName."/Trade/$IdAsset'
+            , pui:'".$uiTabsId."'
+        });  
+
+        $(\"#{$uiTabsId} [th='sorted']\").bindSorting({
+            modelName:'Trade',
+            url:'".$this->virtualClassName."/Trade/$IdAsset',
+            destUi:'".$uiTabsId."'
+        });
+        
+        $('#cntAssetChild .js-select-label').SelectBox();
+
+        {$orderReadyJs}
+        ";
+
+        $return['onReadyJs'] .= "
+                "
+                . $this->hookListReadyJsTrade;
+        return $return;
+    }
+
+    /**
+     * Query for AssetExchange_IdExchange selectBox 
+     * @param object $obj
+     * @param object $dataObj
+     * @param array $data
+    **/
+    public function selectBoxAssetExchange_IdExchange(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
+        $q = ExchangeQuery::create();
+
+            $q->select(array('Name', 'IdExchange'));
+            $q->orderBy('Name', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
+
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}	
     /**
      * function getAssetExchangeList
      * @param string $IdAsset
@@ -1204,17 +1666,18 @@ $this->fields['Asset']['IdToken']['html']
                 
                 $tr .= 
                         tr(
-                            (isset($hookListColumnsAssetExchangeFirst)?$hookListColumnsAssetExchangeFirst:'').
+                            (isset($this->hookListColumnsAssetExchangeFirst)?$this->hookListColumnsAssetExchangeFirst:'').
                             
                 td(span((($altValue['Type']) ? $altValue['Type'] : isntPo($data->getType())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editAssetExchange'") . 
                 td(span((($altValue['IdExchange']) ? $altValue['IdExchange'] : $Exchange_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdExchange' class=''  j='editAssetExchange'") . 
                 td(span((($altValue['FreeToken']) ? $altValue['FreeToken'] : str_replace(',', '.', $data->getFreeToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='FreeToken' class='right'  j='editAssetExchange'") . 
                 td(span((($altValue['LockedToken']) ? $altValue['LockedToken'] : str_replace(',', '.', $data->getLockedToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='LockedToken' class='right'  j='editAssetExchange'") . 
                 td(span((($altValue['FreezeToken']) ? $altValue['FreezeToken'] : str_replace(',', '.', $data->getFreezeToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='FreezeToken' class='right'  j='editAssetExchange'") . 
-                            (isset($hookListColumnsAssetExchange)?$hookListColumnsAssetExchange:'').
+                            (isset($this->hookListColumnsAssetExchange)?$this->hookListColumnsAssetExchange:'').
                             $actionRow
-                        ,"id='AssetExchangeRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='AssetExchange'  ")
-                        ;
+                            
+                        ,"id='AssetExchangeRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='AssetExchange'  ");
+                        
                 
                 $i++;
             }
@@ -1295,415 +1758,6 @@ $this->fields['Asset']['IdToken']['html']
         $return['onReadyJs'] .= "
                 "
                 . $this->hookListReadyJsAssetExchange;
-        return $return;
-    }
-
-    /**
-     * Query for Trade_IdExchange selectBox 
-     * @param object $obj
-     * @param object $dataObj
-     * @param array $data
-    **/
-    public function selectBoxTrade_IdExchange(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
-        $q = ExchangeQuery::create();
-
-            $q->select(array('Name', 'IdExchange'));
-            $q->orderBy('Name', 'ASC');
-        
-            if(!$array){
-                return $q;
-            }else{
-                $pcDataO = $q->find();
-            }
-
-
-        $arrayOpt = $pcDataO->toArray();
-
-        return assocToNum($arrayOpt , true);
-    }
-
-    /**
-     * Query for Trade_IdSymbol selectBox 
-     * @param object $obj
-     * @param object $dataObj
-     * @param array $data
-    **/
-    public function selectBoxTrade_IdSymbol(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
-        $q = SymbolQuery::create();
-
-            $q->select(array('Name', 'IdSymbol'));
-            $q->orderBy('Name', 'ASC');
-        
-            if(!$array){
-                return $q;
-            }else{
-                $pcDataO = $q->find();
-            }
-
-
-        $arrayOpt = $pcDataO->toArray();
-
-        return assocToNum($arrayOpt , true);
-    }
-
-    /**
-     * Query for Trade_CommissionAsset selectBox 
-     * @param object $obj
-     * @param object $dataObj
-     * @param array $data
-    **/
-    public function selectBoxTrade_CommissionAsset(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
-        $q = TokenQuery::create();
-
-            $q->addAsColumn('selDisplay', ''.TokenPeer::TICKER.'');
-            $q->select(array('selDisplay', 'IdToken'));
-            $q->orderBy('selDisplay', 'ASC');
-        
-            if(!$array){
-                return $q;
-            }else{
-                $pcDataO = $q->find();
-            }
-
-
-        $arrayOpt = $pcDataO->toArray();
-
-        return assocToNum($arrayOpt , true);
-    }	
-    /**
-     * function getTradeList
-     * @param string $IdAsset
-     * @param integer $page
-     * @param string $uiTabsId
-     * @param string $parentContainer
-     * @param string $mja_list
-     * @param array $search
-     * @param array $params
-     * @return string
-     */
-    public function getTradeList(String $IdAsset, array $request)
-    {
-
-        $this->TableName = 'Trade';
-        $altValue = array (
-  'IdTrade' => '',
-  'Type' => '',
-  'IdExchange' => '',
-  'IdAsset' => '',
-  'Qty' => '',
-  'IdSymbol' => '',
-  'Date' => '',
-  'GrossUsd' => '',
-  'Commission' => '',
-  'CommissionAsset' => '',
-  'OrderId' => '',
-  'DateCreation' => '',
-  'DateModification' => '',
-  'IdGroupCreation' => '',
-  'IdCreation' => '',
-  'IdModification' => '',
-);
-        $dataObj = null;
-        $search = ['order' => null, 'page' => null, ];
-        $uiTabsId = (empty($request['cui'])) ? 'cntAssetChild' : $request['cui'];
-        $parentContainer = $request['pc'];
-        $orderReadyJs = '';
-        $param = [];
-        $total_child = '';
-
-        // if Search params
-        $this->searchMs = $this->setSearchVar($request['ms'] ?? '', 'Asset/Trade');
-
-        // order
-        $search['order'] = $this->setOrderVar($request['order'] ?? '', 'Asset/Trade');
-        
-        // page
-        $search['page'] = $this->setPageVar($request['pg'] ?? '', 'Asset/Trade');
-       
-        
-        
-
-        /*column hide*/
-        
-        if($parentContainer == 'editDialog'){
-            $diagNoClose = "diag:\"noclose\", ";
-            $diagNoCloseEscaped = "diag:\\\"noclose\\\", ";
-        }
-        
-        if(isset($this->Asset['request']['noHeader']) && $this->Asset['request']['noHeader'] == 'true'){
-            $noHeader = "'noHeader':'true',";
-        }
-        
-        $data['IdAsset'] = $IdAsset;
-        if($dataObj == null){
-            $dataObj = new Asset();
-            $dataObj->setIdAsset($IdAsset);
-        }
-
-        $this->Trade['list_add'] = "
-        $('#TradeListForm #addTrade').bindEdit({
-                modelName: 'Trade',
-                destUi: 'editDialog',
-                pc:'{$this->virtualClassName}',
-                ip:'".$IdAsset."',
-                jet:'refreshChild',
-                tp:'Trade',
-                description: 'Trade'
-        });
-        ";
-        $this->Trade['list_delete'] = "
-        $(\"[j='deleteTrade']\").bindDelete({
-            modelName:'Trade',
-            ui:'cntTradedivChild',
-            title: 'Trade',
-            message: '".addslashes(message_label('delete_row_confirm_msg') ?? '')."'
-        });";
-
-        if($_SESSION[_AUTH_VAR]->hasRights('Trade', 'r')){
-            $this->Trade['list_edit'] = "
-        $(\"#TradeTable tr td[j='editTrade']\").bind('click', function (){
-            
-        $('#editDialog').html( $('<div>').append( $('<img>').attr('src', '"._SITE_URL."public/img/Ellipsis-3.9s-200px.svg').css('width', '300px')).css('width', '300px').css('margin', 'auto') );
-        $('#editDialog').dialog({width:'auto'}).dialog('open');
-        $.get('"._SITE_URL."Trade/edit/'+$(this).attr('i'),
-                { ip:'".$IdAsset."', ui:'editDialog', pc:'{$this->virtualClassName}', je:'TradeTableCntnr', jet:'refreshChild', 'it-pos':$(this).data('iterator-pos') },
-            function(data){ 
-                dialogWidthClass($('#editDialog')); 
-                $('#editDialog').html(data).dialog({width:'auto'});  
-        });
-        });";
-        }
-
-        #filters validation
-        
-        $filterKey = $IdAsset;
-        $this->IdPk = $IdAsset;
-        
-        
-        #main query
-        
-        // Normal query
-        $maxPerPage = ( $request['maxperpage'] ) ? $request['maxperpage'] : $this->childMaxPerPage;
-        $q = TradeQuery::create();
-        
-        
-        $q
-                #required trade
-                ->leftJoinWith('Exchange')
-                #required trade
-                ->leftJoinWith('Symbol')
-                #required trade
-                ->leftJoinWith('Token') 
-            
-            ->filterByIdAsset( $filterKey );; 
-               // Search
-        
-               // orderring
-           
-        if( is_array( $search['order'] ) ) {
-            foreach ($search['order'] as $order) {
-                foreach ($order as $col => $sens) {
-                    if( $sens ) {
-                        $tOrd = explode('.', $col);
-                        $orderBy = "use" . $tOrd[0] . "Query";
-                        if( $tOrd[1] && method_exists( $q, $orderBy )) {
-                            $q->$orderBy( '', \Criteria::LEFT_JOIN )->orderBy( $tOrd[1], $sens )->endUse();
-                        }elseif( method_exists( $q, 'filterBy' . $col )) {
-                            $q->orderBy( $col, $sens );
-                        }
-
-                        $orderReadyJs .= "
-                            $(\"#{$uiTabsId} [th='sorted'][c='".$col."'], #{$uiTabsId} [th='sorted'][rc='".$col."']\").attr('sens','".$sens."');
-                            $(\"#{$uiTabsId} [th='sorted'][c='".$col."'], #{$uiTabsId} [th='sorted'][rc='".$col."']\").attr('order','on');
-                        ";
-                    }
-                }
-            }
-        }
-            // group by
-           
-        
-        $this->queryObjTrade = $q;
-        
-        $pmpoData =$q->paginate($search['page'], $maxPerPage);
-        $resultsCount = $pmpoData->getNbResults();
-        
-        //custom hook
-        if (method_exists($this, 'beforeChildListTrade')){
-            $this->beforeChildListTrade();
-        }
-         
-        #options building
-        
-        $this->arrayIdExchangeOptions = $this->selectBoxTrade_IdExchange($this, $dataObj, $data);
-        $this->arrayIdSymbolOptions = $this->selectBoxTrade_IdSymbol($this, $dataObj, $data);
-        $this->arrayCommissionAssetOptions = $this->selectBoxTrade_CommissionAsset($this, $dataObj, $data);
-        
-        
-          
-        
-        if(isset($this->Asset['request']['noHeader']) && $this->Asset['request']['noHeader'] == 'true'){
-            $trSearch = "";
-        }
-
-        $actionRowHeader ='';
-        if($_SESSION[_AUTH_VAR]->hasRights('Trade', 'd')){
-            $actionRowHeader = th('&nbsp;', " r='delrow' class='actionrow' ");
-        }
-
-        $header = tr( th(_("State"), " th='sorted' c='Type' title='" . _('State')."' ")
-.th(_("Exchange"), " th='sorted' c='Exchange.Name' title='"._('Exchange.Name')."' ")
-.th(_("Qty"), " th='sorted' c='Qty' title='" . _('Qty')."' ")
-.th(_("Symbol"), " th='sorted' c='Symbol.Name' title='"._('Symbol.Name')."' ")
-.th(_("Date"), " th='sorted' c='Date' title='" . _('Date')."' ")
-.th(_("Price"), " th='sorted' c='GrossUsd' title='" . _('Price')."' ")
-.th(_("Commission"), " th='sorted' c='Commission' title='" . _('Commission')."' ")
-.th(_("Token ticker"), " th='sorted' c='Token.Ticker' title='"._('Token.Ticker')."' ")
-.'' . $actionRowHeader, " ln='Trade' class=''");
-
-        
-
-        $i=0;
-        $tr = '';
-        if( $pmpoData->isEmpty() ){
-            $tr .= tr(	td(p(span(_("No Trade found")),'class="no-results"'), "style='font-size:16px;' t='empty' ln='Trade' colspan='100%' "));
-            
-        }else{
-            //$pcData = $pmpoData->getResults();
-            foreach($pmpoData as $data){
-                $this->listActionCellTrade = '';
-                $actionRow = '';
-                
-            // custom hooks
-            if (method_exists($this, 'beforeListTrTrade')){ $this->beforeListTrTrade($altValue, $data, $i, $param, $hookListColumnsTrade, $actionRow);}
-            
-                
-                
-                if($_SESSION[_AUTH_VAR]->hasRights('Trade', 'd')){
-                    $actionRow = htmlLink("<i class='ri-delete-bin-7-line'></i>", "Javascript:", "class='ac-delete-link' j='deleteTrade' i='".json_encode($data->getPrimaryKey())."'");
-                }
-                
-                
-                
-                
-                
-                $actionRow = $actionRow;
-                $actionRow = (!empty($actionRow)) ? td($this->listActionCellTrade.$actionRow," class='actionrow'") : "";
-                
-                                    $Exchange_Name = "";
-                                    if($data->getExchange()){
-                                        $Exchange_Name = $data->getExchange()->getName();
-                                    }
-                                    $Symbol_Name = "";
-                                    if($data->getSymbol()){
-                                        $Symbol_Name = $data->getSymbol()->getName();
-                                    }
-        $altValue['Token_Ticker'] = "";
-        if($data->getToken()){
-            $altValue['Token_Ticker'] = $data->getToken()->getTicker();
-        }
-                
-                
-                ;
-                
-                
-                
-                $tr .= $param['tr_before'].
-                        tr(
-                            (isset($hookListColumnsTradeFirst)?$hookListColumnsTradeFirst:'').
-                            
-                td(span((($altValue['Type']) ? $altValue['Type'] : isntPo($data->getType())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editTrade'") . 
-                td(span((($altValue['IdExchange']) ? $altValue['IdExchange'] : $Exchange_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdExchange' class=''  j='editTrade'") . 
-                td(span((($altValue['Qty']) ? $altValue['Qty'] : str_replace(',', '.', $data->getQty())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Qty' class='right'  j='editTrade'") . 
-                td(span((($altValue['IdSymbol']) ? $altValue['IdSymbol'] : $Symbol_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdSymbol' class=''  j='editTrade'") . 
-                td(span((($altValue['Date']) ? $altValue['Date'] : $data->getDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class=''  j='editTrade'") . 
-                td(span((($altValue['GrossUsd']) ? $altValue['GrossUsd'] : str_replace(',', '.', $data->getGrossUsd())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='GrossUsd' class='right'  j='editTrade'") . 
-                td(span((($altValue['Commission']) ? $altValue['Commission'] : str_replace(',', '.', $data->getCommission())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Commission' class='right'  j='editTrade'") . 
-                td(span((($altValue['CommissionAsset']) ? $altValue['CommissionAsset'] : $altValue['Token_Ticker']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='CommissionAsset' class=''  j='editTrade'") . 
-                            (isset($hookListColumnsTrade)?$hookListColumnsTrade:'').
-                            $actionRow
-                        ,"id='TradeRow{$data->getPrimaryKey()}' rid='{$data->getPrimaryKey()}' ln='Trade' ".$param['tr']." ")
-                        .$param['tr_after'];
-                
-                $i++;
-            }
-            
-            
-        }
-
-    $add_button_child = 
-                            div(
-                                div(
-                                    div($total_child,'','class="nolink"')
-                            ,'trTrade'," ln='Trade' class=''").$this->cCMainTableHeader, '', "class='listHeaderItem' ");
-    if(($_SESSION[_AUTH_VAR]->hasRights('Trade', 'a')) ){
-        $add_button_child = htmlLink(span(_("Add")), "Javascript:","title='Add "._('Trade')."' id='addTrade' class='button-link-blue add-button'");
-    }
-
-    //@PAGINATION
-    $pagerRow = $this->getPager($pmpoData, $resultsCount, $search, true);
-
-    $return['html'] =
-            div(
-                 $this->hookTradeListTop
-                .div(
-                    div($add_button_child
-                    .$trSearch, '' ,'class="ac-list-form-header-child"')
-                    .div(
-                        div(
-                            div(
-                                table(	
-                                    thead($header)
-                                    .$tr
-                                    .$this->hookTradeTableFooter
-                                , "id='TradeTable' class='tablesorter'")
-                            , 'childlistTrade')
-                            .$this->hookTradeListBottom
-                        ,'',' class="content" ')
-                    ,'listFormChild',' class="ac-list" ')
-                    .$pagerRow
-                ,'TradeListForm')
-            ,'cntTradedivChild', "class='childListWrapper'");
-
-            
-            
-
-            $return['onReadyJs'] =
-                $this->hookListReadyJsFirstTrade
-                .""
-                .$this->Trade['list_add']
-                .$this->Trade['list_delete']
-                .$this->Trade['list_edit']
-            ."
-            
-            
-            
-            /*checkboxes*/
-            
-                
-        /* PAGINATION */
-        $('#TradePager').bindPaging({
-            tableName:'Trade'
-            , parentId:'".$IdAsset."'
-            , uiTabsId:'{$uiTabsId}'
-            , ajaxPageActParent:'".$this->virtualClassName."/Trade/$IdAsset'
-            , pui:'".$uiTabsId."'
-        });  
-
-        $(\"#{$uiTabsId} [th='sorted']\").bindSorting({
-            modelName:'Trade',
-            url:'".$this->virtualClassName."/Trade/$IdAsset',
-            destUi:'".$uiTabsId."'
-        });
-        
-        $('#cntAssetChild .js-select-label').SelectBox();
-
-        {$orderReadyJs}
-        ";
-
-        $return['onReadyJs'] .= "
-                "
-                . $this->hookListReadyJsTrade;
         return $return;
     }
 }

@@ -195,6 +195,9 @@ class AuthyGroupService
             if($obj->countSymbols()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Symbol'. ", '', true,'Group'); die( $error['onReadyJs'] );
             }
+            if($obj->countImports()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Import'. ", '', true,'Group'); die( $error['onReadyJs'] );
+            }
             if($obj->countAuthyGroupsRelatedByIdAuthyGroup()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Group'. ", '', true,'Group'); die( $error['onReadyJs'] );
             }

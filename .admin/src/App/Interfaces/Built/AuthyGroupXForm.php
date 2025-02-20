@@ -741,6 +741,7 @@ $this->fields['AuthyGroupX']['IdAuthyGroup']['html']
      * @param array $data
     **/
     public function selectBoxAuthyGroupX_IdAuthyGroup(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = AuthyGroupQuery::create();
 
             $q->select(array('Name', 'IdAuthyGroup'));
@@ -753,8 +754,13 @@ $this->fields['AuthyGroupX']['IdAuthyGroup']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 }

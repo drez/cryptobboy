@@ -126,7 +126,7 @@ class TradeForm extends Trade
                 ->leftJoinWith('Exchange')
                 #required trade
                 ->leftJoinWith('Symbol')
-                #required trade
+                #default
                 ->leftJoinWith('Token');
 
         if( isset($this->searchMs['Type']) ) {
@@ -182,7 +182,7 @@ class TradeForm extends Trade
                 ->leftJoinWith('Exchange')
                 #required trade
                 ->leftJoinWith('Symbol')
-                #required trade
+                #default
                 ->leftJoinWith('Token')
                             
 
@@ -197,7 +197,7 @@ class TradeForm extends Trade
                 ->leftJoinWith('Exchange')
                 #required trade
                 ->leftJoinWith('Symbol')
-                #required trade
+                #default
                 ->leftJoinWith('Token');
                 
             }
@@ -604,6 +604,8 @@ class TradeForm extends Trade
         $e->setGrossUsd( ($data['GrossUsd'] == '' ) ? null : $data['GrossUsd']);
         //integer not required
         $e->setCommission( ($data['Commission'] == '' ) ? null : $data['Commission']);
+        //foreign
+        $e->setCommissionAsset(( $data['CommissionAsset'] == '' ) ? null : $data['CommissionAsset']);
         $e->setDateCreation( ($data['DateCreation'] == '' || $data['DateCreation'] == 'null' || substr($data['DateCreation'],0,10) == '-0001-11-30') ? null : $data['DateCreation'] );
         $e->setDateModification( ($data['DateModification'] == '' || $data['DateModification'] == 'null' || substr($data['DateModification'],0,10) == '-0001-11-30') ? null : $data['DateModification'] );
         //foreign
@@ -642,6 +644,9 @@ class TradeForm extends Trade
         }
         if(isset($data['Commission'])){
             $e->setCommission( ($data['Commission'] == '' ) ? null : $data['Commission']);
+        }
+        if( isset($data['CommissionAsset']) ){
+            $e->setCommissionAsset(( $data['CommissionAsset'] == '' ) ? null : $data['CommissionAsset']);
         }
         if(isset($data['DateCreation'])){
             $e->setDateCreation( ($data['DateCreation'] == '' || $data['DateCreation'] == 'null' || substr($data['DateCreation'],0,10) == '-0001-11-30') ? null : $data['DateCreation'] );
@@ -778,7 +783,7 @@ class TradeForm extends Trade
                 ->leftJoinWith('Exchange')
                 #required trade
                 ->leftJoinWith('Symbol')
-                #required trade
+                #default
                 ->leftJoinWith('Token')
             ;
             
@@ -829,7 +834,7 @@ $this->fields['Trade']['IdSymbol']['html'] = stdFieldRow(_("Symbol"), selectboxC
 $this->fields['Trade']['Date']['html'] = stdFieldRow(_("Date"), input('datetime-local', 'Date', $dataObj->getDate(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD hh:mm:ss' size='30'  s='d' class='' title='Date'"), 'Date', "", $this->commentsDate, $this->commentsDate_css, '', ' ', 'no');
 $this->fields['Trade']['GrossUsd']['html'] = stdFieldRow(_("Price"), input('text', 'GrossUsd', $dataObj->getGrossUsd(), "  placeholder='".str_replace("'","&#39;",_('Price'))."'  v='GROSS_USD' size='10' s='d' class=''"), 'GrossUsd', "", $this->commentsGrossUsd, $this->commentsGrossUsd_css, '', ' ', 'no');
 $this->fields['Trade']['Commission']['html'] = stdFieldRow(_("Commission"), input('text', 'Commission', $dataObj->getCommission(), "  placeholder='".str_replace("'","&#39;",_('Commission'))."'  v='COMMISSION' size='10' s='d' class=''"), 'Commission', "", $this->commentsCommission, $this->commentsCommission_css, '', ' ', 'no');
-$this->fields['Trade']['CommissionAsset']['html'] = stdFieldRow(_("commissionAsset"), selectboxCustomArray('CommissionAsset', $this->arrayCommissionAssetOptions, "", "v='COMMISSION_ASSET'  s='d'  val='".$dataObj->getCommissionAsset()."'", $dataObj->getCommissionAsset()), 'CommissionAsset', "", $this->commentsCommissionAsset, $this->commentsCommissionAsset_css, '', ' ', 'no');
+$this->fields['Trade']['CommissionAsset']['html'] = stdFieldRow(_("commissionAsset"), selectboxCustomArray('CommissionAsset', $this->arrayCommissionAssetOptions, _('commissionAsset'), "v='COMMISSION_ASSET'  s='d'  val='".$dataObj->getCommissionAsset()."'", $dataObj->getCommissionAsset()), 'CommissionAsset', "", $this->commentsCommissionAsset, $this->commentsCommissionAsset_css, '', ' ', 'no');
 
 
         
@@ -992,6 +997,7 @@ $this->fields['Trade']['Type']['html']
      * @param array $data
     **/
     public function selectBoxTrade_IdExchange(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = ExchangeQuery::create();
 
             $q->select(array('Name', 'IdExchange'));
@@ -1004,10 +1010,15 @@ $this->fields['Trade']['Type']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for Trade_IdSymbol selectBox 
@@ -1016,6 +1027,7 @@ $this->fields['Trade']['Type']['html']
      * @param array $data
     **/
     public function selectBoxTrade_IdSymbol(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = SymbolQuery::create();
 
             $q->select(array('Name', 'IdSymbol'));
@@ -1028,10 +1040,15 @@ $this->fields['Trade']['Type']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for Trade_CommissionAsset selectBox 
@@ -1040,6 +1057,7 @@ $this->fields['Trade']['Type']['html']
      * @param array $data
     **/
     public function selectBoxTrade_CommissionAsset(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
         $q = TokenQuery::create();
 
             $q->addAsColumn('selDisplay', ''.TokenPeer::TICKER.'');
@@ -1053,8 +1071,13 @@ $this->fields['Trade']['Type']['html']
             }
 
 
-        $arrayOpt = $pcDataO->toArray();
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
 
-        return assocToNum($arrayOpt , true);
-    }
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 }
