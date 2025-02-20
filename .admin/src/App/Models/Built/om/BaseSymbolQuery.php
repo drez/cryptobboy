@@ -12,6 +12,7 @@ use \PropelCollection;
 use \PropelException;
 use \PropelObjectCollection;
 use \PropelPDO;
+use App\Asset;
 use App\Authy;
 use App\AuthyGroup;
 use App\Symbol;
@@ -62,6 +63,10 @@ use App\Trade;
  * @method SymbolQuery leftJoinAuthyRelatedByIdModification($relationAlias = null) Adds a LEFT JOIN clause to the query using the AuthyRelatedByIdModification relation
  * @method SymbolQuery rightJoinAuthyRelatedByIdModification($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AuthyRelatedByIdModification relation
  * @method SymbolQuery innerJoinAuthyRelatedByIdModification($relationAlias = null) Adds a INNER JOIN clause to the query using the AuthyRelatedByIdModification relation
+ *
+ * @method SymbolQuery leftJoinAsset($relationAlias = null) Adds a LEFT JOIN clause to the query using the Asset relation
+ * @method SymbolQuery rightJoinAsset($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Asset relation
+ * @method SymbolQuery innerJoinAsset($relationAlias = null) Adds a INNER JOIN clause to the query using the Asset relation
  *
  * @method SymbolQuery leftJoinTrade($relationAlias = null) Adds a LEFT JOIN clause to the query using the Trade relation
  * @method SymbolQuery rightJoinTrade($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Trade relation
@@ -921,6 +926,80 @@ abstract class BaseSymbolQuery extends ModelCriteria
         return $this
             ->joinAuthyRelatedByIdModification($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'AuthyRelatedByIdModification', '\App\AuthyQuery');
+    }
+
+    /**
+     * Filter the query by a related Asset object
+     *
+     * @param   Asset|PropelObjectCollection $asset  the related object to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 SymbolQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterByAsset($asset, $comparison = null)
+    {
+        if ($asset instanceof Asset) {
+            return $this
+                ->addUsingAlias(SymbolPeer::ID_SYMBOL, $asset->getIdSymbol(), $comparison);
+        } elseif ($asset instanceof PropelObjectCollection) {
+            return $this
+                ->useAssetQuery()
+                ->filterByPrimaryKeys($asset->getPrimaryKeys())
+                ->endUse();
+        } else {
+            throw new PropelException('filterByAsset() only accepts arguments of type Asset or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Asset relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return SymbolQuery The current query, for fluid interface
+     */
+    public function joinAsset($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Asset');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Asset');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Asset relation Asset object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\AssetQuery A secondary query class using the current class as primary query
+     */
+    public function useAssetQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinAsset($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Asset', '\App\AssetQuery');
     }
 
     /**

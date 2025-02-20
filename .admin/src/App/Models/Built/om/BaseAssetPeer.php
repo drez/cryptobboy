@@ -13,6 +13,7 @@ use App\Asset;
 use App\AssetPeer;
 use App\AuthyGroupPeer;
 use App\AuthyPeer;
+use App\SymbolPeer;
 use App\TokenPeer;
 use App\map\AssetTableMap;
 
@@ -39,13 +40,13 @@ abstract class BaseAssetPeer
     const TM_CLASS = 'App\\map\\AssetTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 16;
+    const NUM_COLUMNS = 17;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 16;
+    const NUM_HYDRATE_COLUMNS = 17;
 
     /** the column name for the id_asset field */
     const ID_ASSET = 'asset.id_asset';
@@ -64,6 +65,9 @@ abstract class BaseAssetPeer
 
     /** the column name for the usd_value field */
     const USD_VALUE = 'asset.usd_value';
+
+    /** the column name for the id_symbol field */
+    const ID_SYMBOL = 'asset.id_symbol';
 
     /** the column name for the avg_price field */
     const AVG_PRICE = 'asset.avg_price';
@@ -114,12 +118,12 @@ abstract class BaseAssetPeer
      * e.g. AssetPeer::$fieldNames[AssetPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('IdAsset', 'IdToken', 'FreeToken', 'StakedToken', 'TotalToken', 'UsdValue', 'AvgPrice', 'Profit', 'LockedToken', 'FreezeToken', 'LastSync', 'DateCreation', 'DateModification', 'IdGroupCreation', 'IdCreation', 'IdModification', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idAsset', 'idToken', 'freeToken', 'stakedToken', 'totalToken', 'usdValue', 'avgPrice', 'profit', 'lockedToken', 'freezeToken', 'lastSync', 'dateCreation', 'dateModification', 'idGroupCreation', 'idCreation', 'idModification', ),
-        BasePeer::TYPE_COLNAME => array (AssetPeer::ID_ASSET, AssetPeer::ID_TOKEN, AssetPeer::FREE_TOKEN, AssetPeer::STAKED_TOKEN, AssetPeer::TOTAL_TOKEN, AssetPeer::USD_VALUE, AssetPeer::AVG_PRICE, AssetPeer::PROFIT, AssetPeer::LOCKED_TOKEN, AssetPeer::FREEZE_TOKEN, AssetPeer::LAST_SYNC, AssetPeer::DATE_CREATION, AssetPeer::DATE_MODIFICATION, AssetPeer::ID_GROUP_CREATION, AssetPeer::ID_CREATION, AssetPeer::ID_MODIFICATION, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_ASSET', 'ID_TOKEN', 'FREE_TOKEN', 'STAKED_TOKEN', 'TOTAL_TOKEN', 'USD_VALUE', 'AVG_PRICE', 'PROFIT', 'LOCKED_TOKEN', 'FREEZE_TOKEN', 'LAST_SYNC', 'DATE_CREATION', 'DATE_MODIFICATION', 'ID_GROUP_CREATION', 'ID_CREATION', 'ID_MODIFICATION', ),
-        BasePeer::TYPE_FIELDNAME => array ('id_asset', 'id_token', 'free_token', 'staked_token', 'total_token', 'usd_value', 'avg_price', 'profit', 'locked_token', 'freeze_token', 'last_sync', 'date_creation', 'date_modification', 'id_group_creation', 'id_creation', 'id_modification', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
+        BasePeer::TYPE_PHPNAME => array ('IdAsset', 'IdToken', 'FreeToken', 'StakedToken', 'TotalToken', 'UsdValue', 'IdSymbol', 'AvgPrice', 'Profit', 'LockedToken', 'FreezeToken', 'LastSync', 'DateCreation', 'DateModification', 'IdGroupCreation', 'IdCreation', 'IdModification', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idAsset', 'idToken', 'freeToken', 'stakedToken', 'totalToken', 'usdValue', 'idSymbol', 'avgPrice', 'profit', 'lockedToken', 'freezeToken', 'lastSync', 'dateCreation', 'dateModification', 'idGroupCreation', 'idCreation', 'idModification', ),
+        BasePeer::TYPE_COLNAME => array (AssetPeer::ID_ASSET, AssetPeer::ID_TOKEN, AssetPeer::FREE_TOKEN, AssetPeer::STAKED_TOKEN, AssetPeer::TOTAL_TOKEN, AssetPeer::USD_VALUE, AssetPeer::ID_SYMBOL, AssetPeer::AVG_PRICE, AssetPeer::PROFIT, AssetPeer::LOCKED_TOKEN, AssetPeer::FREEZE_TOKEN, AssetPeer::LAST_SYNC, AssetPeer::DATE_CREATION, AssetPeer::DATE_MODIFICATION, AssetPeer::ID_GROUP_CREATION, AssetPeer::ID_CREATION, AssetPeer::ID_MODIFICATION, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_ASSET', 'ID_TOKEN', 'FREE_TOKEN', 'STAKED_TOKEN', 'TOTAL_TOKEN', 'USD_VALUE', 'ID_SYMBOL', 'AVG_PRICE', 'PROFIT', 'LOCKED_TOKEN', 'FREEZE_TOKEN', 'LAST_SYNC', 'DATE_CREATION', 'DATE_MODIFICATION', 'ID_GROUP_CREATION', 'ID_CREATION', 'ID_MODIFICATION', ),
+        BasePeer::TYPE_FIELDNAME => array ('id_asset', 'id_token', 'free_token', 'staked_token', 'total_token', 'usd_value', 'id_symbol', 'avg_price', 'profit', 'locked_token', 'freeze_token', 'last_sync', 'date_creation', 'date_modification', 'id_group_creation', 'id_creation', 'id_modification', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, )
     );
 
     /**
@@ -129,12 +133,12 @@ abstract class BaseAssetPeer
      * e.g. AssetPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('IdAsset' => 0, 'IdToken' => 1, 'FreeToken' => 2, 'StakedToken' => 3, 'TotalToken' => 4, 'UsdValue' => 5, 'AvgPrice' => 6, 'Profit' => 7, 'LockedToken' => 8, 'FreezeToken' => 9, 'LastSync' => 10, 'DateCreation' => 11, 'DateModification' => 12, 'IdGroupCreation' => 13, 'IdCreation' => 14, 'IdModification' => 15, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idAsset' => 0, 'idToken' => 1, 'freeToken' => 2, 'stakedToken' => 3, 'totalToken' => 4, 'usdValue' => 5, 'avgPrice' => 6, 'profit' => 7, 'lockedToken' => 8, 'freezeToken' => 9, 'lastSync' => 10, 'dateCreation' => 11, 'dateModification' => 12, 'idGroupCreation' => 13, 'idCreation' => 14, 'idModification' => 15, ),
-        BasePeer::TYPE_COLNAME => array (AssetPeer::ID_ASSET => 0, AssetPeer::ID_TOKEN => 1, AssetPeer::FREE_TOKEN => 2, AssetPeer::STAKED_TOKEN => 3, AssetPeer::TOTAL_TOKEN => 4, AssetPeer::USD_VALUE => 5, AssetPeer::AVG_PRICE => 6, AssetPeer::PROFIT => 7, AssetPeer::LOCKED_TOKEN => 8, AssetPeer::FREEZE_TOKEN => 9, AssetPeer::LAST_SYNC => 10, AssetPeer::DATE_CREATION => 11, AssetPeer::DATE_MODIFICATION => 12, AssetPeer::ID_GROUP_CREATION => 13, AssetPeer::ID_CREATION => 14, AssetPeer::ID_MODIFICATION => 15, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_ASSET' => 0, 'ID_TOKEN' => 1, 'FREE_TOKEN' => 2, 'STAKED_TOKEN' => 3, 'TOTAL_TOKEN' => 4, 'USD_VALUE' => 5, 'AVG_PRICE' => 6, 'PROFIT' => 7, 'LOCKED_TOKEN' => 8, 'FREEZE_TOKEN' => 9, 'LAST_SYNC' => 10, 'DATE_CREATION' => 11, 'DATE_MODIFICATION' => 12, 'ID_GROUP_CREATION' => 13, 'ID_CREATION' => 14, 'ID_MODIFICATION' => 15, ),
-        BasePeer::TYPE_FIELDNAME => array ('id_asset' => 0, 'id_token' => 1, 'free_token' => 2, 'staked_token' => 3, 'total_token' => 4, 'usd_value' => 5, 'avg_price' => 6, 'profit' => 7, 'locked_token' => 8, 'freeze_token' => 9, 'last_sync' => 10, 'date_creation' => 11, 'date_modification' => 12, 'id_group_creation' => 13, 'id_creation' => 14, 'id_modification' => 15, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
+        BasePeer::TYPE_PHPNAME => array ('IdAsset' => 0, 'IdToken' => 1, 'FreeToken' => 2, 'StakedToken' => 3, 'TotalToken' => 4, 'UsdValue' => 5, 'IdSymbol' => 6, 'AvgPrice' => 7, 'Profit' => 8, 'LockedToken' => 9, 'FreezeToken' => 10, 'LastSync' => 11, 'DateCreation' => 12, 'DateModification' => 13, 'IdGroupCreation' => 14, 'IdCreation' => 15, 'IdModification' => 16, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idAsset' => 0, 'idToken' => 1, 'freeToken' => 2, 'stakedToken' => 3, 'totalToken' => 4, 'usdValue' => 5, 'idSymbol' => 6, 'avgPrice' => 7, 'profit' => 8, 'lockedToken' => 9, 'freezeToken' => 10, 'lastSync' => 11, 'dateCreation' => 12, 'dateModification' => 13, 'idGroupCreation' => 14, 'idCreation' => 15, 'idModification' => 16, ),
+        BasePeer::TYPE_COLNAME => array (AssetPeer::ID_ASSET => 0, AssetPeer::ID_TOKEN => 1, AssetPeer::FREE_TOKEN => 2, AssetPeer::STAKED_TOKEN => 3, AssetPeer::TOTAL_TOKEN => 4, AssetPeer::USD_VALUE => 5, AssetPeer::ID_SYMBOL => 6, AssetPeer::AVG_PRICE => 7, AssetPeer::PROFIT => 8, AssetPeer::LOCKED_TOKEN => 9, AssetPeer::FREEZE_TOKEN => 10, AssetPeer::LAST_SYNC => 11, AssetPeer::DATE_CREATION => 12, AssetPeer::DATE_MODIFICATION => 13, AssetPeer::ID_GROUP_CREATION => 14, AssetPeer::ID_CREATION => 15, AssetPeer::ID_MODIFICATION => 16, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_ASSET' => 0, 'ID_TOKEN' => 1, 'FREE_TOKEN' => 2, 'STAKED_TOKEN' => 3, 'TOTAL_TOKEN' => 4, 'USD_VALUE' => 5, 'ID_SYMBOL' => 6, 'AVG_PRICE' => 7, 'PROFIT' => 8, 'LOCKED_TOKEN' => 9, 'FREEZE_TOKEN' => 10, 'LAST_SYNC' => 11, 'DATE_CREATION' => 12, 'DATE_MODIFICATION' => 13, 'ID_GROUP_CREATION' => 14, 'ID_CREATION' => 15, 'ID_MODIFICATION' => 16, ),
+        BasePeer::TYPE_FIELDNAME => array ('id_asset' => 0, 'id_token' => 1, 'free_token' => 2, 'staked_token' => 3, 'total_token' => 4, 'usd_value' => 5, 'id_symbol' => 6, 'avg_price' => 7, 'profit' => 8, 'locked_token' => 9, 'freeze_token' => 10, 'last_sync' => 11, 'date_creation' => 12, 'date_modification' => 13, 'id_group_creation' => 14, 'id_creation' => 15, 'id_modification' => 16, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, )
     );
 
     /**
@@ -214,6 +218,7 @@ abstract class BaseAssetPeer
             $criteria->addSelectColumn(AssetPeer::STAKED_TOKEN);
             $criteria->addSelectColumn(AssetPeer::TOTAL_TOKEN);
             $criteria->addSelectColumn(AssetPeer::USD_VALUE);
+            $criteria->addSelectColumn(AssetPeer::ID_SYMBOL);
             $criteria->addSelectColumn(AssetPeer::AVG_PRICE);
             $criteria->addSelectColumn(AssetPeer::PROFIT);
             $criteria->addSelectColumn(AssetPeer::LOCKED_TOKEN);
@@ -231,6 +236,7 @@ abstract class BaseAssetPeer
             $criteria->addSelectColumn($alias . '.staked_token');
             $criteria->addSelectColumn($alias . '.total_token');
             $criteria->addSelectColumn($alias . '.usd_value');
+            $criteria->addSelectColumn($alias . '.id_symbol');
             $criteria->addSelectColumn($alias . '.avg_price');
             $criteria->addSelectColumn($alias . '.profit');
             $criteria->addSelectColumn($alias . '.locked_token');
@@ -594,6 +600,57 @@ abstract class BaseAssetPeer
 
 
     /**
+     * Returns the number of rows matching criteria, joining the related Symbol table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinSymbol(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(AssetPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            AssetPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY won't ever affect the count
+
+        // Set the correct dbName
+        $criteria->setDbName(AssetPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(AssetPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(AssetPeer::ID_SYMBOL, SymbolPeer::ID_SYMBOL, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
      * Returns the number of rows matching criteria, joining the related AuthyGroup table
      *
      * @param      Criteria $criteria
@@ -801,6 +858,73 @@ abstract class BaseAssetPeer
                 } // if obj2 already loaded
 
                 // Add the $obj1 (Asset) to $obj2 (Token)
+                $obj2->addAsset($obj1);
+
+            } // if joined row was not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
+     * Selects a collection of Asset objects pre-filled with their Symbol objects.
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Asset objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinSymbol(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(AssetPeer::DATABASE_NAME);
+        }
+
+        AssetPeer::addSelectColumns($criteria);
+        $startcol = AssetPeer::NUM_HYDRATE_COLUMNS;
+        SymbolPeer::addSelectColumns($criteria);
+
+        $criteria->addJoin(AssetPeer::ID_SYMBOL, SymbolPeer::ID_SYMBOL, $join_behavior);
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = AssetPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = AssetPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+
+                $cls = AssetPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                AssetPeer::addInstanceToPool($obj1, $key1);
+            } // if $obj1 already loaded
+
+            $key2 = SymbolPeer::getPrimaryKeyHashFromRow($row, $startcol);
+            if ($key2 !== null) {
+                $obj2 = SymbolPeer::getInstanceFromPool($key2);
+                if (!$obj2) {
+
+                    $cls = SymbolPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol);
+                    SymbolPeer::addInstanceToPool($obj2, $key2);
+                } // if obj2 already loaded
+
+                // Add the $obj1 (Asset) to $obj2 (Symbol)
                 $obj2->addAsset($obj1);
 
             } // if joined row was not null
@@ -1052,6 +1176,8 @@ abstract class BaseAssetPeer
 
         $criteria->addJoin(AssetPeer::ID_TOKEN, TokenPeer::ID_TOKEN, $join_behavior);
 
+        $criteria->addJoin(AssetPeer::ID_SYMBOL, SymbolPeer::ID_SYMBOL, $join_behavior);
+
         $criteria->addJoin(AssetPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
         $criteria->addJoin(AssetPeer::ID_CREATION, AuthyPeer::ID_AUTHY, $join_behavior);
@@ -1095,16 +1221,21 @@ abstract class BaseAssetPeer
         TokenPeer::addSelectColumns($criteria);
         $startcol3 = $startcol2 + TokenPeer::NUM_HYDRATE_COLUMNS;
 
-        AuthyGroupPeer::addSelectColumns($criteria);
-        $startcol4 = $startcol3 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
+        SymbolPeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + SymbolPeer::NUM_HYDRATE_COLUMNS;
 
-        AuthyPeer::addSelectColumns($criteria);
-        $startcol5 = $startcol4 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+        AuthyGroupPeer::addSelectColumns($criteria);
+        $startcol5 = $startcol4 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
 
         AuthyPeer::addSelectColumns($criteria);
         $startcol6 = $startcol5 + AuthyPeer::NUM_HYDRATE_COLUMNS;
 
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol7 = $startcol6 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
         $criteria->addJoin(AssetPeer::ID_TOKEN, TokenPeer::ID_TOKEN, $join_behavior);
+
+        $criteria->addJoin(AssetPeer::ID_SYMBOL, SymbolPeer::ID_SYMBOL, $join_behavior);
 
         $criteria->addJoin(AssetPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
@@ -1147,40 +1278,40 @@ abstract class BaseAssetPeer
                 $obj2->addAsset($obj1);
             } // if joined row not null
 
-            // Add objects for joined AuthyGroup rows
+            // Add objects for joined Symbol rows
 
-            $key3 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+            $key3 = SymbolPeer::getPrimaryKeyHashFromRow($row, $startcol3);
             if ($key3 !== null) {
-                $obj3 = AuthyGroupPeer::getInstanceFromPool($key3);
+                $obj3 = SymbolPeer::getInstanceFromPool($key3);
                 if (!$obj3) {
 
-                    $cls = AuthyGroupPeer::getOMClass();
+                    $cls = SymbolPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
-                    AuthyGroupPeer::addInstanceToPool($obj3, $key3);
+                    SymbolPeer::addInstanceToPool($obj3, $key3);
                 } // if obj3 loaded
 
-                // Add the $obj1 (Asset) to the collection in $obj3 (AuthyGroup)
+                // Add the $obj1 (Asset) to the collection in $obj3 (Symbol)
                 $obj3->addAsset($obj1);
             } // if joined row not null
 
-            // Add objects for joined Authy rows
+            // Add objects for joined AuthyGroup rows
 
-            $key4 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+            $key4 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol4);
             if ($key4 !== null) {
-                $obj4 = AuthyPeer::getInstanceFromPool($key4);
+                $obj4 = AuthyGroupPeer::getInstanceFromPool($key4);
                 if (!$obj4) {
 
-                    $cls = AuthyPeer::getOMClass();
+                    $cls = AuthyGroupPeer::getOMClass();
 
                     $obj4 = new $cls();
                     $obj4->hydrate($row, $startcol4);
-                    AuthyPeer::addInstanceToPool($obj4, $key4);
+                    AuthyGroupPeer::addInstanceToPool($obj4, $key4);
                 } // if obj4 loaded
 
-                // Add the $obj1 (Asset) to the collection in $obj4 (Authy)
-                $obj4->addAssetRelatedByIdCreation($obj1);
+                // Add the $obj1 (Asset) to the collection in $obj4 (AuthyGroup)
+                $obj4->addAsset($obj1);
             } // if joined row not null
 
             // Add objects for joined Authy rows
@@ -1198,7 +1329,25 @@ abstract class BaseAssetPeer
                 } // if obj5 loaded
 
                 // Add the $obj1 (Asset) to the collection in $obj5 (Authy)
-                $obj5->addAssetRelatedByIdModification($obj1);
+                $obj5->addAssetRelatedByIdCreation($obj1);
+            } // if joined row not null
+
+            // Add objects for joined Authy rows
+
+            $key6 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol6);
+            if ($key6 !== null) {
+                $obj6 = AuthyPeer::getInstanceFromPool($key6);
+                if (!$obj6) {
+
+                    $cls = AuthyPeer::getOMClass();
+
+                    $obj6 = new $cls();
+                    $obj6->hydrate($row, $startcol6);
+                    AuthyPeer::addInstanceToPool($obj6, $key6);
+                } // if obj6 loaded
+
+                // Add the $obj1 (Asset) to the collection in $obj6 (Authy)
+                $obj6->addAssetRelatedByIdModification($obj1);
             } // if joined row not null
 
             $results[] = $obj1;
@@ -1244,6 +1393,65 @@ abstract class BaseAssetPeer
         if ($con === null) {
             $con = Propel::getConnection(AssetPeer::DATABASE_NAME, Propel::CONNECTION_READ);
         }
+
+        $criteria->addJoin(AssetPeer::ID_SYMBOL, SymbolPeer::ID_SYMBOL, $join_behavior);
+
+        $criteria->addJoin(AssetPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
+
+        $criteria->addJoin(AssetPeer::ID_CREATION, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $criteria->addJoin(AssetPeer::ID_MODIFICATION, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $stmt = BasePeer::doCount($criteria, $con);
+
+        if ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $count = (int) $row[0];
+        } else {
+            $count = 0; // no rows returned; we infer that means 0 matches.
+        }
+        $stmt->closeCursor();
+
+        return $count;
+    }
+
+
+    /**
+     * Returns the number of rows matching criteria, joining the related Symbol table
+     *
+     * @param      Criteria $criteria
+     * @param      boolean $distinct Whether to select only distinct columns; deprecated: use Criteria->setDistinct() instead.
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return int Number of matching rows.
+     */
+    public static function doCountJoinAllExceptSymbol(Criteria $criteria, $distinct = false, PropelPDO $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        // we're going to modify criteria, so copy it first
+        $criteria = clone $criteria;
+
+        // We need to set the primary table name, since in the case that there are no WHERE columns
+        // it will be impossible for the BasePeer::createSelectSql() method to determine which
+        // tables go into the FROM clause.
+        $criteria->setPrimaryTableName(AssetPeer::TABLE_NAME);
+
+        if ($distinct && !in_array(Criteria::DISTINCT, $criteria->getSelectModifiers())) {
+            $criteria->setDistinct();
+        }
+
+        if (!$criteria->hasSelectClause()) {
+            AssetPeer::addSelectColumns($criteria);
+        }
+
+        $criteria->clearOrderByColumns(); // ORDER BY should not affect count
+
+        // Set the correct dbName
+        $criteria->setDbName(AssetPeer::DATABASE_NAME);
+
+        if ($con === null) {
+            $con = Propel::getConnection(AssetPeer::DATABASE_NAME, Propel::CONNECTION_READ);
+        }
+
+        $criteria->addJoin(AssetPeer::ID_TOKEN, TokenPeer::ID_TOKEN, $join_behavior);
 
         $criteria->addJoin(AssetPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
@@ -1302,6 +1510,8 @@ abstract class BaseAssetPeer
 
         $criteria->addJoin(AssetPeer::ID_TOKEN, TokenPeer::ID_TOKEN, $join_behavior);
 
+        $criteria->addJoin(AssetPeer::ID_SYMBOL, SymbolPeer::ID_SYMBOL, $join_behavior);
+
         $criteria->addJoin(AssetPeer::ID_CREATION, AuthyPeer::ID_AUTHY, $join_behavior);
 
         $criteria->addJoin(AssetPeer::ID_MODIFICATION, AuthyPeer::ID_AUTHY, $join_behavior);
@@ -1357,6 +1567,8 @@ abstract class BaseAssetPeer
 
         $criteria->addJoin(AssetPeer::ID_TOKEN, TokenPeer::ID_TOKEN, $join_behavior);
 
+        $criteria->addJoin(AssetPeer::ID_SYMBOL, SymbolPeer::ID_SYMBOL, $join_behavior);
+
         $criteria->addJoin(AssetPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -1410,6 +1622,8 @@ abstract class BaseAssetPeer
 
         $criteria->addJoin(AssetPeer::ID_TOKEN, TokenPeer::ID_TOKEN, $join_behavior);
 
+        $criteria->addJoin(AssetPeer::ID_SYMBOL, SymbolPeer::ID_SYMBOL, $join_behavior);
+
         $criteria->addJoin(AssetPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
         $stmt = BasePeer::doCount($criteria, $con);
@@ -1449,14 +1663,19 @@ abstract class BaseAssetPeer
         AssetPeer::addSelectColumns($criteria);
         $startcol2 = AssetPeer::NUM_HYDRATE_COLUMNS;
 
-        AuthyGroupPeer::addSelectColumns($criteria);
-        $startcol3 = $startcol2 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
+        SymbolPeer::addSelectColumns($criteria);
+        $startcol3 = $startcol2 + SymbolPeer::NUM_HYDRATE_COLUMNS;
 
-        AuthyPeer::addSelectColumns($criteria);
-        $startcol4 = $startcol3 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+        AuthyGroupPeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
 
         AuthyPeer::addSelectColumns($criteria);
         $startcol5 = $startcol4 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol6 = $startcol5 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
+        $criteria->addJoin(AssetPeer::ID_SYMBOL, SymbolPeer::ID_SYMBOL, $join_behavior);
 
         $criteria->addJoin(AssetPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
@@ -1482,41 +1701,41 @@ abstract class BaseAssetPeer
                 AssetPeer::addInstanceToPool($obj1, $key1);
             } // if obj1 already loaded
 
-                // Add objects for joined AuthyGroup rows
+                // Add objects for joined Symbol rows
 
-                $key2 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+                $key2 = SymbolPeer::getPrimaryKeyHashFromRow($row, $startcol2);
                 if ($key2 !== null) {
-                    $obj2 = AuthyGroupPeer::getInstanceFromPool($key2);
+                    $obj2 = SymbolPeer::getInstanceFromPool($key2);
                     if (!$obj2) {
 
-                        $cls = AuthyGroupPeer::getOMClass();
+                        $cls = SymbolPeer::getOMClass();
 
                     $obj2 = new $cls();
                     $obj2->hydrate($row, $startcol2);
-                    AuthyGroupPeer::addInstanceToPool($obj2, $key2);
+                    SymbolPeer::addInstanceToPool($obj2, $key2);
                 } // if $obj2 already loaded
 
-                // Add the $obj1 (Asset) to the collection in $obj2 (AuthyGroup)
+                // Add the $obj1 (Asset) to the collection in $obj2 (Symbol)
                 $obj2->addAsset($obj1);
 
             } // if joined row is not null
 
-                // Add objects for joined Authy rows
+                // Add objects for joined AuthyGroup rows
 
-                $key3 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+                $key3 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol3);
                 if ($key3 !== null) {
-                    $obj3 = AuthyPeer::getInstanceFromPool($key3);
+                    $obj3 = AuthyGroupPeer::getInstanceFromPool($key3);
                     if (!$obj3) {
 
-                        $cls = AuthyPeer::getOMClass();
+                        $cls = AuthyGroupPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
-                    AuthyPeer::addInstanceToPool($obj3, $key3);
+                    AuthyGroupPeer::addInstanceToPool($obj3, $key3);
                 } // if $obj3 already loaded
 
-                // Add the $obj1 (Asset) to the collection in $obj3 (Authy)
-                $obj3->addAssetRelatedByIdCreation($obj1);
+                // Add the $obj1 (Asset) to the collection in $obj3 (AuthyGroup)
+                $obj3->addAsset($obj1);
 
             } // if joined row is not null
 
@@ -1535,7 +1754,172 @@ abstract class BaseAssetPeer
                 } // if $obj4 already loaded
 
                 // Add the $obj1 (Asset) to the collection in $obj4 (Authy)
-                $obj4->addAssetRelatedByIdModification($obj1);
+                $obj4->addAssetRelatedByIdCreation($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Authy rows
+
+                $key5 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                if ($key5 !== null) {
+                    $obj5 = AuthyPeer::getInstanceFromPool($key5);
+                    if (!$obj5) {
+
+                        $cls = AuthyPeer::getOMClass();
+
+                    $obj5 = new $cls();
+                    $obj5->hydrate($row, $startcol5);
+                    AuthyPeer::addInstanceToPool($obj5, $key5);
+                } // if $obj5 already loaded
+
+                // Add the $obj1 (Asset) to the collection in $obj5 (Authy)
+                $obj5->addAssetRelatedByIdModification($obj1);
+
+            } // if joined row is not null
+
+            $results[] = $obj1;
+        }
+        $stmt->closeCursor();
+
+        return $results;
+    }
+
+
+    /**
+     * Selects a collection of Asset objects pre-filled with all related objects except Symbol.
+     *
+     * @param      Criteria  $criteria
+     * @param      PropelPDO $con
+     * @param      String    $join_behavior the type of joins to use, defaults to Criteria::LEFT_JOIN
+     * @return array           Array of Asset objects.
+     * @throws PropelException Any exceptions caught during processing will be
+     *		 rethrown wrapped into a PropelException.
+     */
+    public static function doSelectJoinAllExceptSymbol(Criteria $criteria, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $criteria = clone $criteria;
+
+        // Set the correct dbName if it has not been overridden
+        // $criteria->getDbName() will return the same object if not set to another value
+        // so == check is okay and faster
+        if ($criteria->getDbName() == Propel::getDefaultDB()) {
+            $criteria->setDbName(AssetPeer::DATABASE_NAME);
+        }
+
+        AssetPeer::addSelectColumns($criteria);
+        $startcol2 = AssetPeer::NUM_HYDRATE_COLUMNS;
+
+        TokenPeer::addSelectColumns($criteria);
+        $startcol3 = $startcol2 + TokenPeer::NUM_HYDRATE_COLUMNS;
+
+        AuthyGroupPeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
+
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol5 = $startcol4 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol6 = $startcol5 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
+        $criteria->addJoin(AssetPeer::ID_TOKEN, TokenPeer::ID_TOKEN, $join_behavior);
+
+        $criteria->addJoin(AssetPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
+
+        $criteria->addJoin(AssetPeer::ID_CREATION, AuthyPeer::ID_AUTHY, $join_behavior);
+
+        $criteria->addJoin(AssetPeer::ID_MODIFICATION, AuthyPeer::ID_AUTHY, $join_behavior);
+
+
+        $stmt = BasePeer::doSelect($criteria, $con);
+        $results = array();
+
+        while ($row = $stmt->fetch(PDO::FETCH_NUM)) {
+            $key1 = AssetPeer::getPrimaryKeyHashFromRow($row, 0);
+            if (null !== ($obj1 = AssetPeer::getInstanceFromPool($key1))) {
+                // We no longer rehydrate the object, since this can cause data loss.
+                // See http://www.propelorm.org/ticket/509
+                // $obj1->hydrate($row, 0, true); // rehydrate
+            } else {
+                $cls = AssetPeer::getOMClass();
+
+                $obj1 = new $cls();
+                $obj1->hydrate($row);
+                AssetPeer::addInstanceToPool($obj1, $key1);
+            } // if obj1 already loaded
+
+                // Add objects for joined Token rows
+
+                $key2 = TokenPeer::getPrimaryKeyHashFromRow($row, $startcol2);
+                if ($key2 !== null) {
+                    $obj2 = TokenPeer::getInstanceFromPool($key2);
+                    if (!$obj2) {
+
+                        $cls = TokenPeer::getOMClass();
+
+                    $obj2 = new $cls();
+                    $obj2->hydrate($row, $startcol2);
+                    TokenPeer::addInstanceToPool($obj2, $key2);
+                } // if $obj2 already loaded
+
+                // Add the $obj1 (Asset) to the collection in $obj2 (Token)
+                $obj2->addAsset($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined AuthyGroup rows
+
+                $key3 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+                if ($key3 !== null) {
+                    $obj3 = AuthyGroupPeer::getInstanceFromPool($key3);
+                    if (!$obj3) {
+
+                        $cls = AuthyGroupPeer::getOMClass();
+
+                    $obj3 = new $cls();
+                    $obj3->hydrate($row, $startcol3);
+                    AuthyGroupPeer::addInstanceToPool($obj3, $key3);
+                } // if $obj3 already loaded
+
+                // Add the $obj1 (Asset) to the collection in $obj3 (AuthyGroup)
+                $obj3->addAsset($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Authy rows
+
+                $key4 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+                if ($key4 !== null) {
+                    $obj4 = AuthyPeer::getInstanceFromPool($key4);
+                    if (!$obj4) {
+
+                        $cls = AuthyPeer::getOMClass();
+
+                    $obj4 = new $cls();
+                    $obj4->hydrate($row, $startcol4);
+                    AuthyPeer::addInstanceToPool($obj4, $key4);
+                } // if $obj4 already loaded
+
+                // Add the $obj1 (Asset) to the collection in $obj4 (Authy)
+                $obj4->addAssetRelatedByIdCreation($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Authy rows
+
+                $key5 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                if ($key5 !== null) {
+                    $obj5 = AuthyPeer::getInstanceFromPool($key5);
+                    if (!$obj5) {
+
+                        $cls = AuthyPeer::getOMClass();
+
+                    $obj5 = new $cls();
+                    $obj5->hydrate($row, $startcol5);
+                    AuthyPeer::addInstanceToPool($obj5, $key5);
+                } // if $obj5 already loaded
+
+                // Add the $obj1 (Asset) to the collection in $obj5 (Authy)
+                $obj5->addAssetRelatedByIdModification($obj1);
 
             } // if joined row is not null
 
@@ -1574,13 +1958,18 @@ abstract class BaseAssetPeer
         TokenPeer::addSelectColumns($criteria);
         $startcol3 = $startcol2 + TokenPeer::NUM_HYDRATE_COLUMNS;
 
-        AuthyPeer::addSelectColumns($criteria);
-        $startcol4 = $startcol3 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+        SymbolPeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + SymbolPeer::NUM_HYDRATE_COLUMNS;
 
         AuthyPeer::addSelectColumns($criteria);
         $startcol5 = $startcol4 + AuthyPeer::NUM_HYDRATE_COLUMNS;
 
+        AuthyPeer::addSelectColumns($criteria);
+        $startcol6 = $startcol5 + AuthyPeer::NUM_HYDRATE_COLUMNS;
+
         $criteria->addJoin(AssetPeer::ID_TOKEN, TokenPeer::ID_TOKEN, $join_behavior);
+
+        $criteria->addJoin(AssetPeer::ID_SYMBOL, SymbolPeer::ID_SYMBOL, $join_behavior);
 
         $criteria->addJoin(AssetPeer::ID_CREATION, AuthyPeer::ID_AUTHY, $join_behavior);
 
@@ -1623,22 +2012,22 @@ abstract class BaseAssetPeer
 
             } // if joined row is not null
 
-                // Add objects for joined Authy rows
+                // Add objects for joined Symbol rows
 
-                $key3 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+                $key3 = SymbolPeer::getPrimaryKeyHashFromRow($row, $startcol3);
                 if ($key3 !== null) {
-                    $obj3 = AuthyPeer::getInstanceFromPool($key3);
+                    $obj3 = SymbolPeer::getInstanceFromPool($key3);
                     if (!$obj3) {
 
-                        $cls = AuthyPeer::getOMClass();
+                        $cls = SymbolPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
-                    AuthyPeer::addInstanceToPool($obj3, $key3);
+                    SymbolPeer::addInstanceToPool($obj3, $key3);
                 } // if $obj3 already loaded
 
-                // Add the $obj1 (Asset) to the collection in $obj3 (Authy)
-                $obj3->addAssetRelatedByIdCreation($obj1);
+                // Add the $obj1 (Asset) to the collection in $obj3 (Symbol)
+                $obj3->addAsset($obj1);
 
             } // if joined row is not null
 
@@ -1657,7 +2046,26 @@ abstract class BaseAssetPeer
                 } // if $obj4 already loaded
 
                 // Add the $obj1 (Asset) to the collection in $obj4 (Authy)
-                $obj4->addAssetRelatedByIdModification($obj1);
+                $obj4->addAssetRelatedByIdCreation($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined Authy rows
+
+                $key5 = AuthyPeer::getPrimaryKeyHashFromRow($row, $startcol5);
+                if ($key5 !== null) {
+                    $obj5 = AuthyPeer::getInstanceFromPool($key5);
+                    if (!$obj5) {
+
+                        $cls = AuthyPeer::getOMClass();
+
+                    $obj5 = new $cls();
+                    $obj5->hydrate($row, $startcol5);
+                    AuthyPeer::addInstanceToPool($obj5, $key5);
+                } // if $obj5 already loaded
+
+                // Add the $obj1 (Asset) to the collection in $obj5 (Authy)
+                $obj5->addAssetRelatedByIdModification($obj1);
 
             } // if joined row is not null
 
@@ -1696,10 +2104,15 @@ abstract class BaseAssetPeer
         TokenPeer::addSelectColumns($criteria);
         $startcol3 = $startcol2 + TokenPeer::NUM_HYDRATE_COLUMNS;
 
+        SymbolPeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + SymbolPeer::NUM_HYDRATE_COLUMNS;
+
         AuthyGroupPeer::addSelectColumns($criteria);
-        $startcol4 = $startcol3 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
+        $startcol5 = $startcol4 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
 
         $criteria->addJoin(AssetPeer::ID_TOKEN, TokenPeer::ID_TOKEN, $join_behavior);
+
+        $criteria->addJoin(AssetPeer::ID_SYMBOL, SymbolPeer::ID_SYMBOL, $join_behavior);
 
         $criteria->addJoin(AssetPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
@@ -1740,22 +2153,41 @@ abstract class BaseAssetPeer
 
             } // if joined row is not null
 
-                // Add objects for joined AuthyGroup rows
+                // Add objects for joined Symbol rows
 
-                $key3 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+                $key3 = SymbolPeer::getPrimaryKeyHashFromRow($row, $startcol3);
                 if ($key3 !== null) {
-                    $obj3 = AuthyGroupPeer::getInstanceFromPool($key3);
+                    $obj3 = SymbolPeer::getInstanceFromPool($key3);
                     if (!$obj3) {
 
-                        $cls = AuthyGroupPeer::getOMClass();
+                        $cls = SymbolPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
-                    AuthyGroupPeer::addInstanceToPool($obj3, $key3);
+                    SymbolPeer::addInstanceToPool($obj3, $key3);
                 } // if $obj3 already loaded
 
-                // Add the $obj1 (Asset) to the collection in $obj3 (AuthyGroup)
+                // Add the $obj1 (Asset) to the collection in $obj3 (Symbol)
                 $obj3->addAsset($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined AuthyGroup rows
+
+                $key4 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+                if ($key4 !== null) {
+                    $obj4 = AuthyGroupPeer::getInstanceFromPool($key4);
+                    if (!$obj4) {
+
+                        $cls = AuthyGroupPeer::getOMClass();
+
+                    $obj4 = new $cls();
+                    $obj4->hydrate($row, $startcol4);
+                    AuthyGroupPeer::addInstanceToPool($obj4, $key4);
+                } // if $obj4 already loaded
+
+                // Add the $obj1 (Asset) to the collection in $obj4 (AuthyGroup)
+                $obj4->addAsset($obj1);
 
             } // if joined row is not null
 
@@ -1794,10 +2226,15 @@ abstract class BaseAssetPeer
         TokenPeer::addSelectColumns($criteria);
         $startcol3 = $startcol2 + TokenPeer::NUM_HYDRATE_COLUMNS;
 
+        SymbolPeer::addSelectColumns($criteria);
+        $startcol4 = $startcol3 + SymbolPeer::NUM_HYDRATE_COLUMNS;
+
         AuthyGroupPeer::addSelectColumns($criteria);
-        $startcol4 = $startcol3 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
+        $startcol5 = $startcol4 + AuthyGroupPeer::NUM_HYDRATE_COLUMNS;
 
         $criteria->addJoin(AssetPeer::ID_TOKEN, TokenPeer::ID_TOKEN, $join_behavior);
+
+        $criteria->addJoin(AssetPeer::ID_SYMBOL, SymbolPeer::ID_SYMBOL, $join_behavior);
 
         $criteria->addJoin(AssetPeer::ID_GROUP_CREATION, AuthyGroupPeer::ID_AUTHY_GROUP, $join_behavior);
 
@@ -1838,22 +2275,41 @@ abstract class BaseAssetPeer
 
             } // if joined row is not null
 
-                // Add objects for joined AuthyGroup rows
+                // Add objects for joined Symbol rows
 
-                $key3 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol3);
+                $key3 = SymbolPeer::getPrimaryKeyHashFromRow($row, $startcol3);
                 if ($key3 !== null) {
-                    $obj3 = AuthyGroupPeer::getInstanceFromPool($key3);
+                    $obj3 = SymbolPeer::getInstanceFromPool($key3);
                     if (!$obj3) {
 
-                        $cls = AuthyGroupPeer::getOMClass();
+                        $cls = SymbolPeer::getOMClass();
 
                     $obj3 = new $cls();
                     $obj3->hydrate($row, $startcol3);
-                    AuthyGroupPeer::addInstanceToPool($obj3, $key3);
+                    SymbolPeer::addInstanceToPool($obj3, $key3);
                 } // if $obj3 already loaded
 
-                // Add the $obj1 (Asset) to the collection in $obj3 (AuthyGroup)
+                // Add the $obj1 (Asset) to the collection in $obj3 (Symbol)
                 $obj3->addAsset($obj1);
+
+            } // if joined row is not null
+
+                // Add objects for joined AuthyGroup rows
+
+                $key4 = AuthyGroupPeer::getPrimaryKeyHashFromRow($row, $startcol4);
+                if ($key4 !== null) {
+                    $obj4 = AuthyGroupPeer::getInstanceFromPool($key4);
+                    if (!$obj4) {
+
+                        $cls = AuthyGroupPeer::getOMClass();
+
+                    $obj4 = new $cls();
+                    $obj4->hydrate($row, $startcol4);
+                    AuthyGroupPeer::addInstanceToPool($obj4, $key4);
+                } // if $obj4 already loaded
+
+                // Add the $obj1 (Asset) to the collection in $obj4 (AuthyGroup)
+                $obj4->addAsset($obj1);
 
             } // if joined row is not null
 
@@ -2111,6 +2567,9 @@ abstract class BaseAssetPeer
 
         if ($obj->isNew() || $obj->isColumnModified(AssetPeer::ID_TOKEN))
             $columns[AssetPeer::ID_TOKEN] = $obj->getIdToken();
+
+        if ($obj->isNew() || $obj->isColumnModified(AssetPeer::ID_SYMBOL))
+            $columns[AssetPeer::ID_SYMBOL] = $obj->getIdSymbol();
 
         if ($obj->isNew() || $obj->isColumnModified(AssetPeer::LAST_SYNC))
             $columns[AssetPeer::LAST_SYNC] = $obj->getLastSync();

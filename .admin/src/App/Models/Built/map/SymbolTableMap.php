@@ -68,6 +68,7 @@ class SymbolTableMap extends TableMap
         $this->addRelation('AuthyGroup', 'App\\AuthyGroup', RelationMap::MANY_TO_ONE, array('id_group_creation' => 'id_authy_group', ), null, null);
         $this->addRelation('AuthyRelatedByIdCreation', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_creation' => 'id_authy', ), null, null);
         $this->addRelation('AuthyRelatedByIdModification', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_modification' => 'id_authy', ), null, null);
+        $this->addRelation('Asset', 'App\\Asset', RelationMap::ONE_TO_MANY, array('id_symbol' => 'id_symbol', ), null, null, 'Assets');
         $this->addRelation('Trade', 'App\\Trade', RelationMap::ONE_TO_MANY, array('id_symbol' => 'id_symbol', ), null, null, 'Trades');
     } // buildRelations()
 

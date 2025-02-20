@@ -22,20 +22,32 @@ class AssetServiceWrapper extends AssetService
         $this->customActions['syncAssets']            = 'syncAssets';
         $this->customActions['syncTrades']            = 'syncAccountTrades';
         $this->customActions['getAsset']            = 'getAsset';
+        $this->customActions['syncPair']            = 'syncPair';
         $this->Form = new AssetFormWrapper($request, $args);
     }
 
     public function getAsset($request){
-        try {
 
-            $binance = new Binance($_ENV['BINANCE_KEY'], $_ENV['BINANCE_SECRET']);
-            $result = $binance->system()->getTickerPrice(['symbol' => $request['data']['asset']."USDT"]);
-           // echo pre(print_r($result, true));
+        if ($request['data']['id_token'] || $request['data']['id_symbol']) {
+            if ($request['data']['id_symbol']) {
+                $Symbol = SymbolQuery::create()->findPk($request['data']['id_symbol']);
+                $tradingPair = $Symbol->getName();
+            } else {
 
-            return json_encode(['bids' => $result['price']]);
-        }catch (\Exception $e){
-            print_r($e->getMessage());
-        }
+                $Token = TokenQuery::create()->findPk($request['data']['id_token']);
+                $tradingPair = $Token->getTicker() . default_trading_pair;
+            }
+
+            try {
+                $binance = new Binance($_ENV['BINANCE_KEY'], $_ENV['BINANCE_SECRET']);
+                $result = $binance->system()->getTickerPrice(['symbol' => $tradingPair]);
+                // echo pre(print_r($result, true));
+
+                return json_encode(['bids' => $result['price'], 'symbol' => $tradingPair]);
+            } catch (\Exception $e) {
+                print_r($e->getMessage());
+            }
+        } 
     }
 
     public function syncAssets($request)
@@ -47,6 +59,10 @@ class AssetServiceWrapper extends AssetService
     {
         $sync = new \Connector\Binance\Sync();
         return $sync->syncAccountTrades($request['data']['IdToken'], ['data']['IdAsset']);
+    }
+
+    public function syncPair(){
+
     }
 
 

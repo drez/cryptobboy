@@ -35,10 +35,12 @@ class TradeFormWrapper extends TradeForm
       
         $this->hookListReadyJs = "
             $('.sw-header .custom-controls').append( $('<a>').html('Sync').addClass('button-link-blue header-controls').attr('href', 'Javascript:;').attr('id', 'syncTrades') );
+            sw_message('Synchronizing...', false, 'sync_load', true);
             $('#syncTrades').click(()=>{
                 $.post('" . _SITE_URL . $this->virtualClassName . "/sync/', {ui:'list'}, (data)=>{
                     $('#editPopupDialog').html(data);
                     $('#editPopupDialog').dialog('open');
+                    sw_message(true, false, 'sync_load');
                 });
             });
         ";

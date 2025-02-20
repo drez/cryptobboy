@@ -24,6 +24,8 @@ use App\Authy;
 use App\AuthyGroup;
 use App\AuthyGroupQuery;
 use App\AuthyQuery;
+use App\Symbol;
+use App\SymbolQuery;
 use App\Token;
 use App\TokenQuery;
 use App\Trade;
@@ -94,6 +96,12 @@ abstract class BaseAsset extends BaseObject implements Persistent
     protected $usd_value;
 
     /**
+     * The value for the id_symbol field.
+     * @var        int
+     */
+    protected $id_symbol;
+
+    /**
      * The value for the avg_price field.
      * @var        string
      */
@@ -157,6 +165,11 @@ abstract class BaseAsset extends BaseObject implements Persistent
      * @var        Token
      */
     protected $aToken;
+
+    /**
+     * @var        Symbol
+     */
+    protected $aSymbol;
 
     /**
      * @var        AuthyGroup
@@ -287,6 +300,18 @@ abstract class BaseAsset extends BaseObject implements Persistent
     {
 
         return $this->usd_value;
+    }
+
+    /**
+     * @Field()
+     * Get the [id_symbol] column value.
+     * Trading pair
+     * @return int
+     */
+    public function getIdSymbol()
+    {
+
+        return $this->id_symbol;
     }
 
     /**
@@ -627,6 +652,31 @@ abstract class BaseAsset extends BaseObject implements Persistent
     } // setUsdValue()
 
     /**
+     * Set the value of [id_symbol] column.
+     * Trading pair
+     * @param  int $v new value
+     * @return Asset The current object (for fluent API support)
+     */
+    public function setIdSymbol($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (int) $v;
+        }
+
+        if ($this->id_symbol !== $v) {
+            $this->id_symbol = $v;
+            $this->modifiedColumns[] = AssetPeer::ID_SYMBOL;
+        }
+
+        if ($this->aSymbol !== null && $this->aSymbol->getIdSymbol() !== $v) {
+            $this->aSymbol = null;
+        }
+
+
+        return $this;
+    } // setIdSymbol()
+
+    /**
      * Set the value of [avg_price] column.
      * Avg. price
      * @param  string $v new value
@@ -892,16 +942,17 @@ abstract class BaseAsset extends BaseObject implements Persistent
             $this->staked_token = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
             $this->total_token = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
             $this->usd_value = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
-            $this->avg_price = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
-            $this->profit = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
-            $this->locked_token = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
-            $this->freeze_token = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
-            $this->last_sync = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
-            $this->date_creation = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
-            $this->date_modification = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
-            $this->id_group_creation = ($row[$startcol + 13] !== null) ? (int) $row[$startcol + 13] : null;
-            $this->id_creation = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
-            $this->id_modification = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
+            $this->id_symbol = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+            $this->avg_price = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
+            $this->profit = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
+            $this->locked_token = ($row[$startcol + 9] !== null) ? (string) $row[$startcol + 9] : null;
+            $this->freeze_token = ($row[$startcol + 10] !== null) ? (string) $row[$startcol + 10] : null;
+            $this->last_sync = ($row[$startcol + 11] !== null) ? (string) $row[$startcol + 11] : null;
+            $this->date_creation = ($row[$startcol + 12] !== null) ? (string) $row[$startcol + 12] : null;
+            $this->date_modification = ($row[$startcol + 13] !== null) ? (string) $row[$startcol + 13] : null;
+            $this->id_group_creation = ($row[$startcol + 14] !== null) ? (int) $row[$startcol + 14] : null;
+            $this->id_creation = ($row[$startcol + 15] !== null) ? (int) $row[$startcol + 15] : null;
+            $this->id_modification = ($row[$startcol + 16] !== null) ? (int) $row[$startcol + 16] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -911,7 +962,7 @@ abstract class BaseAsset extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 16; // 16 = AssetPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 17; // 17 = AssetPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Asset object", $e);
@@ -936,6 +987,9 @@ abstract class BaseAsset extends BaseObject implements Persistent
 
         if ($this->aToken !== null && $this->id_token !== $this->aToken->getIdToken()) {
             $this->aToken = null;
+        }
+        if ($this->aSymbol !== null && $this->id_symbol !== $this->aSymbol->getIdSymbol()) {
+            $this->aSymbol = null;
         }
         if ($this->aAuthyGroup !== null && $this->id_group_creation !== $this->aAuthyGroup->getIdAuthyGroup()) {
             $this->aAuthyGroup = null;
@@ -986,6 +1040,7 @@ abstract class BaseAsset extends BaseObject implements Persistent
         if ($deep) {  // also de-associate any related objects?
 
             $this->aToken = null;
+            $this->aSymbol = null;
             $this->aAuthyGroup = null;
             $this->aAuthyRelatedByIdCreation = null;
             $this->aAuthyRelatedByIdModification = null;
@@ -1138,6 +1193,13 @@ abstract class BaseAsset extends BaseObject implements Persistent
                 $this->setToken($this->aToken);
             }
 
+            if ($this->aSymbol !== null) {
+                if ($this->aSymbol->isModified() || $this->aSymbol->isNew()) {
+                    $affectedRows += $this->aSymbol->save($con);
+                }
+                $this->setSymbol($this->aSymbol);
+            }
+
             if ($this->aAuthyGroup !== null) {
                 if ($this->aAuthyGroup->isModified() || $this->aAuthyGroup->isNew()) {
                     $affectedRows += $this->aAuthyGroup->save($con);
@@ -1248,6 +1310,9 @@ abstract class BaseAsset extends BaseObject implements Persistent
         if ($this->isColumnModified(AssetPeer::USD_VALUE)) {
             $modifiedColumns[':p' . $index++]  = '`usd_value`';
         }
+        if ($this->isColumnModified(AssetPeer::ID_SYMBOL)) {
+            $modifiedColumns[':p' . $index++]  = '`id_symbol`';
+        }
         if ($this->isColumnModified(AssetPeer::AVG_PRICE)) {
             $modifiedColumns[':p' . $index++]  = '`avg_price`';
         }
@@ -1306,6 +1371,9 @@ abstract class BaseAsset extends BaseObject implements Persistent
                         break;
                     case '`usd_value`':
                         $stmt->bindValue($identifier, $this->usd_value, PDO::PARAM_STR);
+                        break;
+                    case '`id_symbol`':
+                        $stmt->bindValue($identifier, $this->id_symbol, PDO::PARAM_INT);
                         break;
                     case '`avg_price`':
                         $stmt->bindValue($identifier, $this->avg_price, PDO::PARAM_STR);
@@ -1442,6 +1510,12 @@ abstract class BaseAsset extends BaseObject implements Persistent
                 }
             }
 
+            if ($this->aSymbol !== null) {
+                if (!$this->aSymbol->validate($columns)) {
+                    $failureMap = array_merge($failureMap, $this->aSymbol->getValidationFailures());
+                }
+            }
+
             if ($this->aAuthyGroup !== null) {
                 if (!$this->aAuthyGroup->validate($columns)) {
                     $failureMap = array_merge($failureMap, $this->aAuthyGroup->getValidationFailures());
@@ -1536,16 +1610,17 @@ abstract class BaseAsset extends BaseObject implements Persistent
             $keys[3] => $this->getStakedToken(),
             $keys[4] => $this->getTotalToken(),
             $keys[5] => $this->getUsdValue(),
-            $keys[6] => $this->getAvgPrice(),
-            $keys[7] => $this->getProfit(),
-            $keys[8] => $this->getLockedToken(),
-            $keys[9] => $this->getFreezeToken(),
-            $keys[10] => $this->getLastSync(),
-            $keys[11] => $this->getDateCreation(),
-            $keys[12] => $this->getDateModification(),
-            $keys[13] => $this->getIdGroupCreation(),
-            $keys[14] => $this->getIdCreation(),
-            $keys[15] => $this->getIdModification(),
+            $keys[6] => $this->getIdSymbol(),
+            $keys[7] => $this->getAvgPrice(),
+            $keys[8] => $this->getProfit(),
+            $keys[9] => $this->getLockedToken(),
+            $keys[10] => $this->getFreezeToken(),
+            $keys[11] => $this->getLastSync(),
+            $keys[12] => $this->getDateCreation(),
+            $keys[13] => $this->getDateModification(),
+            $keys[14] => $this->getIdGroupCreation(),
+            $keys[15] => $this->getIdCreation(),
+            $keys[16] => $this->getIdModification(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1555,6 +1630,9 @@ abstract class BaseAsset extends BaseObject implements Persistent
         if ($includeForeignObjects) {
             if (null !== $this->aToken) {
                 $result['Token'] = $this->aToken->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->aSymbol) {
+                $result['Symbol'] = $this->aSymbol->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
             }
             if (null !== $this->aAuthyGroup) {
                 $result['AuthyGroup'] = $this->aAuthyGroup->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
@@ -1624,33 +1702,36 @@ abstract class BaseAsset extends BaseObject implements Persistent
                 $this->setUsdValue($value);
                 break;
             case 6:
-                $this->setAvgPrice($value);
+                $this->setIdSymbol($value);
                 break;
             case 7:
-                $this->setProfit($value);
+                $this->setAvgPrice($value);
                 break;
             case 8:
-                $this->setLockedToken($value);
+                $this->setProfit($value);
                 break;
             case 9:
-                $this->setFreezeToken($value);
+                $this->setLockedToken($value);
                 break;
             case 10:
-                $this->setLastSync($value);
+                $this->setFreezeToken($value);
                 break;
             case 11:
-                $this->setDateCreation($value);
+                $this->setLastSync($value);
                 break;
             case 12:
-                $this->setDateModification($value);
+                $this->setDateCreation($value);
                 break;
             case 13:
-                $this->setIdGroupCreation($value);
+                $this->setDateModification($value);
                 break;
             case 14:
-                $this->setIdCreation($value);
+                $this->setIdGroupCreation($value);
                 break;
             case 15:
+                $this->setIdCreation($value);
+                break;
+            case 16:
                 $this->setIdModification($value);
                 break;
         } // switch()
@@ -1683,16 +1764,17 @@ abstract class BaseAsset extends BaseObject implements Persistent
         if (array_key_exists($keys[3], $arr)) $this->setStakedToken($arr[$keys[3]]);
         if (array_key_exists($keys[4], $arr)) $this->setTotalToken($arr[$keys[4]]);
         if (array_key_exists($keys[5], $arr)) $this->setUsdValue($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setAvgPrice($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setProfit($arr[$keys[7]]);
-        if (array_key_exists($keys[8], $arr)) $this->setLockedToken($arr[$keys[8]]);
-        if (array_key_exists($keys[9], $arr)) $this->setFreezeToken($arr[$keys[9]]);
-        if (array_key_exists($keys[10], $arr)) $this->setLastSync($arr[$keys[10]]);
-        if (array_key_exists($keys[11], $arr)) $this->setDateCreation($arr[$keys[11]]);
-        if (array_key_exists($keys[12], $arr)) $this->setDateModification($arr[$keys[12]]);
-        if (array_key_exists($keys[13], $arr)) $this->setIdGroupCreation($arr[$keys[13]]);
-        if (array_key_exists($keys[14], $arr)) $this->setIdCreation($arr[$keys[14]]);
-        if (array_key_exists($keys[15], $arr)) $this->setIdModification($arr[$keys[15]]);
+        if (array_key_exists($keys[6], $arr)) $this->setIdSymbol($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setAvgPrice($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setProfit($arr[$keys[8]]);
+        if (array_key_exists($keys[9], $arr)) $this->setLockedToken($arr[$keys[9]]);
+        if (array_key_exists($keys[10], $arr)) $this->setFreezeToken($arr[$keys[10]]);
+        if (array_key_exists($keys[11], $arr)) $this->setLastSync($arr[$keys[11]]);
+        if (array_key_exists($keys[12], $arr)) $this->setDateCreation($arr[$keys[12]]);
+        if (array_key_exists($keys[13], $arr)) $this->setDateModification($arr[$keys[13]]);
+        if (array_key_exists($keys[14], $arr)) $this->setIdGroupCreation($arr[$keys[14]]);
+        if (array_key_exists($keys[15], $arr)) $this->setIdCreation($arr[$keys[15]]);
+        if (array_key_exists($keys[16], $arr)) $this->setIdModification($arr[$keys[16]]);
     }
 
     /**
@@ -1710,6 +1792,7 @@ abstract class BaseAsset extends BaseObject implements Persistent
         if ($this->isColumnModified(AssetPeer::STAKED_TOKEN)) $criteria->add(AssetPeer::STAKED_TOKEN, $this->staked_token);
         if ($this->isColumnModified(AssetPeer::TOTAL_TOKEN)) $criteria->add(AssetPeer::TOTAL_TOKEN, $this->total_token);
         if ($this->isColumnModified(AssetPeer::USD_VALUE)) $criteria->add(AssetPeer::USD_VALUE, $this->usd_value);
+        if ($this->isColumnModified(AssetPeer::ID_SYMBOL)) $criteria->add(AssetPeer::ID_SYMBOL, $this->id_symbol);
         if ($this->isColumnModified(AssetPeer::AVG_PRICE)) $criteria->add(AssetPeer::AVG_PRICE, $this->avg_price);
         if ($this->isColumnModified(AssetPeer::PROFIT)) $criteria->add(AssetPeer::PROFIT, $this->profit);
         if ($this->isColumnModified(AssetPeer::LOCKED_TOKEN)) $criteria->add(AssetPeer::LOCKED_TOKEN, $this->locked_token);
@@ -1788,6 +1871,7 @@ abstract class BaseAsset extends BaseObject implements Persistent
         $copyObj->setStakedToken($this->getStakedToken());
         $copyObj->setTotalToken($this->getTotalToken());
         $copyObj->setUsdValue($this->getUsdValue());
+        $copyObj->setIdSymbol($this->getIdSymbol());
         $copyObj->setAvgPrice($this->getAvgPrice());
         $copyObj->setProfit($this->getProfit());
         $copyObj->setLockedToken($this->getLockedToken());
@@ -1918,6 +2002,58 @@ abstract class BaseAsset extends BaseObject implements Persistent
         }
 
         return $this->aToken;
+    }
+
+    /**
+     * Declares an association between this object and a Symbol object.
+     *
+     * @param                  Symbol $v
+     * @return Asset The current object (for fluent API support)
+     * @throws PropelException
+     */
+    public function setSymbol(Symbol $v = null)
+    {
+        if ($v === null) {
+            $this->setIdSymbol(NULL);
+        } else {
+            $this->setIdSymbol($v->getIdSymbol());
+        }
+
+        $this->aSymbol = $v;
+
+        // Add binding for other direction of this n:n relationship.
+        // If this object has already been added to the Symbol object, it will not be re-added.
+        if ($v !== null) {
+            $v->addAsset($this);
+        }
+
+
+        return $this;
+    }
+
+
+    /**
+     * Get the associated Symbol object
+     *
+     * @param PropelPDO $con Optional Connection object.
+     * @param $doQuery Executes a query to get the object if required
+     * @return Symbol The associated Symbol object.
+     * @throws PropelException
+     */
+    public function getSymbol(PropelPDO $con = null, $doQuery = true)
+    {
+        if ($this->aSymbol === null && ($this->id_symbol !== null) && $doQuery) {
+            $this->aSymbol = SymbolQuery::create()->findPk($this->id_symbol, $con);
+            /* The following can be used additionally to
+                guarantee the related object contains a reference
+                to this object.  This level of coupling may, however, be
+                undesirable since it could result in an only partially populated collection
+                in the referenced object.
+                $this->aSymbol->addAssets($this);
+             */
+        }
+
+        return $this->aSymbol;
     }
 
     /**
@@ -2743,6 +2879,7 @@ abstract class BaseAsset extends BaseObject implements Persistent
         $this->staked_token = null;
         $this->total_token = null;
         $this->usd_value = null;
+        $this->id_symbol = null;
         $this->avg_price = null;
         $this->profit = null;
         $this->locked_token = null;
@@ -2788,6 +2925,9 @@ abstract class BaseAsset extends BaseObject implements Persistent
             if ($this->aToken instanceof Persistent) {
               $this->aToken->clearAllReferences($deep);
             }
+            if ($this->aSymbol instanceof Persistent) {
+              $this->aSymbol->clearAllReferences($deep);
+            }
             if ($this->aAuthyGroup instanceof Persistent) {
               $this->aAuthyGroup->clearAllReferences($deep);
             }
@@ -2810,6 +2950,7 @@ abstract class BaseAsset extends BaseObject implements Persistent
         }
         $this->collTrades = null;
         $this->aToken = null;
+        $this->aSymbol = null;
         $this->aAuthyGroup = null;
         $this->aAuthyRelatedByIdCreation = null;
         $this->aAuthyRelatedByIdModification = null;

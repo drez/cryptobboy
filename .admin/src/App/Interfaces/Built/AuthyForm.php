@@ -1552,7 +1552,7 @@ $('.cntOnglet').parent().tabs();
             url:'".$this->virtualClassName."/AuthyGroupX/$IdAuthy',
             destUi:'".$uiTabsId."'
         });
-        
+       
         $('#cntAuthyChild .js-select-label').SelectBox();
 
         {$orderReadyJs}
@@ -1845,7 +1845,7 @@ $('.cntOnglet').parent().tabs();
             url:'".$this->virtualClassName."/AuthyLog/$IdAuthy',
             destUi:'".$uiTabsId."'
         });
-        
+       
         $('#cntAuthyChild .js-select-label').SelectBox();
 
         {$orderReadyJs}

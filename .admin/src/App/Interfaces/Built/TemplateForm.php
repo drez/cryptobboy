@@ -1275,7 +1275,7 @@ $(function(){
             url:'".$this->virtualClassName."/TemplateFile/$IdTemplate',
             destUi:'".$uiTabsId."'
         });
-        
+       
         $('#cntTemplateChild .js-select-label').SelectBox();
 
         {$orderReadyJs}

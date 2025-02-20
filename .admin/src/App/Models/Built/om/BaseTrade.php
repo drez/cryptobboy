@@ -82,12 +82,6 @@ abstract class BaseTrade extends BaseObject implements Persistent
     protected $id_asset;
 
     /**
-     * The value for the qty field.
-     * @var        string
-     */
-    protected $qty;
-
-    /**
      * The value for the id_symbol field.
      * @var        int
      */
@@ -98,6 +92,12 @@ abstract class BaseTrade extends BaseObject implements Persistent
      * @var        string
      */
     protected $date;
+
+    /**
+     * The value for the qty field.
+     * @var        string
+     */
+    protected $qty;
 
     /**
      * The value for the gross_usd field.
@@ -266,20 +266,8 @@ abstract class BaseTrade extends BaseObject implements Persistent
 
     /**
      * @Field()
-     * Get the [qty] column value.
-     * Qty
-     * @return string
-     */
-    public function getQty()
-    {
-
-        return $this->qty;
-    }
-
-    /**
-     * @Field()
      * Get the [id_symbol] column value.
-     * Symbol
+     * Trading pair
      * @return int
      */
     public function getIdSymbol()
@@ -327,6 +315,18 @@ abstract class BaseTrade extends BaseObject implements Persistent
 
         return $dt->format($format);
 
+    }
+
+    /**
+     * @Field()
+     * Get the [qty] column value.
+     * Qty
+     * @return string
+     */
+    public function getQty()
+    {
+
+        return $this->qty;
     }
 
     /**
@@ -593,29 +593,8 @@ abstract class BaseTrade extends BaseObject implements Persistent
     } // setIdAsset()
 
     /**
-     * Set the value of [qty] column.
-     * Qty
-     * @param  string $v new value
-     * @return Trade The current object (for fluent API support)
-     */
-    public function setQty($v)
-    {
-        if ($v !== null && is_numeric($v)) {
-            $v = (string) $v;
-        }
-
-        if ($this->qty !== $v) {
-            $this->qty = $v;
-            $this->modifiedColumns[] = TradePeer::QTY;
-        }
-
-
-        return $this;
-    } // setQty()
-
-    /**
      * Set the value of [id_symbol] column.
-     * Symbol
+     * Trading pair
      * @param  int $v new value
      * @return Trade The current object (for fluent API support)
      */
@@ -660,6 +639,27 @@ abstract class BaseTrade extends BaseObject implements Persistent
 
         return $this;
     } // setDate()
+
+    /**
+     * Set the value of [qty] column.
+     * Qty
+     * @param  string $v new value
+     * @return Trade The current object (for fluent API support)
+     */
+    public function setQty($v)
+    {
+        if ($v !== null && is_numeric($v)) {
+            $v = (string) $v;
+        }
+
+        if ($this->qty !== $v) {
+            $this->qty = $v;
+            $this->modifiedColumns[] = TradePeer::QTY;
+        }
+
+
+        return $this;
+    } // setQty()
 
     /**
      * Set the value of [gross_usd] column.
@@ -906,9 +906,9 @@ abstract class BaseTrade extends BaseObject implements Persistent
             $this->type = ($row[$startcol + 1] !== null) ? (int) $row[$startcol + 1] : null;
             $this->id_exchange = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
             $this->id_asset = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
-            $this->qty = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-            $this->id_symbol = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-            $this->date = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
+            $this->id_symbol = ($row[$startcol + 4] !== null) ? (int) $row[$startcol + 4] : null;
+            $this->date = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+            $this->qty = ($row[$startcol + 6] !== null) ? (string) $row[$startcol + 6] : null;
             $this->gross_usd = ($row[$startcol + 7] !== null) ? (string) $row[$startcol + 7] : null;
             $this->commission = ($row[$startcol + 8] !== null) ? (string) $row[$startcol + 8] : null;
             $this->commission_asset = ($row[$startcol + 9] !== null) ? (int) $row[$startcol + 9] : null;
@@ -1253,14 +1253,14 @@ abstract class BaseTrade extends BaseObject implements Persistent
         if ($this->isColumnModified(TradePeer::ID_ASSET)) {
             $modifiedColumns[':p' . $index++]  = '`id_asset`';
         }
-        if ($this->isColumnModified(TradePeer::QTY)) {
-            $modifiedColumns[':p' . $index++]  = '`qty`';
-        }
         if ($this->isColumnModified(TradePeer::ID_SYMBOL)) {
             $modifiedColumns[':p' . $index++]  = '`id_symbol`';
         }
         if ($this->isColumnModified(TradePeer::DATE)) {
             $modifiedColumns[':p' . $index++]  = '`date`';
+        }
+        if ($this->isColumnModified(TradePeer::QTY)) {
+            $modifiedColumns[':p' . $index++]  = '`qty`';
         }
         if ($this->isColumnModified(TradePeer::GROSS_USD)) {
             $modifiedColumns[':p' . $index++]  = '`gross_usd`';
@@ -1312,14 +1312,14 @@ abstract class BaseTrade extends BaseObject implements Persistent
                     case '`id_asset`':
                         $stmt->bindValue($identifier, $this->id_asset, PDO::PARAM_INT);
                         break;
-                    case '`qty`':
-                        $stmt->bindValue($identifier, $this->qty, PDO::PARAM_STR);
-                        break;
                     case '`id_symbol`':
                         $stmt->bindValue($identifier, $this->id_symbol, PDO::PARAM_INT);
                         break;
                     case '`date`':
                         $stmt->bindValue($identifier, $this->date, PDO::PARAM_STR);
+                        break;
+                    case '`qty`':
+                        $stmt->bindValue($identifier, $this->qty, PDO::PARAM_STR);
                         break;
                     case '`gross_usd`':
                         $stmt->bindValue($identifier, $this->gross_usd, PDO::PARAM_STR);
@@ -1547,9 +1547,9 @@ abstract class BaseTrade extends BaseObject implements Persistent
             $keys[1] => $this->getType(),
             $keys[2] => $this->getIdExchange(),
             $keys[3] => $this->getIdAsset(),
-            $keys[4] => $this->getQty(),
-            $keys[5] => $this->getIdSymbol(),
-            $keys[6] => $this->getDate(),
+            $keys[4] => $this->getIdSymbol(),
+            $keys[5] => $this->getDate(),
+            $keys[6] => $this->getQty(),
             $keys[7] => $this->getGrossUsd(),
             $keys[8] => $this->getCommission(),
             $keys[9] => $this->getCommissionAsset(),
@@ -1638,13 +1638,13 @@ abstract class BaseTrade extends BaseObject implements Persistent
                 $this->setIdAsset($value);
                 break;
             case 4:
-                $this->setQty($value);
-                break;
-            case 5:
                 $this->setIdSymbol($value);
                 break;
-            case 6:
+            case 5:
                 $this->setDate($value);
+                break;
+            case 6:
+                $this->setQty($value);
                 break;
             case 7:
                 $this->setGrossUsd($value);
@@ -1701,9 +1701,9 @@ abstract class BaseTrade extends BaseObject implements Persistent
         if (array_key_exists($keys[1], $arr)) $this->setType($arr[$keys[1]]);
         if (array_key_exists($keys[2], $arr)) $this->setIdExchange($arr[$keys[2]]);
         if (array_key_exists($keys[3], $arr)) $this->setIdAsset($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setQty($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setIdSymbol($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setDate($arr[$keys[6]]);
+        if (array_key_exists($keys[4], $arr)) $this->setIdSymbol($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setDate($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setQty($arr[$keys[6]]);
         if (array_key_exists($keys[7], $arr)) $this->setGrossUsd($arr[$keys[7]]);
         if (array_key_exists($keys[8], $arr)) $this->setCommission($arr[$keys[8]]);
         if (array_key_exists($keys[9], $arr)) $this->setCommissionAsset($arr[$keys[9]]);
@@ -1728,9 +1728,9 @@ abstract class BaseTrade extends BaseObject implements Persistent
         if ($this->isColumnModified(TradePeer::TYPE)) $criteria->add(TradePeer::TYPE, $this->type);
         if ($this->isColumnModified(TradePeer::ID_EXCHANGE)) $criteria->add(TradePeer::ID_EXCHANGE, $this->id_exchange);
         if ($this->isColumnModified(TradePeer::ID_ASSET)) $criteria->add(TradePeer::ID_ASSET, $this->id_asset);
-        if ($this->isColumnModified(TradePeer::QTY)) $criteria->add(TradePeer::QTY, $this->qty);
         if ($this->isColumnModified(TradePeer::ID_SYMBOL)) $criteria->add(TradePeer::ID_SYMBOL, $this->id_symbol);
         if ($this->isColumnModified(TradePeer::DATE)) $criteria->add(TradePeer::DATE, $this->date);
+        if ($this->isColumnModified(TradePeer::QTY)) $criteria->add(TradePeer::QTY, $this->qty);
         if ($this->isColumnModified(TradePeer::GROSS_USD)) $criteria->add(TradePeer::GROSS_USD, $this->gross_usd);
         if ($this->isColumnModified(TradePeer::COMMISSION)) $criteria->add(TradePeer::COMMISSION, $this->commission);
         if ($this->isColumnModified(TradePeer::COMMISSION_ASSET)) $criteria->add(TradePeer::COMMISSION_ASSET, $this->commission_asset);
@@ -1806,9 +1806,9 @@ abstract class BaseTrade extends BaseObject implements Persistent
         $copyObj->setType($this->getType());
         $copyObj->setIdExchange($this->getIdExchange());
         $copyObj->setIdAsset($this->getIdAsset());
-        $copyObj->setQty($this->getQty());
         $copyObj->setIdSymbol($this->getIdSymbol());
         $copyObj->setDate($this->getDate());
+        $copyObj->setQty($this->getQty());
         $copyObj->setGrossUsd($this->getGrossUsd());
         $copyObj->setCommission($this->getCommission());
         $copyObj->setCommissionAsset($this->getCommissionAsset());
@@ -2249,9 +2249,9 @@ abstract class BaseTrade extends BaseObject implements Persistent
         $this->type = null;
         $this->id_exchange = null;
         $this->id_asset = null;
-        $this->qty = null;
         $this->id_symbol = null;
         $this->date = null;
+        $this->qty = null;
         $this->gross_usd = null;
         $this->commission = null;
         $this->commission_asset = null;

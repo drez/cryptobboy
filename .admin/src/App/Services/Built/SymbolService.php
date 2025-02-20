@@ -171,6 +171,9 @@ class SymbolService
         $obj = SymbolQuery::create()->findPk(json_decode($this->request['i']));
 
 
+            if($obj->countAssets()){
+                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Asset'. ", '', true,'Symbol'); die( $error['onReadyJs'] );
+            }
             if($obj->countTrades()){
                 $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Trade'. ", '', true,'Symbol'); die( $error['onReadyJs'] );
             }

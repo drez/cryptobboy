@@ -13,7 +13,8 @@
                     "afterSave":[],
                     "beforeList":["trade", "asset"],
                     "child.beforeList":["asset.trade", "template.file"],
-                    "child.beforeListTr":["asset.trade"]
+                    "child.beforeListTr":["asset.trade"],
+                    "selectboxData":["asset.id_symbol"]
                 },
         with_api:true,
 

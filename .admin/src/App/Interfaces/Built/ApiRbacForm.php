@@ -1292,7 +1292,7 @@ $this->fields['ApiRbac']['DateCreation']['html']
             url:'".$this->virtualClassName."/ApiLog/$IdApiRbac',
             destUi:'".$uiTabsId."'
         });
-        
+       
         $('#cntApiRbacChild .js-select-label').SelectBox();
 
         {$orderReadyJs}

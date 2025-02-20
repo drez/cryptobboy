@@ -1898,6 +1898,23 @@ abstract class BaseToken extends BaseObject implements Persistent
      * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
      * @return PropelObjectCollection|Asset[] List of Asset objects
      */
+    public function getAssetsJoinSymbol($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = AssetQuery::create(null, $criteria);
+        $query->joinWith('Symbol', $join_behavior);
+
+        return $this->getAssets($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Asset[] List of Asset objects
+     */
     public function getAssetsJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
     {
         $query = AssetQuery::create(null, $criteria);

@@ -100,6 +100,7 @@ CREATE TABLE `asset`
     `staked_token` DECIMAL(16, 9) COMMENT 'Staked',
     `total_token` DECIMAL(16, 9) COMMENT 'Total',
     `usd_value` DECIMAL(12, 2) COMMENT 'Value USD',
+    `id_symbol` INTEGER(11) COMMENT 'Trading pair',
     `avg_price` DECIMAL(14, 4) COMMENT 'Avg. price',
     `profit` DECIMAL(12, 2) COMMENT 'Profit',
     `locked_token` DECIMAL(16, 9) COMMENT 'Locked',
@@ -112,19 +113,23 @@ CREATE TABLE `asset`
     `id_modification` INTEGER,
     PRIMARY KEY (`id_asset`),
     INDEX `asset_FI_1` (`id_token`),
-    INDEX `asset_FI_2` (`id_group_creation`),
-    INDEX `asset_FI_3` (`id_creation`),
-    INDEX `asset_FI_4` (`id_modification`),
+    INDEX `asset_FI_2` (`id_symbol`),
+    INDEX `asset_FI_3` (`id_group_creation`),
+    INDEX `asset_FI_4` (`id_creation`),
+    INDEX `asset_FI_5` (`id_modification`),
     CONSTRAINT `asset_FK_1`
         FOREIGN KEY (`id_token`)
         REFERENCES `token` (`id_token`),
     CONSTRAINT `asset_FK_2`
+        FOREIGN KEY (`id_symbol`)
+        REFERENCES `symbol` (`id_symbol`),
+    CONSTRAINT `asset_FK_3`
         FOREIGN KEY (`id_group_creation`)
         REFERENCES `authy_group` (`id_authy_group`),
-    CONSTRAINT `asset_FK_3`
+    CONSTRAINT `asset_FK_4`
         FOREIGN KEY (`id_creation`)
         REFERENCES `authy` (`id_authy`),
-    CONSTRAINT `asset_FK_4`
+    CONSTRAINT `asset_FK_5`
         FOREIGN KEY (`id_modification`)
         REFERENCES `authy` (`id_authy`)
 ) ENGINE=InnoDB COMMENT='Asset';
@@ -189,9 +194,9 @@ CREATE TABLE `trade`
     `type` TINYINT NOT NULL COMMENT 'State',
     `id_exchange` INTEGER(11) NOT NULL COMMENT 'Exchange',
     `id_asset` INTEGER(11) NOT NULL,
-    `qty` DECIMAL(16, 9) COMMENT 'Qty',
-    `id_symbol` INTEGER(11) NOT NULL COMMENT 'Symbol',
+    `id_symbol` INTEGER(11) NOT NULL COMMENT 'Trading pair',
     `date` DATETIME COMMENT 'Date',
+    `qty` DECIMAL(16, 9) COMMENT 'Qty',
     `gross_usd` DECIMAL(16, 9) COMMENT 'Price',
     `commission` DECIMAL(16, 9) COMMENT 'Commission',
     `commission_asset` INTEGER(11) COMMENT 'commissionAsset',

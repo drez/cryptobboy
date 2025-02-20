@@ -15,6 +15,8 @@ use \PropelDateTime;
 use \PropelException;
 use \PropelObjectCollection;
 use \PropelPDO;
+use App\Asset;
+use App\AssetQuery;
 use App\Authy;
 use App\AuthyGroup;
 use App\AuthyGroupQuery;
@@ -124,6 +126,12 @@ abstract class BaseSymbol extends BaseObject implements Persistent
     protected $aAuthyRelatedByIdModification;
 
     /**
+     * @var        PropelObjectCollection|Asset[] Collection to store aggregation of Asset objects.
+     */
+    protected $collAssets;
+    protected $collAssetsPartial;
+
+    /**
      * @var        PropelObjectCollection|Trade[] Collection to store aggregation of Trade objects.
      */
     protected $collTrades;
@@ -148,6 +156,12 @@ abstract class BaseSymbol extends BaseObject implements Persistent
      * @var        boolean
      */
     protected $alreadyInClearAllReferencesDeep = false;
+
+    /**
+     * An array of objects scheduled for deletion.
+     * @var		PropelObjectCollection
+     */
+    protected $assetsScheduledForDeletion = null;
 
     /**
      * An array of objects scheduled for deletion.
@@ -624,6 +638,8 @@ abstract class BaseSymbol extends BaseObject implements Persistent
             $this->aAuthyGroup = null;
             $this->aAuthyRelatedByIdCreation = null;
             $this->aAuthyRelatedByIdModification = null;
+            $this->collAssets = null;
+
             $this->collTrades = null;
 
         } // if (deep)
@@ -801,6 +817,24 @@ abstract class BaseSymbol extends BaseObject implements Persistent
                 }
                 $affectedRows += 1;
                 $this->resetModified();
+            }
+
+            if ($this->assetsScheduledForDeletion !== null) {
+                if (!$this->assetsScheduledForDeletion->isEmpty()) {
+                    foreach ($this->assetsScheduledForDeletion as $asset) {
+                        // need to save related object because we set the relation to null
+                        $asset->save($con);
+                    }
+                    $this->assetsScheduledForDeletion = null;
+                }
+            }
+
+            if ($this->collAssets !== null) {
+                foreach ($this->collAssets as $referrerFK) {
+                    if (!$referrerFK->isDeleted() && ($referrerFK->isNew() || $referrerFK->isModified())) {
+                        $affectedRows += $referrerFK->save($con);
+                    }
+                }
             }
 
             if ($this->tradesScheduledForDeletion !== null) {
@@ -1034,6 +1068,14 @@ abstract class BaseSymbol extends BaseObject implements Persistent
             }
 
 
+                if ($this->collAssets !== null) {
+                    foreach ($this->collAssets as $referrerFK) {
+                        if (!$referrerFK->validate($columns)) {
+                            $failureMap = array_merge($failureMap, $referrerFK->getValidationFailures());
+                        }
+                    }
+                }
+
                 if ($this->collTrades !== null) {
                     foreach ($this->collTrades as $referrerFK) {
                         if (!$referrerFK->validate($columns)) {
@@ -1116,6 +1158,9 @@ abstract class BaseSymbol extends BaseObject implements Persistent
             }
             if (null !== $this->aAuthyRelatedByIdModification) {
                 $result['AuthyRelatedByIdModification'] = $this->aAuthyRelatedByIdModification->toArray($keyType, $includeLazyLoadColumns,  $alreadyDumpedObjects, true);
+            }
+            if (null !== $this->collAssets) {
+                $result['Assets'] = $this->collAssets->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
             }
             if (null !== $this->collTrades) {
                 $result['Trades'] = $this->collTrades->toArray(null, true, $keyType, $includeLazyLoadColumns, $alreadyDumpedObjects);
@@ -1306,6 +1351,12 @@ abstract class BaseSymbol extends BaseObject implements Persistent
             $copyObj->setNew(false);
             // store object hash to prevent cycle
             $this->startCopy = true;
+
+            foreach ($this->getAssets() as $relObj) {
+                if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
+                    $copyObj->addAsset($relObj->copy($deepCopy));
+                }
+            }
 
             foreach ($this->getTrades() as $relObj) {
                 if ($relObj !== $this) {  // ensure that we don't try to copy a reference to ourselves
@@ -1582,9 +1633,305 @@ abstract class BaseSymbol extends BaseObject implements Persistent
      */
     public function initRelation($relationName)
     {
+        if ('Asset' == $relationName) {
+            $this->initAssets();
+        }
         if ('Trade' == $relationName) {
             $this->initTrades();
         }
+    }
+
+    /**
+     * Clears out the collAssets collection
+     *
+     * This does not modify the database; however, it will remove any associated objects, causing
+     * them to be refetched by subsequent calls to accessor method.
+     *
+     * @return Symbol The current object (for fluent API support)
+     * @see        addAssets()
+     */
+    public function clearAssets()
+    {
+        $this->collAssets = null; // important to set this to null since that means it is uninitialized
+        $this->collAssetsPartial = null;
+
+        return $this;
+    }
+
+    /**
+     * reset is the collAssets collection loaded partially
+     *
+     * @return void
+     */
+    public function resetPartialAssets($v = true)
+    {
+        $this->collAssetsPartial = $v;
+    }
+
+    /**
+     * Initializes the collAssets collection.
+     *
+     * By default this just sets the collAssets collection to an empty array (like clearcollAssets());
+     * however, you may wish to override this method in your stub class to provide setting appropriate
+     * to your application -- for example, setting the initial array to the values stored in database.
+     *
+     * @param boolean $overrideExisting If set to true, the method call initializes
+     *                                        the collection even if it is not empty
+     *
+     * @return void
+     */
+    public function initAssets($overrideExisting = true)
+    {
+        if (null !== $this->collAssets && !$overrideExisting) {
+            return;
+        }
+        $this->collAssets = new PropelObjectCollection();
+        $this->collAssets->setModel('Asset');
+    }
+
+    /**
+     * Gets an array of Asset objects which contain a foreign key that references this object.
+     *
+     * If the $criteria is not null, it is used to always fetch the results from the database.
+     * Otherwise the results are fetched from the database the first time, then cached.
+     * Next time the same method is called without $criteria, the cached collection is returned.
+     * If this Symbol is new, it will return
+     * an empty collection or the current collection; the criteria is ignored on a new object.
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @return PropelObjectCollection|Asset[] List of Asset objects
+     * @throws PropelException
+     */
+    public function getAssets($criteria = null, PropelPDO $con = null)
+    {
+        $partial = $this->collAssetsPartial && !$this->isNew();
+        if (null === $this->collAssets || null !== $criteria  || $partial) {
+            if ($this->isNew() && null === $this->collAssets) {
+                // return empty collection
+                $this->initAssets();
+            } else {
+                $collAssets = AssetQuery::create(null, $criteria)
+                    ->filterBySymbol($this)
+                    ->find($con);
+                if (null !== $criteria) {
+                    if (false !== $this->collAssetsPartial && count($collAssets)) {
+                      $this->initAssets(false);
+
+                      foreach ($collAssets as $obj) {
+                        if (false == $this->collAssets->contains($obj)) {
+                          $this->collAssets->append($obj);
+                        }
+                      }
+
+                      $this->collAssetsPartial = true;
+                    }
+
+                    $collAssets->getInternalIterator()->rewind();
+
+                    return $collAssets;
+                }
+
+                if ($partial && $this->collAssets) {
+                    foreach ($this->collAssets as $obj) {
+                        if ($obj->isNew()) {
+                            $collAssets[] = $obj;
+                        }
+                    }
+                }
+
+                $this->collAssets = $collAssets;
+                $this->collAssetsPartial = false;
+            }
+        }
+
+        return $this->collAssets;
+    }
+
+    /**
+     * Sets a collection of Asset objects related by a one-to-many relationship
+     * to the current object.
+     * It will also schedule objects for deletion based on a diff between old objects (aka persisted)
+     * and new objects from the given Propel collection.
+     *
+     * @param PropelCollection $assets A Propel collection.
+     * @param PropelPDO $con Optional connection object
+     * @return Symbol The current object (for fluent API support)
+     */
+    public function setAssets(PropelCollection $assets, PropelPDO $con = null)
+    {
+        $assetsToDelete = $this->getAssets(new Criteria(), $con)->diff($assets);
+
+
+        $this->assetsScheduledForDeletion = $assetsToDelete;
+
+        foreach ($assetsToDelete as $assetRemoved) {
+            $assetRemoved->setSymbol(null);
+        }
+
+        $this->collAssets = null;
+        foreach ($assets as $asset) {
+            $this->addAsset($asset);
+        }
+
+        $this->collAssets = $assets;
+        $this->collAssetsPartial = false;
+
+        return $this;
+    }
+
+    /**
+     * Returns the number of related Asset objects.
+     *
+     * @param Criteria $criteria
+     * @param boolean $distinct
+     * @param PropelPDO $con
+     * @return int             Count of related Asset objects.
+     * @throws PropelException
+     */
+    public function countAssets(Criteria $criteria = null, $distinct = false, PropelPDO $con = null)
+    {
+        $partial = $this->collAssetsPartial && !$this->isNew();
+        if (null === $this->collAssets || null !== $criteria || $partial) {
+            if ($this->isNew() && null === $this->collAssets) {
+                return 0;
+            }
+
+            if ($partial && !$criteria) {
+                return count($this->getAssets());
+            }
+            $query = AssetQuery::create(null, $criteria);
+            if ($distinct) {
+                $query->distinct();
+            }
+
+            return $query
+                ->filterBySymbol($this)
+                ->count($con);
+        }
+
+        return count($this->collAssets);
+    }
+
+    /**
+     * Method called to associate a Asset object to this object
+     * through the Asset foreign key attribute.
+     *
+     * @param    Asset $l Asset
+     * @return Symbol The current object (for fluent API support)
+     */
+    public function addAsset(Asset $l)
+    {
+        if ($this->collAssets === null) {
+            $this->initAssets();
+            $this->collAssetsPartial = true;
+        }
+
+        if (!in_array($l, $this->collAssets->getArrayCopy(), true)) { // only add it if the **same** object is not already associated
+            $this->doAddAsset($l);
+
+            if ($this->assetsScheduledForDeletion and $this->assetsScheduledForDeletion->contains($l)) {
+                $this->assetsScheduledForDeletion->remove($this->assetsScheduledForDeletion->search($l));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param	Asset $asset The asset object to add.
+     */
+    protected function doAddAsset($asset)
+    {
+        $this->collAssets[]= $asset;
+        $asset->setSymbol($this);
+    }
+
+    /**
+     * @param	Asset $asset The asset object to remove.
+     * @return Symbol The current object (for fluent API support)
+     */
+    public function removeAsset($asset)
+    {
+        if ($this->getAssets()->contains($asset)) {
+            $this->collAssets->remove($this->collAssets->search($asset));
+            if (null === $this->assetsScheduledForDeletion) {
+                $this->assetsScheduledForDeletion = clone $this->collAssets;
+                $this->assetsScheduledForDeletion->clear();
+            }
+            $this->assetsScheduledForDeletion[]= $asset;
+            $asset->setSymbol(null);
+        }
+
+        return $this;
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Asset[] List of Asset objects
+     */
+    public function getAssetsJoinToken($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = AssetQuery::create(null, $criteria);
+        $query->joinWith('Token', $join_behavior);
+
+        return $this->getAssets($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Asset[] List of Asset objects
+     */
+    public function getAssetsJoinAuthyGroup($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = AssetQuery::create(null, $criteria);
+        $query->joinWith('AuthyGroup', $join_behavior);
+
+        return $this->getAssets($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Asset[] List of Asset objects
+     */
+    public function getAssetsJoinAuthyRelatedByIdCreation($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = AssetQuery::create(null, $criteria);
+        $query->joinWith('AuthyRelatedByIdCreation', $join_behavior);
+
+        return $this->getAssets($query, $con);
+    }
+
+
+    /**
+
+     *
+     * @param Criteria $criteria optional Criteria object to narrow the query
+     * @param PropelPDO $con optional connection object
+     * @param string $join_behavior optional join type to use (defaults to Criteria::LEFT_JOIN)
+     * @return PropelObjectCollection|Asset[] List of Asset objects
+     */
+    public function getAssetsJoinAuthyRelatedByIdModification($criteria = null, $con = null, $join_behavior = Criteria::LEFT_JOIN)
+    {
+        $query = AssetQuery::create(null, $criteria);
+        $query->joinWith('AuthyRelatedByIdModification', $join_behavior);
+
+        return $this->getAssets($query, $con);
     }
 
     /**
@@ -1949,6 +2296,11 @@ abstract class BaseSymbol extends BaseObject implements Persistent
     {
         if ($deep && !$this->alreadyInClearAllReferencesDeep) {
             $this->alreadyInClearAllReferencesDeep = true;
+            if ($this->collAssets) {
+                foreach ($this->collAssets as $o) {
+                    $o->clearAllReferences($deep);
+                }
+            }
             if ($this->collTrades) {
                 foreach ($this->collTrades as $o) {
                     $o->clearAllReferences($deep);
@@ -1970,6 +2322,10 @@ abstract class BaseSymbol extends BaseObject implements Persistent
             $this->alreadyInClearAllReferencesDeep = false;
         } // if ($deep)
 
+        if ($this->collAssets instanceof PropelCollection) {
+            $this->collAssets->clearIterator();
+        }
+        $this->collAssets = null;
         if ($this->collTrades instanceof PropelCollection) {
             $this->collTrades->clearIterator();
         }

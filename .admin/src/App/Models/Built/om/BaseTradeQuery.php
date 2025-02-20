@@ -31,9 +31,9 @@ use App\TradeQuery;
  * @method TradeQuery orderByType($order = Criteria::ASC) Order by the type column
  * @method TradeQuery orderByIdExchange($order = Criteria::ASC) Order by the id_exchange column
  * @method TradeQuery orderByIdAsset($order = Criteria::ASC) Order by the id_asset column
- * @method TradeQuery orderByQty($order = Criteria::ASC) Order by the qty column
  * @method TradeQuery orderByIdSymbol($order = Criteria::ASC) Order by the id_symbol column
  * @method TradeQuery orderByDate($order = Criteria::ASC) Order by the date column
+ * @method TradeQuery orderByQty($order = Criteria::ASC) Order by the qty column
  * @method TradeQuery orderByGrossUsd($order = Criteria::ASC) Order by the gross_usd column
  * @method TradeQuery orderByCommission($order = Criteria::ASC) Order by the commission column
  * @method TradeQuery orderByCommissionAsset($order = Criteria::ASC) Order by the commission_asset column
@@ -48,9 +48,9 @@ use App\TradeQuery;
  * @method TradeQuery groupByType() Group by the type column
  * @method TradeQuery groupByIdExchange() Group by the id_exchange column
  * @method TradeQuery groupByIdAsset() Group by the id_asset column
- * @method TradeQuery groupByQty() Group by the qty column
  * @method TradeQuery groupByIdSymbol() Group by the id_symbol column
  * @method TradeQuery groupByDate() Group by the date column
+ * @method TradeQuery groupByQty() Group by the qty column
  * @method TradeQuery groupByGrossUsd() Group by the gross_usd column
  * @method TradeQuery groupByCommission() Group by the commission column
  * @method TradeQuery groupByCommissionAsset() Group by the commission_asset column
@@ -99,9 +99,9 @@ use App\TradeQuery;
  * @method Trade findOneByType(int $type) Return the first Trade filtered by the type column
  * @method Trade findOneByIdExchange(int $id_exchange) Return the first Trade filtered by the id_exchange column
  * @method Trade findOneByIdAsset(int $id_asset) Return the first Trade filtered by the id_asset column
- * @method Trade findOneByQty(string $qty) Return the first Trade filtered by the qty column
  * @method Trade findOneByIdSymbol(int $id_symbol) Return the first Trade filtered by the id_symbol column
  * @method Trade findOneByDate(string $date) Return the first Trade filtered by the date column
+ * @method Trade findOneByQty(string $qty) Return the first Trade filtered by the qty column
  * @method Trade findOneByGrossUsd(string $gross_usd) Return the first Trade filtered by the gross_usd column
  * @method Trade findOneByCommission(string $commission) Return the first Trade filtered by the commission column
  * @method Trade findOneByCommissionAsset(int $commission_asset) Return the first Trade filtered by the commission_asset column
@@ -116,9 +116,9 @@ use App\TradeQuery;
  * @method array findByType(int $type) Return Trade objects filtered by the type column
  * @method array findByIdExchange(int $id_exchange) Return Trade objects filtered by the id_exchange column
  * @method array findByIdAsset(int $id_asset) Return Trade objects filtered by the id_asset column
- * @method array findByQty(string $qty) Return Trade objects filtered by the qty column
  * @method array findByIdSymbol(int $id_symbol) Return Trade objects filtered by the id_symbol column
  * @method array findByDate(string $date) Return Trade objects filtered by the date column
+ * @method array findByQty(string $qty) Return Trade objects filtered by the qty column
  * @method array findByGrossUsd(string $gross_usd) Return Trade objects filtered by the gross_usd column
  * @method array findByCommission(string $commission) Return Trade objects filtered by the commission column
  * @method array findByCommissionAsset(int $commission_asset) Return Trade objects filtered by the commission_asset column
@@ -236,7 +236,7 @@ abstract class BaseTradeQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_trade`, `type`, `id_exchange`, `id_asset`, `qty`, `id_symbol`, `date`, `gross_usd`, `commission`, `commission_asset`, `order_id`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `trade` WHERE `id_trade` = :p0';
+        $sql = 'SELECT `id_trade`, `type`, `id_exchange`, `id_asset`, `id_symbol`, `date`, `qty`, `gross_usd`, `commission`, `commission_asset`, `order_id`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `trade` WHERE `id_trade` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -486,48 +486,6 @@ abstract class BaseTradeQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the qty column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByQty(1234); // WHERE qty = 1234
-     * $query->filterByQty(array(12, 34)); // WHERE qty IN (12, 34)
-     * $query->filterByQty(array('min' => 12)); // WHERE qty >= 12
-     * $query->filterByQty(array('max' => 12)); // WHERE qty <= 12
-     * </code>
-     *
-     * @param     mixed $qty The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return TradeQuery The current query, for fluid interface
-     */
-    public function filterByQty($qty = null, $comparison = null)
-    {
-        if (is_array($qty)) {
-            $useMinMax = false;
-            if (isset($qty['min'])) {
-                $this->addUsingAlias(TradePeer::QTY, $qty['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($qty['max'])) {
-                $this->addUsingAlias(TradePeer::QTY, $qty['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(TradePeer::QTY, $qty, $comparison);
-    }
-
-    /**
      * Filter the query on the id_symbol column
      *
      * Example usage:
@@ -612,6 +570,48 @@ abstract class BaseTradeQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(TradePeer::DATE, $date, $comparison);
+    }
+
+    /**
+     * Filter the query on the qty column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByQty(1234); // WHERE qty = 1234
+     * $query->filterByQty(array(12, 34)); // WHERE qty IN (12, 34)
+     * $query->filterByQty(array('min' => 12)); // WHERE qty >= 12
+     * $query->filterByQty(array('max' => 12)); // WHERE qty <= 12
+     * </code>
+     *
+     * @param     mixed $qty The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return TradeQuery The current query, for fluid interface
+     */
+    public function filterByQty($qty = null, $comparison = null)
+    {
+        if (is_array($qty)) {
+            $useMinMax = false;
+            if (isset($qty['min'])) {
+                $this->addUsingAlias(TradePeer::QTY, $qty['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($qty['max'])) {
+                $this->addUsingAlias(TradePeer::QTY, $qty['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(TradePeer::QTY, $qty, $comparison);
     }
 
     /**

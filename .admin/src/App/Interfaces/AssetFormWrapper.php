@@ -39,9 +39,9 @@ class AssetFormWrapper extends AssetForm
         var last_value=0;
         let color='#000';
         const getTicker = () => {
-            const ticker = $('#IdToken_label').text();
+            const id_token = $('#formAsset #IdToken').val();
 
-            $.post('" . _SITE_URL . "Asset/getAsset/', {ui:'list', asset:ticker}, (data)=>{
+            $.post('" . _SITE_URL . "Asset/getAsset/', {ui:'list', id_token:id_token, id_symbol:$('#formAsset #IdSymbol').val()}, (data)=>{
                 if(data?.bids){
                     const value = Number(data?.bids).toString();
                     if(last_value > value){color='#c44100';}
@@ -51,7 +51,7 @@ class AssetFormWrapper extends AssetForm
                         $('#live_ticker').html(value).css('color', color); 
                     }else{
                         $('#divCntAsset .panel-heading').append(
-                            $('<div>').append( $('<div>').css('display', 'inline-block').css('padding-right', '10px').html(ticker+'/USDT') )
+                            $('<div>').append( $('<div>').css('display', 'inline-block').css('padding-right', '10px').html(data?.symbol) )
                             .append( $('<div>').css('display', 'inline-block').attr('id', 'live_ticker').css('color', color).html(value) )
                         );
                     }
@@ -62,10 +62,20 @@ class AssetFormWrapper extends AssetForm
         ";
 
         $this->hookFormReadyJs = "
-            getTicker();
-            $('#ogf_Asset [for=IdToken]').parent().hide();
-            $('#saveAsset').remove();
-        ".$swmessage;
+    getTicker();
+    $('#ogf_Asset [for=IdToken]').parent().hide();
+
+    /*$('[in=inIdSymbol] label').css('width', '85%');
+    $('[in=inIdSymbol]').append( $('<a>').attr('href', 'Javascript:;').attr('id', 'syncPair').html($('<i>').addClass('ri-restart-fill').css('display', 'inline-block')) );
+    $('#syncPair').click(()=>{
+         $('#syncTrades').click(()=>{
+            $.post('" . _SITE_URL . $this->virtualClassName . "/syncPair/".$dataObj->getToken()->getTicker()."?i=".$dataObj->getIdToken()."', {ui:'list'}, (data)=>{
+                $('#editPopupDialog').html(data);
+                $('#editPopupDialog').dialog('open');
+            });
+        });
+    });*/
+            ".$swmessage;
 
         $avgPrice = ['qty' => 0, 'amount' => 0];
         $Trades = TradeQuery::create()->filterByIdAsset($dataObj->getPrimaryKey())->orderByDate('ASC')->find();
@@ -88,6 +98,7 @@ class AssetFormWrapper extends AssetForm
                 }
                 $dataObj->setAvgPrice(($avgPrice['qty'] > 0)?$avg:$curavg);
                 $dataObj->setProfit($profit);
+                ($dataObj->getSymbol()->isNew())?$dataObj->setSymbol(null):'';
                 $dataObj->save();
             }
         
@@ -150,5 +161,9 @@ class AssetFormWrapper extends AssetForm
         if ($data->getType() == "Sell") {
             $altValue['Type'] = span($data->getType(), "style='color:#c44100;'");
         }
+    }
+
+    public function selectboxDataAsset_IdSymbol($pcDataO, $q, $override){
+
     }
 }

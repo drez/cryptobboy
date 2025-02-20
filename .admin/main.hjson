@@ -11,9 +11,10 @@
         "with_child_tables": ["trade", "asset_exchange"],
         "set_child_colunms":{"id_token":["ticker"]},
         "add_tab_columns": {"Other":"locked_token"},
-        "set_list_hide_columns":["locked_token", "freeze_token"],
-        "set_readonly_columns":["id_token", "free_token", "staked_token", "total_token", "usd_value",
-         "locked_token", "freeze_token", "last_sync", "avg_price", "profit"]
+        "set_list_hide_columns":["locked_token", "freeze_token", "id_symbol", "last_sync"],
+        "set_readonly_columns":[ "free_token", "staked_token", "total_token", "usd_value", 
+         "locked_token", "freeze_token", "last_sync", "avg_price", "profit", "last_sync"]
+        "set_selectbox_filters":{"id_symbol":[ ["id_token", "%obj%.id_token"]],}
 
         "id_asset()": ["primary()"],
         
@@ -22,6 +23,7 @@
         "staked_token('Staked')": ["decimal(16, 9)"],
         "total_token('Total')": ["decimal(16, 9)"],
         "usd_value('Value USD')": ["decimal(12, 2)"],
+        "id_symbol('Trading pair')": ["integer()","foreign(symbol)", "not-required", "default:null"],
         "avg_price('Avg. price')": ["decimal(14, 4)"],
         "profit('Profit')": ["decimal(12, 2)"],
 
@@ -63,15 +65,17 @@
           "Date after": [["date", "%val", "GE"]],
         },
         set_order_list_columns:[["date", "DESC"]],
-        "set_child_colunms":{"id_asset":["token.ticker"], commission_asset:["ticker"]}
+        "set_child_colunms":{"id_asset":["token.ticker"], commission_asset:["ticker"]},
+        "set_list_hide_columns":["commission", "commission_asset"],
 
         "id_trade()": ["primary()"],
         "type('State')": ["enum(Buy, Sell)",'required'],
         "id_exchange('Exchange')": ["integer()","foreign(exchange)"],
         "id_asset('')": ["integer()","foreign(asset)"],
-        "qty('Qty')": ["decimal(16, 9)"],
-        "id_symbol('Symbol')": ["integer()","foreign(symbol)"],
+        
+        "id_symbol('Trading pair')": ["integer()","foreign(symbol)"],
         "date('Date')": ["timestamp()"],
+        "qty('Qty')": ["decimal(16, 9)"],
         "gross_usd('Price')": ["decimal(16, 9)"],
         "commission('Commission')": ["decimal(16, 9)"],
         "commission_asset('commissionAsset')":  ["integer()","foreign(token)", 'default:null',"foreign:id_token", "not-required"],

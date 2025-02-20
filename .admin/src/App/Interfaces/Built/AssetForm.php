@@ -124,7 +124,9 @@ class AssetForm extends Asset
             $q::create()
                 
                 #required asset
-                ->leftJoinWith('Token');
+                ->leftJoinWith('Token')
+                #default
+                ->leftJoinWith('Symbol');
 
         if( isset($this->searchMs['IdToken']) ) {
             $criteria = \Criteria::IN;
@@ -141,7 +143,9 @@ class AssetForm extends Asset
                 $q::create()
                 
                 #required asset
-                ->leftJoinWith('Token');
+                ->leftJoinWith('Token')
+                #default
+                ->leftJoinWith('Symbol');
                 
             }
         }
@@ -199,7 +203,6 @@ class AssetForm extends Asset
 .th(_("Value USD"), " th='sorted' c='UsdValue' title='" . _('Value USD')."' ")
 .th(_("Avg. price"), " th='sorted' c='AvgPrice' title='" . _('Avg. price')."' ")
 .th(_("Profit"), " th='sorted' c='Profit' title='" . _('Profit')."' ")
-.th(_("Last sync"), " th='sorted' c='LastSync' title='" . _('Last sync')."' ")
 . $this->cCmoreColsHeader;
                 if(!$this->setReadOnly){
                     $trHead .= th('&nbsp;',' class="actionrow delete" ');
@@ -215,13 +218,15 @@ class AssetForm extends Asset
 
             case 'search':
                 
+        $this->arrayIdTokenOptions = $this->selectBoxAsset_IdToken($this, $emptyVar, $data);
+        $this->arrayIdSymbolOptions = $this->selectBoxAsset_IdSymbol($this, $emptyVar, $data);
                 $data = [];
             
 
             $trSearch = button(span(_("Show search")),'class="trigger-search button-link-blue"')
 
             .div(
-                form(div(input('text', 'IdToken', $this->searchMs['IdToken'], '  title="'._('Token').'" placeholder="'._('Token').'"',''),'','class="ac-search-item"').$this->hookListSearchTop
+                form(div(selectboxCustomArray('IdToken[]', $this->arrayIdTokenOptions, 'Token' , "v='ID_TOKEN'  s='d' class='select-label js-select-label' multiple size='1'  ", $this->searchMs['IdToken'], '', false), '', ' class="ac-search-item multiple-select"').$this->hookListSearchTop
                     .div(
                        button(span(_("Search")),'id="msAssetBt" title="'._('Search').'" class="icon search"')
                        .button(span(_("Clear")),' title="'._('Clear search').'" id="msAssetBtClear"')
@@ -274,6 +279,7 @@ class AssetForm extends Asset
   'StakedToken' => '',
   'TotalToken' => '',
   'UsdValue' => '',
+  'IdSymbol' => '',
   'AvgPrice' => '',
   'Profit' => '',
   'LockedToken' => '',
@@ -374,8 +380,7 @@ class AssetForm extends Asset
                 td(span((($altValue['TotalToken']) ? $altValue['TotalToken'] : str_replace(',', '.', $data->getTotalToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='TotalToken' class='right'  j='editAsset'") . 
                 td(span((($altValue['UsdValue']) ? $altValue['UsdValue'] : str_replace(',', '.', $data->getUsdValue())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='UsdValue' class='right'  j='editAsset'") . 
                 td(span((($altValue['AvgPrice']) ? $altValue['AvgPrice'] : str_replace(',', '.', $data->getAvgPrice())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='AvgPrice' class='right'  j='editAsset'") . 
-                td(span((($altValue['Profit']) ? $altValue['Profit'] : str_replace(',', '.', $data->getProfit())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Profit' class='right'  j='editAsset'") . 
-                td(span((($altValue['LastSync']) ? $altValue['LastSync'] : $data->getLastSync()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='LastSync' class=''  j='editAsset'") . $cCmoreCols.$actionCell
+                td(span((($altValue['Profit']) ? $altValue['Profit'] : str_replace(',', '.', $data->getProfit())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Profit' class='right'  j='editAsset'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -535,6 +540,8 @@ class AssetForm extends Asset
         $e->setTotalToken( ($data['TotalToken'] == '' ) ? null : $data['TotalToken']);
         //integer not required
         $e->setUsdValue( ($data['UsdValue'] == '' ) ? null : $data['UsdValue']);
+        //foreign
+        $e->setIdSymbol(( $data['IdSymbol'] == '' ) ? null : $data['IdSymbol']);
         //integer not required
         $e->setAvgPrice( ($data['AvgPrice'] == '' ) ? null : $data['AvgPrice']);
         //integer not required
@@ -581,6 +588,9 @@ class AssetForm extends Asset
         }
         if(isset($data['UsdValue'])){
             $e->setUsdValue( ($data['UsdValue'] == '' ) ? null : $data['UsdValue']);
+        }
+        if( isset($data['IdSymbol']) ){
+            $e->setIdSymbol(( $data['IdSymbol'] == '' ) ? null : $data['IdSymbol']);
         }
         if(isset($data['AvgPrice'])){
             $e->setAvgPrice( ($data['AvgPrice'] == '' ) ? null : $data['AvgPrice']);
@@ -662,6 +672,9 @@ class AssetForm extends Asset
                 case 'Token':
                     $data['IdToken'] = $data['ip'];
                     break;
+                case 'Symbol':
+                    $data['IdSymbol'] = $data['ip'];
+                    break;
                 case 'AuthyGroup':
                     $data['IdGroupCreation'] = $data['ip'];
                     break;
@@ -718,6 +731,8 @@ class AssetForm extends Asset
             
                 #required asset
                 ->leftJoinWith('Token')
+                #default
+                ->leftJoinWith('Symbol')
             ;
             
 
@@ -747,19 +762,23 @@ class AssetForm extends Asset
 
 
                                     ($dataObj->getToken())?'':$dataObj->setToken( new Token() );
+                                    ($dataObj->getSymbol())?'':$dataObj->setSymbol( new Symbol() );
 
         
+        $this->arrayIdTokenOptions = $this->selectBoxAsset_IdToken($this, $dataObj, $data);
+        $this->arrayIdSymbolOptions = $this->selectBoxAsset_IdSymbol($this, $dataObj, $data);
         
         
         
         
         
         
-$this->fields['Asset']['IdToken']['html'] = stdFieldRow(_("Token"), ($dataObj->getToken())?$dataObj->getToken()->getIdToken():'', 'IdToken', "", $this->commentsIdToken, $this->commentsIdToken_css, '', ' ', 'no');
+$this->fields['Asset']['IdToken']['html'] = stdFieldRow(_("Token"), selectboxCustomArray('IdToken', $this->arrayIdTokenOptions, "", "v='ID_TOKEN'  s='d'  val='".$dataObj->getIdToken()."'", $dataObj->getIdToken()), 'IdToken', "", $this->commentsIdToken, $this->commentsIdToken_css, '', ' ', 'no');
 $this->fields['Asset']['FreeToken']['html'] = stdFieldRow(_("Free"), input('text', 'FreeToken', $dataObj->getFreeToken(), "  placeholder='".str_replace("'","&#39;",_('Free'))."'  v='FREE_TOKEN' size='10' s='d' class='req'"), 'FreeToken', "", $this->commentsFreeToken, $this->commentsFreeToken_css, '', ' ', 'no');
 $this->fields['Asset']['StakedToken']['html'] = stdFieldRow(_("Staked"), input('text', 'StakedToken', $dataObj->getStakedToken(), "  placeholder='".str_replace("'","&#39;",_('Staked'))."'  v='STAKED_TOKEN' size='10' s='d' class=''"), 'StakedToken', "", $this->commentsStakedToken, $this->commentsStakedToken_css, '', ' ', 'no');
 $this->fields['Asset']['TotalToken']['html'] = stdFieldRow(_("Total"), input('text', 'TotalToken', $dataObj->getTotalToken(), "  placeholder='".str_replace("'","&#39;",_('Total'))."'  v='TOTAL_TOKEN' size='10' s='d' class=''"), 'TotalToken', "", $this->commentsTotalToken, $this->commentsTotalToken_css, '', ' ', 'no');
 $this->fields['Asset']['UsdValue']['html'] = stdFieldRow(_("Value USD"), input('text', 'UsdValue', $dataObj->getUsdValue(), "  placeholder='".str_replace("'","&#39;",_('Value USD'))."'  v='USD_VALUE' size='10' s='d' class=''"), 'UsdValue', "", $this->commentsUsdValue, $this->commentsUsdValue_css, '', ' ', 'no');
+$this->fields['Asset']['IdSymbol']['html'] = stdFieldRow(_("Trading pair"), selectboxCustomArray('IdSymbol', $this->arrayIdSymbolOptions, _('Trading pair'), "v='ID_SYMBOL'  s='d'  val='".$dataObj->getIdSymbol()."'", $dataObj->getIdSymbol()), 'IdSymbol', "", $this->commentsIdSymbol, $this->commentsIdSymbol_css, '', ' ', 'no');
 $this->fields['Asset']['AvgPrice']['html'] = stdFieldRow(_("Avg. price"), input('text', 'AvgPrice', $dataObj->getAvgPrice(), "  placeholder='".str_replace("'","&#39;",_('Avg. price'))."'  v='AVG_PRICE' size='10' s='d' class=''"), 'AvgPrice', "", $this->commentsAvgPrice, $this->commentsAvgPrice_css, '', ' ', 'no');
 $this->fields['Asset']['Profit']['html'] = stdFieldRow(_("Profit"), input('text', 'Profit', $dataObj->getProfit(), "  placeholder='".str_replace("'","&#39;",_('Profit'))."'  v='PROFIT' size='10' s='d' class=''"), 'Profit', "", $this->commentsProfit, $this->commentsProfit_css, '', ' ', 'no');
 $this->fields['Asset']['LockedToken']['html'] = stdFieldRow(_("Locked"), input('text', 'LockedToken', $dataObj->getLockedToken(), "  placeholder='".str_replace("'","&#39;",_('Locked'))."'  v='LOCKED_TOKEN' size='10' s='d' class=''"), 'LockedToken', "", $this->commentsLockedToken, $this->commentsLockedToken_css, '', ' ', 'no');
@@ -767,7 +786,7 @@ $this->fields['Asset']['FreezeToken']['html'] = stdFieldRow(_("Frozen"), input('
 $this->fields['Asset']['LastSync']['html'] = stdFieldRow(_("Last sync"), input('datetime-local', 'LastSync', $dataObj->getLastSync(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD hh:mm:ss' size='30'  s='d' class='' title='Last sync'"), 'LastSync', "", $this->commentsLastSync, $this->commentsLastSync_css, '', ' ', 'no');
 
 
-        $this->lockFormField(array(0=>'IdToken',1=>'FreeToken',2=>'StakedToken',3=>'TotalToken',4=>'UsdValue',5=>'LockedToken',6=>'FreezeToken',7=>'LastSync',8=>'AvgPrice',9=>'Profit',), $dataObj);
+        $this->lockFormField(array(0=>'FreeToken',1=>'StakedToken',2=>'TotalToken',3=>'UsdValue',4=>'LockedToken',5=>'FreezeToken',6=>'LastSync',7=>'AvgPrice',8=>'Profit',9=>'LastSync',), $dataObj);
 
         // Whole form read only
         if($this->setReadOnly == 'all' ) {
@@ -879,6 +898,7 @@ $this->fields['Asset']['IdToken']['html']
 .$this->fields['Asset']['StakedToken']['html']
 .$this->fields['Asset']['TotalToken']['html']
 .$this->fields['Asset']['UsdValue']['html']
+.$this->fields['Asset']['IdSymbol']['html']
 .$this->fields['Asset']['AvgPrice']['html']
 .$this->fields['Asset']['Profit']['html']
 .'</div><div id="ogf_locked_token"  class=" ui-tabs-panel">'
@@ -967,6 +987,9 @@ $this->fields['Asset']['IdToken']['html']
         $this->fieldsRo['Asset']['UsdValue']['html'] = stdFieldRow(_("Value USD"), div( $dataObj->getUsdValue(), 'UsdValue_label' , "class='readonly' s='d'")
                 .input('hidden', 'UsdValue', $dataObj->getUsdValue(), "s='d'"), 'UsdValue', "", $this->commentsUsdValue, $this->commentsUsdValue_css, 'readonly', ' ', 'no');
 
+        $this->fieldsRo['Asset']['IdSymbol']['html'] = stdFieldRow(_("Trading pair"), div( ($dataObj->getSymbol())?$dataObj->getSymbol()->getName():'', 'IdSymbol_label' , "class='readonly' s='d'")
+                .input('hidden', 'IdSymbol', $dataObj->getIdSymbol(), "s='d'"), 'IdSymbol', "", $this->commentsIdSymbol, $this->commentsIdSymbol_css, 'readonly', ' ', 'no');
+
         $this->fieldsRo['Asset']['AvgPrice']['html'] = stdFieldRow(_("Avg. price"), div( $dataObj->getAvgPrice(), 'AvgPrice_label' , "class='readonly' s='d'")
                 .input('hidden', 'AvgPrice', $dataObj->getAvgPrice(), "s='d'"), 'AvgPrice', "", $this->commentsAvgPrice, $this->commentsAvgPrice_css, 'readonly', ' ', 'no');
 
@@ -993,6 +1016,76 @@ $this->fields['Asset']['IdToken']['html']
             }
         }
     }
+
+    /**
+     * Query for Asset_IdToken selectBox 
+     * @param object $obj
+     * @param object $dataObj
+     * @param array $data
+    **/
+    public function selectBoxAsset_IdToken(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
+        $q = TokenQuery::create();
+
+            $q->addAsColumn('selDisplay', ''.TokenPeer::TICKER.'');
+            $q->select(array('selDisplay', 'IdToken'));
+            $q->orderBy('selDisplay', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
+
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
+
+    /**
+     * Query for Asset_IdSymbol selectBox 
+     * @param object $obj
+     * @param object $dataObj
+     * @param array $data
+    **/
+    public function selectBoxAsset_IdSymbol(&$obj = '', &$dataObj = '', &$data = '', $emptyVal = false, $array = true){
+ $override=false;
+        $q = SymbolQuery::create();
+
+            if( $dataObj != ''){
+                            $q->filterByIdToken($dataObj->getIdToken() );
+                
+                            
+                        };
+            $q->select(array('Name', 'IdSymbol'));
+            $q->orderBy('Name', 'ASC');
+        
+            if(!$array){
+                return $q;
+            }else{
+                $pcDataO = $q->find();
+            }
+
+            if(method_exists($this, 'selectboxDataAsset_IdSymbol')){ 
+                $this->selectboxDataAsset_IdSymbol($pcDataO, $q, $override); 
+            }
+
+
+        
+        if($override === false){
+            $arrayOpt = $pcDataO->toArray();
+
+            return assocToNum($arrayOpt , true);;
+        }else{
+            return $override;
+        }
+}
 
     /**
      * Query for Trade_IdExchange selectBox 
@@ -1034,6 +1127,11 @@ $this->fields['Asset']['IdToken']['html']
  $override=false;
         $q = SymbolQuery::create();
 
+            if( $dataObj != ''){
+                            $q->filterByIdToken($dataObj->getIdToken() );
+                
+                            
+                        };
             $q->select(array('Name', 'IdSymbol'));
             $q->orderBy('Name', 'ASC');
         
@@ -1104,9 +1202,9 @@ $this->fields['Asset']['IdToken']['html']
   'Type' => '',
   'IdExchange' => '',
   'IdAsset' => '',
-  'Qty' => '',
   'IdSymbol' => '',
   'Date' => '',
+  'Qty' => '',
   'GrossUsd' => '',
   'Commission' => '',
   'CommissionAsset' => '',
@@ -1267,12 +1365,10 @@ $this->fields['Asset']['IdToken']['html']
 
         $header = tr( th(_("State"), " th='sorted' c='Type' title='" . _('State')."' ")
 .th(_("Exchange"), " th='sorted' c='Exchange.Name' title='"._('Exchange.Name')."' ")
-.th(_("Qty"), " th='sorted' c='Qty' title='" . _('Qty')."' ")
-.th(_("Symbol"), " th='sorted' c='Symbol.Name' title='"._('Symbol.Name')."' ")
+.th(_("Trading pair"), " th='sorted' c='Symbol.Name' title='"._('Symbol.Name')."' ")
 .th(_("Date"), " th='sorted' c='Date' title='" . _('Date')."' ")
+.th(_("Qty"), " th='sorted' c='Qty' title='" . _('Qty')."' ")
 .th(_("Price"), " th='sorted' c='GrossUsd' title='" . _('Price')."' ")
-.th(_("Commission"), " th='sorted' c='Commission' title='" . _('Commission')."' ")
-.th(_("Token ticker"), " th='sorted' c='Token.Ticker' title='"._('Token.Ticker')."' ")
 .'' . $actionRowHeader, " ln='Trade' class=''");
 
         
@@ -1309,10 +1405,6 @@ $this->fields['Asset']['IdToken']['html']
                                     if($data->getSymbol()){
                                         $Symbol_Name = $data->getSymbol()->getName();
                                     }
-        $altValue['Token_Ticker'] = "";
-        if($data->getToken()){
-            $altValue['Token_Ticker'] = $data->getToken()->getTicker();
-        }
                 
                 
                 ;
@@ -1330,12 +1422,10 @@ $this->fields['Asset']['IdToken']['html']
                             
                 td(span((($altValue['Type']) ? $altValue['Type'] : isntPo($data->getType())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editTrade'") . 
                 td(span((($altValue['IdExchange']) ? $altValue['IdExchange'] : $Exchange_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdExchange' class=''  j='editTrade'") . 
-                td(span((($altValue['Qty']) ? $altValue['Qty'] : str_replace(',', '.', $data->getQty())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Qty' class='right'  j='editTrade'") . 
                 td(span((($altValue['IdSymbol']) ? $altValue['IdSymbol'] : $Symbol_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdSymbol' class=''  j='editTrade'") . 
                 td(span((($altValue['Date']) ? $altValue['Date'] : $data->getDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class=''  j='editTrade'") . 
+                td(span((($altValue['Qty']) ? $altValue['Qty'] : str_replace(',', '.', $data->getQty())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Qty' class='right'  j='editTrade'") . 
                 td(span((($altValue['GrossUsd']) ? $altValue['GrossUsd'] : str_replace(',', '.', $data->getGrossUsd())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='GrossUsd' class='right'  j='editTrade'") . 
-                td(span((($altValue['Commission']) ? $altValue['Commission'] : str_replace(',', '.', $data->getCommission())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Commission' class='right'  j='editTrade'") . 
-                td(span((($altValue['CommissionAsset']) ? $altValue['CommissionAsset'] : $altValue['Token_Ticker']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='CommissionAsset' class=''  j='editTrade'") . 
                             (isset($this->hookListColumnsTrade)?$this->hookListColumnsTrade:'').
                             $actionRow
                             .$param['tr_after']
@@ -1412,7 +1502,7 @@ $this->fields['Asset']['IdToken']['html']
             url:'".$this->virtualClassName."/Trade/$IdAsset',
             destUi:'".$uiTabsId."'
         });
-        
+       
         $('#cntAssetChild .js-select-label').SelectBox();
 
         {$orderReadyJs}
@@ -1749,7 +1839,7 @@ $this->fields['Asset']['IdToken']['html']
             url:'".$this->virtualClassName."/AssetExchange/$IdAsset',
             destUi:'".$uiTabsId."'
         });
-        
+       
         $('#cntAssetChild .js-select-label').SelectBox();
 
         {$orderReadyJs}

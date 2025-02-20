@@ -62,14 +62,14 @@ abstract class BaseTradePeer
     /** the column name for the id_asset field */
     const ID_ASSET = 'trade.id_asset';
 
-    /** the column name for the qty field */
-    const QTY = 'trade.qty';
-
     /** the column name for the id_symbol field */
     const ID_SYMBOL = 'trade.id_symbol';
 
     /** the column name for the date field */
     const DATE = 'trade.date';
+
+    /** the column name for the qty field */
+    const QTY = 'trade.qty';
 
     /** the column name for the gross_usd field */
     const GROSS_USD = 'trade.gross_usd';
@@ -121,11 +121,11 @@ abstract class BaseTradePeer
      * e.g. TradePeer::$fieldNames[TradePeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('IdTrade', 'Type', 'IdExchange', 'IdAsset', 'Qty', 'IdSymbol', 'Date', 'GrossUsd', 'Commission', 'CommissionAsset', 'OrderId', 'DateCreation', 'DateModification', 'IdGroupCreation', 'IdCreation', 'IdModification', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idTrade', 'type', 'idExchange', 'idAsset', 'qty', 'idSymbol', 'date', 'grossUsd', 'commission', 'commissionAsset', 'orderId', 'dateCreation', 'dateModification', 'idGroupCreation', 'idCreation', 'idModification', ),
-        BasePeer::TYPE_COLNAME => array (TradePeer::ID_TRADE, TradePeer::TYPE, TradePeer::ID_EXCHANGE, TradePeer::ID_ASSET, TradePeer::QTY, TradePeer::ID_SYMBOL, TradePeer::DATE, TradePeer::GROSS_USD, TradePeer::COMMISSION, TradePeer::COMMISSION_ASSET, TradePeer::ORDER_ID, TradePeer::DATE_CREATION, TradePeer::DATE_MODIFICATION, TradePeer::ID_GROUP_CREATION, TradePeer::ID_CREATION, TradePeer::ID_MODIFICATION, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_TRADE', 'TYPE', 'ID_EXCHANGE', 'ID_ASSET', 'QTY', 'ID_SYMBOL', 'DATE', 'GROSS_USD', 'COMMISSION', 'COMMISSION_ASSET', 'ORDER_ID', 'DATE_CREATION', 'DATE_MODIFICATION', 'ID_GROUP_CREATION', 'ID_CREATION', 'ID_MODIFICATION', ),
-        BasePeer::TYPE_FIELDNAME => array ('id_trade', 'type', 'id_exchange', 'id_asset', 'qty', 'id_symbol', 'date', 'gross_usd', 'commission', 'commission_asset', 'order_id', 'date_creation', 'date_modification', 'id_group_creation', 'id_creation', 'id_modification', ),
+        BasePeer::TYPE_PHPNAME => array ('IdTrade', 'Type', 'IdExchange', 'IdAsset', 'IdSymbol', 'Date', 'Qty', 'GrossUsd', 'Commission', 'CommissionAsset', 'OrderId', 'DateCreation', 'DateModification', 'IdGroupCreation', 'IdCreation', 'IdModification', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idTrade', 'type', 'idExchange', 'idAsset', 'idSymbol', 'date', 'qty', 'grossUsd', 'commission', 'commissionAsset', 'orderId', 'dateCreation', 'dateModification', 'idGroupCreation', 'idCreation', 'idModification', ),
+        BasePeer::TYPE_COLNAME => array (TradePeer::ID_TRADE, TradePeer::TYPE, TradePeer::ID_EXCHANGE, TradePeer::ID_ASSET, TradePeer::ID_SYMBOL, TradePeer::DATE, TradePeer::QTY, TradePeer::GROSS_USD, TradePeer::COMMISSION, TradePeer::COMMISSION_ASSET, TradePeer::ORDER_ID, TradePeer::DATE_CREATION, TradePeer::DATE_MODIFICATION, TradePeer::ID_GROUP_CREATION, TradePeer::ID_CREATION, TradePeer::ID_MODIFICATION, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_TRADE', 'TYPE', 'ID_EXCHANGE', 'ID_ASSET', 'ID_SYMBOL', 'DATE', 'QTY', 'GROSS_USD', 'COMMISSION', 'COMMISSION_ASSET', 'ORDER_ID', 'DATE_CREATION', 'DATE_MODIFICATION', 'ID_GROUP_CREATION', 'ID_CREATION', 'ID_MODIFICATION', ),
+        BasePeer::TYPE_FIELDNAME => array ('id_trade', 'type', 'id_exchange', 'id_asset', 'id_symbol', 'date', 'qty', 'gross_usd', 'commission', 'commission_asset', 'order_id', 'date_creation', 'date_modification', 'id_group_creation', 'id_creation', 'id_modification', ),
         BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
     );
 
@@ -136,11 +136,11 @@ abstract class BaseTradePeer
      * e.g. TradePeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('IdTrade' => 0, 'Type' => 1, 'IdExchange' => 2, 'IdAsset' => 3, 'Qty' => 4, 'IdSymbol' => 5, 'Date' => 6, 'GrossUsd' => 7, 'Commission' => 8, 'CommissionAsset' => 9, 'OrderId' => 10, 'DateCreation' => 11, 'DateModification' => 12, 'IdGroupCreation' => 13, 'IdCreation' => 14, 'IdModification' => 15, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idTrade' => 0, 'type' => 1, 'idExchange' => 2, 'idAsset' => 3, 'qty' => 4, 'idSymbol' => 5, 'date' => 6, 'grossUsd' => 7, 'commission' => 8, 'commissionAsset' => 9, 'orderId' => 10, 'dateCreation' => 11, 'dateModification' => 12, 'idGroupCreation' => 13, 'idCreation' => 14, 'idModification' => 15, ),
-        BasePeer::TYPE_COLNAME => array (TradePeer::ID_TRADE => 0, TradePeer::TYPE => 1, TradePeer::ID_EXCHANGE => 2, TradePeer::ID_ASSET => 3, TradePeer::QTY => 4, TradePeer::ID_SYMBOL => 5, TradePeer::DATE => 6, TradePeer::GROSS_USD => 7, TradePeer::COMMISSION => 8, TradePeer::COMMISSION_ASSET => 9, TradePeer::ORDER_ID => 10, TradePeer::DATE_CREATION => 11, TradePeer::DATE_MODIFICATION => 12, TradePeer::ID_GROUP_CREATION => 13, TradePeer::ID_CREATION => 14, TradePeer::ID_MODIFICATION => 15, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_TRADE' => 0, 'TYPE' => 1, 'ID_EXCHANGE' => 2, 'ID_ASSET' => 3, 'QTY' => 4, 'ID_SYMBOL' => 5, 'DATE' => 6, 'GROSS_USD' => 7, 'COMMISSION' => 8, 'COMMISSION_ASSET' => 9, 'ORDER_ID' => 10, 'DATE_CREATION' => 11, 'DATE_MODIFICATION' => 12, 'ID_GROUP_CREATION' => 13, 'ID_CREATION' => 14, 'ID_MODIFICATION' => 15, ),
-        BasePeer::TYPE_FIELDNAME => array ('id_trade' => 0, 'type' => 1, 'id_exchange' => 2, 'id_asset' => 3, 'qty' => 4, 'id_symbol' => 5, 'date' => 6, 'gross_usd' => 7, 'commission' => 8, 'commission_asset' => 9, 'order_id' => 10, 'date_creation' => 11, 'date_modification' => 12, 'id_group_creation' => 13, 'id_creation' => 14, 'id_modification' => 15, ),
+        BasePeer::TYPE_PHPNAME => array ('IdTrade' => 0, 'Type' => 1, 'IdExchange' => 2, 'IdAsset' => 3, 'IdSymbol' => 4, 'Date' => 5, 'Qty' => 6, 'GrossUsd' => 7, 'Commission' => 8, 'CommissionAsset' => 9, 'OrderId' => 10, 'DateCreation' => 11, 'DateModification' => 12, 'IdGroupCreation' => 13, 'IdCreation' => 14, 'IdModification' => 15, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idTrade' => 0, 'type' => 1, 'idExchange' => 2, 'idAsset' => 3, 'idSymbol' => 4, 'date' => 5, 'qty' => 6, 'grossUsd' => 7, 'commission' => 8, 'commissionAsset' => 9, 'orderId' => 10, 'dateCreation' => 11, 'dateModification' => 12, 'idGroupCreation' => 13, 'idCreation' => 14, 'idModification' => 15, ),
+        BasePeer::TYPE_COLNAME => array (TradePeer::ID_TRADE => 0, TradePeer::TYPE => 1, TradePeer::ID_EXCHANGE => 2, TradePeer::ID_ASSET => 3, TradePeer::ID_SYMBOL => 4, TradePeer::DATE => 5, TradePeer::QTY => 6, TradePeer::GROSS_USD => 7, TradePeer::COMMISSION => 8, TradePeer::COMMISSION_ASSET => 9, TradePeer::ORDER_ID => 10, TradePeer::DATE_CREATION => 11, TradePeer::DATE_MODIFICATION => 12, TradePeer::ID_GROUP_CREATION => 13, TradePeer::ID_CREATION => 14, TradePeer::ID_MODIFICATION => 15, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_TRADE' => 0, 'TYPE' => 1, 'ID_EXCHANGE' => 2, 'ID_ASSET' => 3, 'ID_SYMBOL' => 4, 'DATE' => 5, 'QTY' => 6, 'GROSS_USD' => 7, 'COMMISSION' => 8, 'COMMISSION_ASSET' => 9, 'ORDER_ID' => 10, 'DATE_CREATION' => 11, 'DATE_MODIFICATION' => 12, 'ID_GROUP_CREATION' => 13, 'ID_CREATION' => 14, 'ID_MODIFICATION' => 15, ),
+        BasePeer::TYPE_FIELDNAME => array ('id_trade' => 0, 'type' => 1, 'id_exchange' => 2, 'id_asset' => 3, 'id_symbol' => 4, 'date' => 5, 'qty' => 6, 'gross_usd' => 7, 'commission' => 8, 'commission_asset' => 9, 'order_id' => 10, 'date_creation' => 11, 'date_modification' => 12, 'id_group_creation' => 13, 'id_creation' => 14, 'id_modification' => 15, ),
         BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, )
     );
 
@@ -272,9 +272,9 @@ abstract class BaseTradePeer
             $criteria->addSelectColumn(TradePeer::TYPE);
             $criteria->addSelectColumn(TradePeer::ID_EXCHANGE);
             $criteria->addSelectColumn(TradePeer::ID_ASSET);
-            $criteria->addSelectColumn(TradePeer::QTY);
             $criteria->addSelectColumn(TradePeer::ID_SYMBOL);
             $criteria->addSelectColumn(TradePeer::DATE);
+            $criteria->addSelectColumn(TradePeer::QTY);
             $criteria->addSelectColumn(TradePeer::GROSS_USD);
             $criteria->addSelectColumn(TradePeer::COMMISSION);
             $criteria->addSelectColumn(TradePeer::COMMISSION_ASSET);
@@ -289,9 +289,9 @@ abstract class BaseTradePeer
             $criteria->addSelectColumn($alias . '.type');
             $criteria->addSelectColumn($alias . '.id_exchange');
             $criteria->addSelectColumn($alias . '.id_asset');
-            $criteria->addSelectColumn($alias . '.qty');
             $criteria->addSelectColumn($alias . '.id_symbol');
             $criteria->addSelectColumn($alias . '.date');
+            $criteria->addSelectColumn($alias . '.qty');
             $criteria->addSelectColumn($alias . '.gross_usd');
             $criteria->addSelectColumn($alias . '.commission');
             $criteria->addSelectColumn($alias . '.commission_asset');

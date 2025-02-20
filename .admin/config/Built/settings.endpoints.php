@@ -158,6 +158,10 @@ $table['asset'] = [
         'type' => 'DECIMAL',
         'description' => 'Value USD',
     ],
+    'id_symbol' => [
+        'type' => 'INTEGER',
+        'description' => 'Trading pair',
+    ],
     'avg_price' => [
         'type' => 'DECIMAL',
         'description' => 'Avg. price',
@@ -275,17 +279,17 @@ $table['trade'] = [
     'id_asset' => [
         'type' => 'INTEGER',
     ],
-    'qty' => [
-        'type' => 'DECIMAL',
-        'description' => 'Qty',
-    ],
     'id_symbol' => [
         'type' => 'INTEGER',
-        'description' => 'Symbol',
+        'description' => 'Trading pair',
     ],
     'date' => [
         'type' => 'TIMESTAMP',
         'description' => 'Date',
+    ],
+    'qty' => [
+        'type' => 'DECIMAL',
+        'description' => 'Qty',
     ],
     'gross_usd' => [
         'type' => 'DECIMAL',

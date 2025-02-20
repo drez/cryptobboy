@@ -48,6 +48,7 @@ class AssetTableMap extends TableMap
         $this->addColumn('staked_token', 'StakedToken', 'DECIMAL', false, 16, null);
         $this->addColumn('total_token', 'TotalToken', 'DECIMAL', false, 16, null);
         $this->addColumn('usd_value', 'UsdValue', 'DECIMAL', false, 12, null);
+        $this->addForeignKey('id_symbol', 'IdSymbol', 'INTEGER', 'symbol', 'id_symbol', false, 11, null);
         $this->addColumn('avg_price', 'AvgPrice', 'DECIMAL', false, 14, null);
         $this->addColumn('profit', 'Profit', 'DECIMAL', false, 12, null);
         $this->addColumn('locked_token', 'LockedToken', 'DECIMAL', false, 16, null);
@@ -64,6 +65,7 @@ class AssetTableMap extends TableMap
         $this->addValidator('id_asset', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Asset_IdAsset_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('id_token', 'required', 'propel.validator.RequiredValidator', '', ('Asset_IdToken_required'));
         $this->addValidator('id_token', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Asset_IdToken_match_/^(?:[0-9]*|null)$/'));
+        $this->addValidator('id_symbol', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Asset_IdSymbol_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('last_sync', 'match', 'propel.validator.MatchValidator', '', ('Asset_LastSync_match'));
     } // initialize()
 
@@ -73,6 +75,7 @@ class AssetTableMap extends TableMap
     public function buildRelations()
     {
         $this->addRelation('Token', 'App\\Token', RelationMap::MANY_TO_ONE, array('id_token' => 'id_token', ), null, null);
+        $this->addRelation('Symbol', 'App\\Symbol', RelationMap::MANY_TO_ONE, array('id_symbol' => 'id_symbol', ), null, null);
         $this->addRelation('AuthyGroup', 'App\\AuthyGroup', RelationMap::MANY_TO_ONE, array('id_group_creation' => 'id_authy_group', ), null, null);
         $this->addRelation('AuthyRelatedByIdCreation', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_creation' => 'id_authy', ), null, null);
         $this->addRelation('AuthyRelatedByIdModification', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_modification' => 'id_authy', ), null, null);
@@ -97,8 +100,9 @@ class AssetTableMap extends TableMap
   'with_child_tables' => '["trade","asset_exchange"]',
   'set_child_colunms' => '{"id_token":["ticker"]}',
   'add_tab_columns' => '{"Other":"locked_token"}',
-  'set_list_hide_columns' => '["locked_token","freeze_token"]',
-  'set_readonly_columns' => '["id_token","free_token","staked_token","total_token","usd_value","locked_token","freeze_token","last_sync","avg_price","profit"]',
+  'set_list_hide_columns' => '["locked_token","freeze_token","id_symbol","last_sync"]',
+  'set_readonly_columns' => '["free_token","staked_token","total_token","usd_value","locked_token","freeze_token","last_sync","avg_price","profit","last_sync"]',
+  'set_selectbox_filters' => '{"id_symbol":[["id_token","%obj%.id_token"]]}',
 ),
             'add_validator' =>  array (
 ),

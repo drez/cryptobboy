@@ -18,6 +18,7 @@ use App\AssetPeer;
 use App\AssetQuery;
 use App\Authy;
 use App\AuthyGroup;
+use App\Symbol;
 use App\Token;
 use App\Trade;
 
@@ -32,6 +33,7 @@ use App\Trade;
  * @method AssetQuery orderByStakedToken($order = Criteria::ASC) Order by the staked_token column
  * @method AssetQuery orderByTotalToken($order = Criteria::ASC) Order by the total_token column
  * @method AssetQuery orderByUsdValue($order = Criteria::ASC) Order by the usd_value column
+ * @method AssetQuery orderByIdSymbol($order = Criteria::ASC) Order by the id_symbol column
  * @method AssetQuery orderByAvgPrice($order = Criteria::ASC) Order by the avg_price column
  * @method AssetQuery orderByProfit($order = Criteria::ASC) Order by the profit column
  * @method AssetQuery orderByLockedToken($order = Criteria::ASC) Order by the locked_token column
@@ -49,6 +51,7 @@ use App\Trade;
  * @method AssetQuery groupByStakedToken() Group by the staked_token column
  * @method AssetQuery groupByTotalToken() Group by the total_token column
  * @method AssetQuery groupByUsdValue() Group by the usd_value column
+ * @method AssetQuery groupByIdSymbol() Group by the id_symbol column
  * @method AssetQuery groupByAvgPrice() Group by the avg_price column
  * @method AssetQuery groupByProfit() Group by the profit column
  * @method AssetQuery groupByLockedToken() Group by the locked_token column
@@ -67,6 +70,10 @@ use App\Trade;
  * @method AssetQuery leftJoinToken($relationAlias = null) Adds a LEFT JOIN clause to the query using the Token relation
  * @method AssetQuery rightJoinToken($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Token relation
  * @method AssetQuery innerJoinToken($relationAlias = null) Adds a INNER JOIN clause to the query using the Token relation
+ *
+ * @method AssetQuery leftJoinSymbol($relationAlias = null) Adds a LEFT JOIN clause to the query using the Symbol relation
+ * @method AssetQuery rightJoinSymbol($relationAlias = null) Adds a RIGHT JOIN clause to the query using the Symbol relation
+ * @method AssetQuery innerJoinSymbol($relationAlias = null) Adds a INNER JOIN clause to the query using the Symbol relation
  *
  * @method AssetQuery leftJoinAuthyGroup($relationAlias = null) Adds a LEFT JOIN clause to the query using the AuthyGroup relation
  * @method AssetQuery rightJoinAuthyGroup($relationAlias = null) Adds a RIGHT JOIN clause to the query using the AuthyGroup relation
@@ -96,6 +103,7 @@ use App\Trade;
  * @method Asset findOneByStakedToken(string $staked_token) Return the first Asset filtered by the staked_token column
  * @method Asset findOneByTotalToken(string $total_token) Return the first Asset filtered by the total_token column
  * @method Asset findOneByUsdValue(string $usd_value) Return the first Asset filtered by the usd_value column
+ * @method Asset findOneByIdSymbol(int $id_symbol) Return the first Asset filtered by the id_symbol column
  * @method Asset findOneByAvgPrice(string $avg_price) Return the first Asset filtered by the avg_price column
  * @method Asset findOneByProfit(string $profit) Return the first Asset filtered by the profit column
  * @method Asset findOneByLockedToken(string $locked_token) Return the first Asset filtered by the locked_token column
@@ -113,6 +121,7 @@ use App\Trade;
  * @method array findByStakedToken(string $staked_token) Return Asset objects filtered by the staked_token column
  * @method array findByTotalToken(string $total_token) Return Asset objects filtered by the total_token column
  * @method array findByUsdValue(string $usd_value) Return Asset objects filtered by the usd_value column
+ * @method array findByIdSymbol(int $id_symbol) Return Asset objects filtered by the id_symbol column
  * @method array findByAvgPrice(string $avg_price) Return Asset objects filtered by the avg_price column
  * @method array findByProfit(string $profit) Return Asset objects filtered by the profit column
  * @method array findByLockedToken(string $locked_token) Return Asset objects filtered by the locked_token column
@@ -231,7 +240,7 @@ abstract class BaseAssetQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_asset`, `id_token`, `free_token`, `staked_token`, `total_token`, `usd_value`, `avg_price`, `profit`, `locked_token`, `freeze_token`, `last_sync`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `asset` WHERE `id_asset` = :p0';
+        $sql = 'SELECT `id_asset`, `id_token`, `free_token`, `staked_token`, `total_token`, `usd_value`, `id_symbol`, `avg_price`, `profit`, `locked_token`, `freeze_token`, `last_sync`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `asset` WHERE `id_asset` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -575,6 +584,50 @@ abstract class BaseAssetQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(AssetPeer::USD_VALUE, $usdValue, $comparison);
+    }
+
+    /**
+     * Filter the query on the id_symbol column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIdSymbol(1234); // WHERE id_symbol = 1234
+     * $query->filterByIdSymbol(array(12, 34)); // WHERE id_symbol IN (12, 34)
+     * $query->filterByIdSymbol(array('min' => 12)); // WHERE id_symbol >= 12
+     * $query->filterByIdSymbol(array('max' => 12)); // WHERE id_symbol <= 12
+     * </code>
+     *
+     * @see       filterBySymbol()
+     *
+     * @param     mixed $idSymbol The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return AssetQuery The current query, for fluid interface
+     */
+    public function filterByIdSymbol($idSymbol = null, $comparison = null)
+    {
+        if (is_array($idSymbol)) {
+            $useMinMax = false;
+            if (isset($idSymbol['min'])) {
+                $this->addUsingAlias(AssetPeer::ID_SYMBOL, $idSymbol['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($idSymbol['max'])) {
+                $this->addUsingAlias(AssetPeer::ID_SYMBOL, $idSymbol['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(AssetPeer::ID_SYMBOL, $idSymbol, $comparison);
     }
 
     /**
@@ -1080,6 +1133,82 @@ abstract class BaseAssetQuery extends ModelCriteria
         return $this
             ->joinToken($relationAlias, $joinType)
             ->useQuery($relationAlias ? $relationAlias : 'Token', '\App\TokenQuery');
+    }
+
+    /**
+     * Filter the query by a related Symbol object
+     *
+     * @param   Symbol|PropelObjectCollection $symbol The related object(s) to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return                 AssetQuery The current query, for fluid interface
+     * @throws PropelException - if the provided filter is invalid.
+     */
+    public function filterBySymbol($symbol, $comparison = null)
+    {
+        if ($symbol instanceof Symbol) {
+            return $this
+                ->addUsingAlias(AssetPeer::ID_SYMBOL, $symbol->getIdSymbol(), $comparison);
+        } elseif ($symbol instanceof PropelObjectCollection) {
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+
+            return $this
+                ->addUsingAlias(AssetPeer::ID_SYMBOL, $symbol->toKeyValue('PrimaryKey', 'IdSymbol'), $comparison);
+        } else {
+            throw new PropelException('filterBySymbol() only accepts arguments of type Symbol or PropelCollection');
+        }
+    }
+
+    /**
+     * Adds a JOIN clause to the query using the Symbol relation
+     *
+     * @param     string $relationAlias optional alias for the relation
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return AssetQuery The current query, for fluid interface
+     */
+    public function joinSymbol($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        $tableMap = $this->getTableMap();
+        $relationMap = $tableMap->getRelation('Symbol');
+
+        // create a ModelJoin object for this join
+        $join = new ModelJoin();
+        $join->setJoinType($joinType);
+        $join->setRelationMap($relationMap, $this->useAliasInSQL ? $this->getModelAlias() : null, $relationAlias);
+        if ($previousJoin = $this->getPreviousJoin()) {
+            $join->setPreviousJoin($previousJoin);
+        }
+
+        // add the ModelJoin to the current object
+        if ($relationAlias) {
+            $this->addAlias($relationAlias, $relationMap->getRightTable()->getName());
+            $this->addJoinObject($join, $relationAlias);
+        } else {
+            $this->addJoinObject($join, 'Symbol');
+        }
+
+        return $this;
+    }
+
+    /**
+     * Use the Symbol relation Symbol object
+     *
+     * @see       useQuery()
+     *
+     * @param     string $relationAlias optional alias for the relation,
+     *                                   to be used as main alias in the secondary query
+     * @param     string $joinType Accepted values are null, 'left join', 'right join', 'inner join'
+     *
+     * @return   \App\SymbolQuery A secondary query class using the current class as primary query
+     */
+    public function useSymbolQuery($relationAlias = null, $joinType = Criteria::LEFT_JOIN)
+    {
+        return $this
+            ->joinSymbol($relationAlias, $joinType)
+            ->useQuery($relationAlias ? $relationAlias : 'Symbol', '\App\SymbolQuery');
     }
 
     /**

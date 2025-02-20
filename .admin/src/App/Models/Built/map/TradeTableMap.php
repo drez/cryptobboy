@@ -50,9 +50,9 @@ class TradeTableMap extends TableMap
 ));
         $this->addForeignKey('id_exchange', 'IdExchange', 'INTEGER', 'exchange', 'id_exchange', true, 11, null);
         $this->addForeignKey('id_asset', 'IdAsset', 'INTEGER', 'asset', 'id_asset', true, 11, null);
-        $this->addColumn('qty', 'Qty', 'DECIMAL', false, 16, null);
         $this->addForeignKey('id_symbol', 'IdSymbol', 'INTEGER', 'symbol', 'id_symbol', true, 11, null);
         $this->addColumn('date', 'Date', 'TIMESTAMP', false, null, null);
+        $this->addColumn('qty', 'Qty', 'DECIMAL', false, 16, null);
         $this->addColumn('gross_usd', 'GrossUsd', 'DECIMAL', false, 16, null);
         $this->addColumn('commission', 'Commission', 'DECIMAL', false, 16, null);
         $this->addForeignKey('commission_asset', 'CommissionAsset', 'INTEGER', 'token', 'id_token', false, 11, null);
@@ -107,6 +107,7 @@ class TradeTableMap extends TableMap
   'add_search_columns' => '{"Type":[["type","%val","multiple"]],"Exchange":[["id_exchange","%val","multiple"]],"Date":[["date","%val"]],"Date before":[["date","%val","LE"]],"Date after":[["date","%val","GE"]]}',
   'set_order_list_columns' => '[["date","DESC"]]',
   'set_child_colunms' => '{"id_asset":["token.ticker"],"commission_asset":["ticker"]}',
+  'set_list_hide_columns' => '["commission","commission_asset"]',
 ),
             'add_validator' =>  array (
 ),

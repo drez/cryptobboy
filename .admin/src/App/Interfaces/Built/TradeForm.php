@@ -251,12 +251,10 @@ class TradeForm extends Trade
             case 'head':
                 $trHead = th(_("State"), " th='sorted' c='Type' title='" . _('State')."' ")
 .th(_("Exchange"), " th='sorted' c='Exchange.Name' title='"._('Exchange.Name')."' ")
-.th(_("Qty"), " th='sorted' c='Qty' title='" . _('Qty')."' ")
-.th(_("Symbol"), " th='sorted' c='Symbol.Name' title='"._('Symbol.Name')."' ")
+.th(_("Trading pair"), " th='sorted' c='Symbol.Name' title='"._('Symbol.Name')."' ")
 .th(_("Date"), " th='sorted' c='Date' title='" . _('Date')."' ")
+.th(_("Qty"), " th='sorted' c='Qty' title='" . _('Qty')."' ")
 .th(_("Price"), " th='sorted' c='GrossUsd' title='" . _('Price')."' ")
-.th(_("Commission"), " th='sorted' c='Commission' title='" . _('Commission')."' ")
-.th(_("Token ticker"), " th='sorted' c='Token.Ticker' title='"._('Token.Ticker')."' ")
 . $this->cCmoreColsHeader;
                 if(!$this->setReadOnly){
                     $trHead .= th('&nbsp;',' class="actionrow delete" ');
@@ -332,9 +330,9 @@ class TradeForm extends Trade
   'Type' => '',
   'IdExchange' => '',
   'IdAsset' => '',
-  'Qty' => '',
   'IdSymbol' => '',
   'Date' => '',
+  'Qty' => '',
   'GrossUsd' => '',
   'Commission' => '',
   'CommissionAsset' => '',
@@ -427,10 +425,6 @@ class TradeForm extends Trade
                                     if($data->getSymbol()){
                                         $Symbol_Name = $data->getSymbol()->getName();
                                     }
-        $altValue['Token_Ticker'] = "";
-        if($data->getToken()){
-            $altValue['Token_Ticker'] = $data->getToken()->getTicker();
-        }
                 
 
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
@@ -438,12 +432,10 @@ class TradeForm extends Trade
                 $tr .= tr(
                 td(span((($altValue['Type']) ? $altValue['Type'] : isntPo($data->getType())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editTrade'") . 
                 td(span((($altValue['IdExchange']) ? $altValue['IdExchange'] : $Exchange_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdExchange' class=''  j='editTrade'") . 
-                td(span((($altValue['Qty']) ? $altValue['Qty'] : str_replace(',', '.', $data->getQty())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Qty' class='right'  j='editTrade'") . 
                 td(span((($altValue['IdSymbol']) ? $altValue['IdSymbol'] : $Symbol_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdSymbol' class=''  j='editTrade'") . 
                 td(span((($altValue['Date']) ? $altValue['Date'] : $data->getDate()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class=''  j='editTrade'") . 
-                td(span((($altValue['GrossUsd']) ? $altValue['GrossUsd'] : str_replace(',', '.', $data->getGrossUsd())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='GrossUsd' class='right'  j='editTrade'") . 
-                td(span((($altValue['Commission']) ? $altValue['Commission'] : str_replace(',', '.', $data->getCommission())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Commission' class='right'  j='editTrade'") . 
-                td(span((($altValue['CommissionAsset']) ? $altValue['CommissionAsset'] : $altValue['Token_Ticker']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='CommissionAsset' class=''  j='editTrade'") . $cCmoreCols.$actionCell
+                td(span((($altValue['Qty']) ? $altValue['Qty'] : str_replace(',', '.', $data->getQty())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Qty' class='right'  j='editTrade'") . 
+                td(span((($altValue['GrossUsd']) ? $altValue['GrossUsd'] : str_replace(',', '.', $data->getGrossUsd())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='GrossUsd' class='right'  j='editTrade'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -829,9 +821,9 @@ class TradeForm extends Trade
         
 $this->fields['Trade']['Type']['html'] = stdFieldRow(_("State"), selectboxCustomArray('Type', array( '0' => array('0'=>_("Buy"), '1'=>"Buy"),'1' => array('0'=>_("Sell"), '1'=>"Sell"), ), "", "s='d'  ", $dataObj->getType(), '', false), 'Type', "", $this->commentsType, $this->commentsType_css, '', ' ', 'no');
 $this->fields['Trade']['IdExchange']['html'] = stdFieldRow(_("Exchange"), selectboxCustomArray('IdExchange', $this->arrayIdExchangeOptions, "", "v='ID_EXCHANGE'  s='d'  val='".$dataObj->getIdExchange()."'", $dataObj->getIdExchange()), 'IdExchange', "", $this->commentsIdExchange, $this->commentsIdExchange_css, '', ' ', 'no');
-$this->fields['Trade']['Qty']['html'] = stdFieldRow(_("Qty"), input('text', 'Qty', $dataObj->getQty(), "  placeholder='".str_replace("'","&#39;",_('Qty'))."'  v='QTY' size='10' s='d' class='req'"), 'Qty', "", $this->commentsQty, $this->commentsQty_css, '', ' ', 'no');
-$this->fields['Trade']['IdSymbol']['html'] = stdFieldRow(_("Symbol"), selectboxCustomArray('IdSymbol', $this->arrayIdSymbolOptions, "", "v='ID_SYMBOL'  s='d'  val='".$dataObj->getIdSymbol()."'", $dataObj->getIdSymbol()), 'IdSymbol', "", $this->commentsIdSymbol, $this->commentsIdSymbol_css, '', ' ', 'no');
+$this->fields['Trade']['IdSymbol']['html'] = stdFieldRow(_("Trading pair"), selectboxCustomArray('IdSymbol', $this->arrayIdSymbolOptions, "", "v='ID_SYMBOL'  s='d'  val='".$dataObj->getIdSymbol()."'", $dataObj->getIdSymbol()), 'IdSymbol', "", $this->commentsIdSymbol, $this->commentsIdSymbol_css, '', ' ', 'no');
 $this->fields['Trade']['Date']['html'] = stdFieldRow(_("Date"), input('datetime-local', 'Date', $dataObj->getDate(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD hh:mm:ss' size='30'  s='d' class='' title='Date'"), 'Date', "", $this->commentsDate, $this->commentsDate_css, '', ' ', 'no');
+$this->fields['Trade']['Qty']['html'] = stdFieldRow(_("Qty"), input('text', 'Qty', $dataObj->getQty(), "  placeholder='".str_replace("'","&#39;",_('Qty'))."'  v='QTY' size='10' s='d' class='req'"), 'Qty', "", $this->commentsQty, $this->commentsQty_css, '', ' ', 'no');
 $this->fields['Trade']['GrossUsd']['html'] = stdFieldRow(_("Price"), input('text', 'GrossUsd', $dataObj->getGrossUsd(), "  placeholder='".str_replace("'","&#39;",_('Price'))."'  v='GROSS_USD' size='10' s='d' class=''"), 'GrossUsd', "", $this->commentsGrossUsd, $this->commentsGrossUsd_css, '', ' ', 'no');
 $this->fields['Trade']['Commission']['html'] = stdFieldRow(_("Commission"), input('text', 'Commission', $dataObj->getCommission(), "  placeholder='".str_replace("'","&#39;",_('Commission'))."'  v='COMMISSION' size='10' s='d' class=''"), 'Commission', "", $this->commentsCommission, $this->commentsCommission_css, '', ' ', 'no');
 $this->fields['Trade']['CommissionAsset']['html'] = stdFieldRow(_("commissionAsset"), selectboxCustomArray('CommissionAsset', $this->arrayCommissionAssetOptions, _('commissionAsset'), "v='COMMISSION_ASSET'  s='d'  val='".$dataObj->getCommissionAsset()."'", $dataObj->getCommissionAsset()), 'CommissionAsset', "", $this->commentsCommissionAsset, $this->commentsCommissionAsset_css, '', ' ', 'no');
@@ -890,9 +882,9 @@ $this->fields['Trade']['CommissionAsset']['html'] = stdFieldRow(_("commissionAss
                 .
 $this->fields['Trade']['Type']['html']
 .$this->fields['Trade']['IdExchange']['html']
-.$this->fields['Trade']['Qty']['html']
 .$this->fields['Trade']['IdSymbol']['html']
 .$this->fields['Trade']['Date']['html']
+.$this->fields['Trade']['Qty']['html']
 .$this->fields['Trade']['GrossUsd']['html']
 .$this->fields['Trade']['Commission']['html']
 .$this->fields['Trade']['CommissionAsset']['html']
@@ -960,14 +952,14 @@ $this->fields['Trade']['Type']['html']
         $this->fieldsRo['Trade']['IdExchange']['html'] = stdFieldRow(_("Exchange"), div( ($dataObj->getExchange())?$dataObj->getExchange()->getName():'', 'IdExchange_label' , "class='readonly' s='d'")
                 .input('hidden', 'IdExchange', $dataObj->getIdExchange(), "s='d'"), 'IdExchange', "", $this->commentsIdExchange, $this->commentsIdExchange_css, 'readonly', ' ', 'no');
 
-        $this->fieldsRo['Trade']['Qty']['html'] = stdFieldRow(_("Qty"), div( $dataObj->getQty(), 'Qty_label' , "class='readonly' s='d'")
-                .input('hidden', 'Qty', $dataObj->getQty(), "s='d'"), 'Qty', "", $this->commentsQty, $this->commentsQty_css, 'readonly', ' ', 'no');
-
-        $this->fieldsRo['Trade']['IdSymbol']['html'] = stdFieldRow(_("Symbol"), div( ($dataObj->getSymbol())?$dataObj->getSymbol()->getName():'', 'IdSymbol_label' , "class='readonly' s='d'")
+        $this->fieldsRo['Trade']['IdSymbol']['html'] = stdFieldRow(_("Trading pair"), div( ($dataObj->getSymbol())?$dataObj->getSymbol()->getName():'', 'IdSymbol_label' , "class='readonly' s='d'")
                 .input('hidden', 'IdSymbol', $dataObj->getIdSymbol(), "s='d'"), 'IdSymbol', "", $this->commentsIdSymbol, $this->commentsIdSymbol_css, 'readonly', ' ', 'no');
 
         $this->fieldsRo['Trade']['Date']['html'] = stdFieldRow(_("Date"), div( $dataObj->getDate(), 'Date_label' , "class='readonly' s='d'")
                 .input('hidden', 'Date', $dataObj->getDate(), "s='d'"), 'Date', "", $this->commentsDate, $this->commentsDate_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['Trade']['Qty']['html'] = stdFieldRow(_("Qty"), div( $dataObj->getQty(), 'Qty_label' , "class='readonly' s='d'")
+                .input('hidden', 'Qty', $dataObj->getQty(), "s='d'"), 'Qty', "", $this->commentsQty, $this->commentsQty_css, 'readonly', ' ', 'no');
 
         $this->fieldsRo['Trade']['GrossUsd']['html'] = stdFieldRow(_("Price"), div( $dataObj->getGrossUsd(), 'GrossUsd_label' , "class='readonly' s='d'")
                 .input('hidden', 'GrossUsd', $dataObj->getGrossUsd(), "s='d'"), 'GrossUsd', "", $this->commentsGrossUsd, $this->commentsGrossUsd_css, 'readonly', ' ', 'no');
