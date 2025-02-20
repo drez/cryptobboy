@@ -40,13 +40,13 @@ abstract class BaseAssetPeer
     const TM_CLASS = 'App\\map\\AssetTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 17;
+    const NUM_COLUMNS = 18;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 17;
+    const NUM_HYDRATE_COLUMNS = 18;
 
     /** the column name for the id_asset field */
     const ID_ASSET = 'asset.id_asset';
@@ -74,6 +74,9 @@ abstract class BaseAssetPeer
 
     /** the column name for the profit field */
     const PROFIT = 'asset.profit';
+
+    /** the column name for the flexible_token field */
+    const FLEXIBLE_TOKEN = 'asset.flexible_token';
 
     /** the column name for the locked_token field */
     const LOCKED_TOKEN = 'asset.locked_token';
@@ -118,12 +121,12 @@ abstract class BaseAssetPeer
      * e.g. AssetPeer::$fieldNames[AssetPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('IdAsset', 'IdToken', 'FreeToken', 'StakedToken', 'TotalToken', 'UsdValue', 'IdSymbol', 'AvgPrice', 'Profit', 'LockedToken', 'FreezeToken', 'LastSync', 'DateCreation', 'DateModification', 'IdGroupCreation', 'IdCreation', 'IdModification', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idAsset', 'idToken', 'freeToken', 'stakedToken', 'totalToken', 'usdValue', 'idSymbol', 'avgPrice', 'profit', 'lockedToken', 'freezeToken', 'lastSync', 'dateCreation', 'dateModification', 'idGroupCreation', 'idCreation', 'idModification', ),
-        BasePeer::TYPE_COLNAME => array (AssetPeer::ID_ASSET, AssetPeer::ID_TOKEN, AssetPeer::FREE_TOKEN, AssetPeer::STAKED_TOKEN, AssetPeer::TOTAL_TOKEN, AssetPeer::USD_VALUE, AssetPeer::ID_SYMBOL, AssetPeer::AVG_PRICE, AssetPeer::PROFIT, AssetPeer::LOCKED_TOKEN, AssetPeer::FREEZE_TOKEN, AssetPeer::LAST_SYNC, AssetPeer::DATE_CREATION, AssetPeer::DATE_MODIFICATION, AssetPeer::ID_GROUP_CREATION, AssetPeer::ID_CREATION, AssetPeer::ID_MODIFICATION, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_ASSET', 'ID_TOKEN', 'FREE_TOKEN', 'STAKED_TOKEN', 'TOTAL_TOKEN', 'USD_VALUE', 'ID_SYMBOL', 'AVG_PRICE', 'PROFIT', 'LOCKED_TOKEN', 'FREEZE_TOKEN', 'LAST_SYNC', 'DATE_CREATION', 'DATE_MODIFICATION', 'ID_GROUP_CREATION', 'ID_CREATION', 'ID_MODIFICATION', ),
-        BasePeer::TYPE_FIELDNAME => array ('id_asset', 'id_token', 'free_token', 'staked_token', 'total_token', 'usd_value', 'id_symbol', 'avg_price', 'profit', 'locked_token', 'freeze_token', 'last_sync', 'date_creation', 'date_modification', 'id_group_creation', 'id_creation', 'id_modification', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, )
+        BasePeer::TYPE_PHPNAME => array ('IdAsset', 'IdToken', 'FreeToken', 'StakedToken', 'TotalToken', 'UsdValue', 'IdSymbol', 'AvgPrice', 'Profit', 'FlexibleToken', 'LockedToken', 'FreezeToken', 'LastSync', 'DateCreation', 'DateModification', 'IdGroupCreation', 'IdCreation', 'IdModification', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idAsset', 'idToken', 'freeToken', 'stakedToken', 'totalToken', 'usdValue', 'idSymbol', 'avgPrice', 'profit', 'flexibleToken', 'lockedToken', 'freezeToken', 'lastSync', 'dateCreation', 'dateModification', 'idGroupCreation', 'idCreation', 'idModification', ),
+        BasePeer::TYPE_COLNAME => array (AssetPeer::ID_ASSET, AssetPeer::ID_TOKEN, AssetPeer::FREE_TOKEN, AssetPeer::STAKED_TOKEN, AssetPeer::TOTAL_TOKEN, AssetPeer::USD_VALUE, AssetPeer::ID_SYMBOL, AssetPeer::AVG_PRICE, AssetPeer::PROFIT, AssetPeer::FLEXIBLE_TOKEN, AssetPeer::LOCKED_TOKEN, AssetPeer::FREEZE_TOKEN, AssetPeer::LAST_SYNC, AssetPeer::DATE_CREATION, AssetPeer::DATE_MODIFICATION, AssetPeer::ID_GROUP_CREATION, AssetPeer::ID_CREATION, AssetPeer::ID_MODIFICATION, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_ASSET', 'ID_TOKEN', 'FREE_TOKEN', 'STAKED_TOKEN', 'TOTAL_TOKEN', 'USD_VALUE', 'ID_SYMBOL', 'AVG_PRICE', 'PROFIT', 'FLEXIBLE_TOKEN', 'LOCKED_TOKEN', 'FREEZE_TOKEN', 'LAST_SYNC', 'DATE_CREATION', 'DATE_MODIFICATION', 'ID_GROUP_CREATION', 'ID_CREATION', 'ID_MODIFICATION', ),
+        BasePeer::TYPE_FIELDNAME => array ('id_asset', 'id_token', 'free_token', 'staked_token', 'total_token', 'usd_value', 'id_symbol', 'avg_price', 'profit', 'flexible_token', 'locked_token', 'freeze_token', 'last_sync', 'date_creation', 'date_modification', 'id_group_creation', 'id_creation', 'id_modification', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, )
     );
 
     /**
@@ -133,12 +136,12 @@ abstract class BaseAssetPeer
      * e.g. AssetPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('IdAsset' => 0, 'IdToken' => 1, 'FreeToken' => 2, 'StakedToken' => 3, 'TotalToken' => 4, 'UsdValue' => 5, 'IdSymbol' => 6, 'AvgPrice' => 7, 'Profit' => 8, 'LockedToken' => 9, 'FreezeToken' => 10, 'LastSync' => 11, 'DateCreation' => 12, 'DateModification' => 13, 'IdGroupCreation' => 14, 'IdCreation' => 15, 'IdModification' => 16, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idAsset' => 0, 'idToken' => 1, 'freeToken' => 2, 'stakedToken' => 3, 'totalToken' => 4, 'usdValue' => 5, 'idSymbol' => 6, 'avgPrice' => 7, 'profit' => 8, 'lockedToken' => 9, 'freezeToken' => 10, 'lastSync' => 11, 'dateCreation' => 12, 'dateModification' => 13, 'idGroupCreation' => 14, 'idCreation' => 15, 'idModification' => 16, ),
-        BasePeer::TYPE_COLNAME => array (AssetPeer::ID_ASSET => 0, AssetPeer::ID_TOKEN => 1, AssetPeer::FREE_TOKEN => 2, AssetPeer::STAKED_TOKEN => 3, AssetPeer::TOTAL_TOKEN => 4, AssetPeer::USD_VALUE => 5, AssetPeer::ID_SYMBOL => 6, AssetPeer::AVG_PRICE => 7, AssetPeer::PROFIT => 8, AssetPeer::LOCKED_TOKEN => 9, AssetPeer::FREEZE_TOKEN => 10, AssetPeer::LAST_SYNC => 11, AssetPeer::DATE_CREATION => 12, AssetPeer::DATE_MODIFICATION => 13, AssetPeer::ID_GROUP_CREATION => 14, AssetPeer::ID_CREATION => 15, AssetPeer::ID_MODIFICATION => 16, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_ASSET' => 0, 'ID_TOKEN' => 1, 'FREE_TOKEN' => 2, 'STAKED_TOKEN' => 3, 'TOTAL_TOKEN' => 4, 'USD_VALUE' => 5, 'ID_SYMBOL' => 6, 'AVG_PRICE' => 7, 'PROFIT' => 8, 'LOCKED_TOKEN' => 9, 'FREEZE_TOKEN' => 10, 'LAST_SYNC' => 11, 'DATE_CREATION' => 12, 'DATE_MODIFICATION' => 13, 'ID_GROUP_CREATION' => 14, 'ID_CREATION' => 15, 'ID_MODIFICATION' => 16, ),
-        BasePeer::TYPE_FIELDNAME => array ('id_asset' => 0, 'id_token' => 1, 'free_token' => 2, 'staked_token' => 3, 'total_token' => 4, 'usd_value' => 5, 'id_symbol' => 6, 'avg_price' => 7, 'profit' => 8, 'locked_token' => 9, 'freeze_token' => 10, 'last_sync' => 11, 'date_creation' => 12, 'date_modification' => 13, 'id_group_creation' => 14, 'id_creation' => 15, 'id_modification' => 16, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, )
+        BasePeer::TYPE_PHPNAME => array ('IdAsset' => 0, 'IdToken' => 1, 'FreeToken' => 2, 'StakedToken' => 3, 'TotalToken' => 4, 'UsdValue' => 5, 'IdSymbol' => 6, 'AvgPrice' => 7, 'Profit' => 8, 'FlexibleToken' => 9, 'LockedToken' => 10, 'FreezeToken' => 11, 'LastSync' => 12, 'DateCreation' => 13, 'DateModification' => 14, 'IdGroupCreation' => 15, 'IdCreation' => 16, 'IdModification' => 17, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idAsset' => 0, 'idToken' => 1, 'freeToken' => 2, 'stakedToken' => 3, 'totalToken' => 4, 'usdValue' => 5, 'idSymbol' => 6, 'avgPrice' => 7, 'profit' => 8, 'flexibleToken' => 9, 'lockedToken' => 10, 'freezeToken' => 11, 'lastSync' => 12, 'dateCreation' => 13, 'dateModification' => 14, 'idGroupCreation' => 15, 'idCreation' => 16, 'idModification' => 17, ),
+        BasePeer::TYPE_COLNAME => array (AssetPeer::ID_ASSET => 0, AssetPeer::ID_TOKEN => 1, AssetPeer::FREE_TOKEN => 2, AssetPeer::STAKED_TOKEN => 3, AssetPeer::TOTAL_TOKEN => 4, AssetPeer::USD_VALUE => 5, AssetPeer::ID_SYMBOL => 6, AssetPeer::AVG_PRICE => 7, AssetPeer::PROFIT => 8, AssetPeer::FLEXIBLE_TOKEN => 9, AssetPeer::LOCKED_TOKEN => 10, AssetPeer::FREEZE_TOKEN => 11, AssetPeer::LAST_SYNC => 12, AssetPeer::DATE_CREATION => 13, AssetPeer::DATE_MODIFICATION => 14, AssetPeer::ID_GROUP_CREATION => 15, AssetPeer::ID_CREATION => 16, AssetPeer::ID_MODIFICATION => 17, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_ASSET' => 0, 'ID_TOKEN' => 1, 'FREE_TOKEN' => 2, 'STAKED_TOKEN' => 3, 'TOTAL_TOKEN' => 4, 'USD_VALUE' => 5, 'ID_SYMBOL' => 6, 'AVG_PRICE' => 7, 'PROFIT' => 8, 'FLEXIBLE_TOKEN' => 9, 'LOCKED_TOKEN' => 10, 'FREEZE_TOKEN' => 11, 'LAST_SYNC' => 12, 'DATE_CREATION' => 13, 'DATE_MODIFICATION' => 14, 'ID_GROUP_CREATION' => 15, 'ID_CREATION' => 16, 'ID_MODIFICATION' => 17, ),
+        BasePeer::TYPE_FIELDNAME => array ('id_asset' => 0, 'id_token' => 1, 'free_token' => 2, 'staked_token' => 3, 'total_token' => 4, 'usd_value' => 5, 'id_symbol' => 6, 'avg_price' => 7, 'profit' => 8, 'flexible_token' => 9, 'locked_token' => 10, 'freeze_token' => 11, 'last_sync' => 12, 'date_creation' => 13, 'date_modification' => 14, 'id_group_creation' => 15, 'id_creation' => 16, 'id_modification' => 17, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, )
     );
 
     /**
@@ -221,6 +224,7 @@ abstract class BaseAssetPeer
             $criteria->addSelectColumn(AssetPeer::ID_SYMBOL);
             $criteria->addSelectColumn(AssetPeer::AVG_PRICE);
             $criteria->addSelectColumn(AssetPeer::PROFIT);
+            $criteria->addSelectColumn(AssetPeer::FLEXIBLE_TOKEN);
             $criteria->addSelectColumn(AssetPeer::LOCKED_TOKEN);
             $criteria->addSelectColumn(AssetPeer::FREEZE_TOKEN);
             $criteria->addSelectColumn(AssetPeer::LAST_SYNC);
@@ -239,6 +243,7 @@ abstract class BaseAssetPeer
             $criteria->addSelectColumn($alias . '.id_symbol');
             $criteria->addSelectColumn($alias . '.avg_price');
             $criteria->addSelectColumn($alias . '.profit');
+            $criteria->addSelectColumn($alias . '.flexible_token');
             $criteria->addSelectColumn($alias . '.locked_token');
             $criteria->addSelectColumn($alias . '.freeze_token');
             $criteria->addSelectColumn($alias . '.last_sync');

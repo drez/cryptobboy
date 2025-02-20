@@ -203,6 +203,7 @@ class AssetForm extends Asset
 .th(_("Value USD"), " th='sorted' c='UsdValue' title='" . _('Value USD')."' ")
 .th(_("Avg. price"), " th='sorted' c='AvgPrice' title='" . _('Avg. price')."' ")
 .th(_("Profit"), " th='sorted' c='Profit' title='" . _('Profit')."' ")
+.th(_("Flexible"), " th='sorted' c='FlexibleToken' title='" . _('Flexible')."' ")
 . $this->cCmoreColsHeader;
                 if(!$this->setReadOnly){
                     $trHead .= th('&nbsp;',' class="actionrow delete" ');
@@ -282,6 +283,7 @@ class AssetForm extends Asset
   'IdSymbol' => '',
   'AvgPrice' => '',
   'Profit' => '',
+  'FlexibleToken' => '',
   'LockedToken' => '',
   'FreezeToken' => '',
   'LastSync' => '',
@@ -380,7 +382,8 @@ class AssetForm extends Asset
                 td(span((($altValue['TotalToken']) ? $altValue['TotalToken'] : str_replace(',', '.', $data->getTotalToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='TotalToken' class='right'  j='editAsset'") . 
                 td(span((($altValue['UsdValue']) ? $altValue['UsdValue'] : str_replace(',', '.', $data->getUsdValue())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='UsdValue' class='right'  j='editAsset'") . 
                 td(span((($altValue['AvgPrice']) ? $altValue['AvgPrice'] : str_replace(',', '.', $data->getAvgPrice())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='AvgPrice' class='right'  j='editAsset'") . 
-                td(span((($altValue['Profit']) ? $altValue['Profit'] : str_replace(',', '.', $data->getProfit())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Profit' class='right'  j='editAsset'") . $cCmoreCols.$actionCell
+                td(span((($altValue['Profit']) ? $altValue['Profit'] : str_replace(',', '.', $data->getProfit())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Profit' class='right'  j='editAsset'") . 
+                td(span((($altValue['FlexibleToken']) ? $altValue['FlexibleToken'] : str_replace(',', '.', $data->getFlexibleToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='FlexibleToken' class='right'  j='editAsset'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -547,6 +550,8 @@ class AssetForm extends Asset
         //integer not required
         $e->setProfit( ($data['Profit'] == '' ) ? null : $data['Profit']);
         //integer not required
+        $e->setFlexibleToken( ($data['FlexibleToken'] == '' ) ? null : $data['FlexibleToken']);
+        //integer not required
         $e->setLockedToken( ($data['LockedToken'] == '' ) ? null : $data['LockedToken']);
         //integer not required
         $e->setFreezeToken( ($data['FreezeToken'] == '' ) ? null : $data['FreezeToken']);
@@ -597,6 +602,9 @@ class AssetForm extends Asset
         }
         if(isset($data['Profit'])){
             $e->setProfit( ($data['Profit'] == '' ) ? null : $data['Profit']);
+        }
+        if(isset($data['FlexibleToken'])){
+            $e->setFlexibleToken( ($data['FlexibleToken'] == '' ) ? null : $data['FlexibleToken']);
         }
         if(isset($data['LockedToken'])){
             $e->setLockedToken( ($data['LockedToken'] == '' ) ? null : $data['LockedToken']);
@@ -781,12 +789,13 @@ $this->fields['Asset']['UsdValue']['html'] = stdFieldRow(_("Value USD"), input('
 $this->fields['Asset']['IdSymbol']['html'] = stdFieldRow(_("Trading pair"), selectboxCustomArray('IdSymbol', $this->arrayIdSymbolOptions, _('Trading pair'), "v='ID_SYMBOL'  s='d'  val='".$dataObj->getIdSymbol()."'", $dataObj->getIdSymbol()), 'IdSymbol', "", $this->commentsIdSymbol, $this->commentsIdSymbol_css, '', ' ', 'no');
 $this->fields['Asset']['AvgPrice']['html'] = stdFieldRow(_("Avg. price"), input('text', 'AvgPrice', $dataObj->getAvgPrice(), "  placeholder='".str_replace("'","&#39;",_('Avg. price'))."'  v='AVG_PRICE' size='10' s='d' class=''"), 'AvgPrice', "", $this->commentsAvgPrice, $this->commentsAvgPrice_css, '', ' ', 'no');
 $this->fields['Asset']['Profit']['html'] = stdFieldRow(_("Profit"), input('text', 'Profit', $dataObj->getProfit(), "  placeholder='".str_replace("'","&#39;",_('Profit'))."'  v='PROFIT' size='10' s='d' class=''"), 'Profit', "", $this->commentsProfit, $this->commentsProfit_css, '', ' ', 'no');
+$this->fields['Asset']['FlexibleToken']['html'] = stdFieldRow(_("Flexible"), input('text', 'FlexibleToken', $dataObj->getFlexibleToken(), "  placeholder='".str_replace("'","&#39;",_('Flexible'))."'  v='FLEXIBLE_TOKEN' size='10' s='d' class=''"), 'FlexibleToken', "", $this->commentsFlexibleToken, $this->commentsFlexibleToken_css, '', ' ', 'no');
 $this->fields['Asset']['LockedToken']['html'] = stdFieldRow(_("Locked"), input('text', 'LockedToken', $dataObj->getLockedToken(), "  placeholder='".str_replace("'","&#39;",_('Locked'))."'  v='LOCKED_TOKEN' size='10' s='d' class=''"), 'LockedToken', "", $this->commentsLockedToken, $this->commentsLockedToken_css, '', ' ', 'no');
 $this->fields['Asset']['FreezeToken']['html'] = stdFieldRow(_("Frozen"), input('text', 'FreezeToken', $dataObj->getFreezeToken(), "  placeholder='".str_replace("'","&#39;",_('Frozen'))."'  v='FREEZE_TOKEN' size='10' s='d' class=''"), 'FreezeToken', "", $this->commentsFreezeToken, $this->commentsFreezeToken_css, '', ' ', 'no');
 $this->fields['Asset']['LastSync']['html'] = stdFieldRow(_("Last sync"), input('datetime-local', 'LastSync', $dataObj->getLastSync(), "  j='date' autocomplete='off' placeholder='YYYY-MM-DD hh:mm:ss' size='30'  s='d' class='' title='Last sync'"), 'LastSync', "", $this->commentsLastSync, $this->commentsLastSync_css, '', ' ', 'no');
 
 
-        $this->lockFormField(array(0=>'FreeToken',1=>'StakedToken',2=>'TotalToken',3=>'UsdValue',4=>'LockedToken',5=>'FreezeToken',6=>'LastSync',7=>'AvgPrice',8=>'Profit',9=>'LastSync',), $dataObj);
+        $this->lockFormField(array(0=>'FreeToken',1=>'StakedToken',2=>'TotalToken',3=>'UsdValue',4=>'LockedToken',5=>'FlexibleToken',6=>'FreezeToken',7=>'LastSync',8=>'AvgPrice',9=>'Profit',10=>'LastSync',), $dataObj);
 
         // Whole form read only
         if($this->setReadOnly == 'all' ) {
@@ -901,6 +910,7 @@ $this->fields['Asset']['IdToken']['html']
 .$this->fields['Asset']['IdSymbol']['html']
 .$this->fields['Asset']['AvgPrice']['html']
 .$this->fields['Asset']['Profit']['html']
+.$this->fields['Asset']['FlexibleToken']['html']
 .'</div><div id="ogf_locked_token"  class=" ui-tabs-panel">'
 .$this->fields['Asset']['LockedToken']['html']
 .$this->fields['Asset']['FreezeToken']['html']
@@ -995,6 +1005,9 @@ $this->fields['Asset']['IdToken']['html']
 
         $this->fieldsRo['Asset']['Profit']['html'] = stdFieldRow(_("Profit"), div( $dataObj->getProfit(), 'Profit_label' , "class='readonly' s='d'")
                 .input('hidden', 'Profit', $dataObj->getProfit(), "s='d'"), 'Profit', "", $this->commentsProfit, $this->commentsProfit_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['Asset']['FlexibleToken']['html'] = stdFieldRow(_("Flexible"), div( $dataObj->getFlexibleToken(), 'FlexibleToken_label' , "class='readonly' s='d'")
+                .input('hidden', 'FlexibleToken', $dataObj->getFlexibleToken(), "s='d'"), 'FlexibleToken', "", $this->commentsFlexibleToken, $this->commentsFlexibleToken_css, 'readonly', ' ', 'no');
 
         $this->fieldsRo['Asset']['LockedToken']['html'] = stdFieldRow(_("Locked"), div( $dataObj->getLockedToken(), 'LockedToken_label' , "class='readonly' s='d'")
                 .input('hidden', 'LockedToken', $dataObj->getLockedToken(), "s='d'"), 'LockedToken', "", $this->commentsLockedToken, $this->commentsLockedToken_css, 'readonly', ' ', 'no');

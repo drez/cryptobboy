@@ -170,6 +170,10 @@ $table['asset'] = [
         'type' => 'DECIMAL',
         'description' => 'Profit',
     ],
+    'flexible_token' => [
+        'type' => 'DECIMAL',
+        'description' => 'Flexible',
+    ],
     'locked_token' => [
         'type' => 'DECIMAL',
         'description' => 'Locked',

@@ -103,6 +103,7 @@ CREATE TABLE `asset`
     `id_symbol` INTEGER(11) COMMENT 'Trading pair',
     `avg_price` DECIMAL(14, 4) COMMENT 'Avg. price',
     `profit` DECIMAL(12, 2) COMMENT 'Profit',
+    `flexible_token` DECIMAL(16, 9) COMMENT 'Flexible',
     `locked_token` DECIMAL(16, 9) COMMENT 'Locked',
     `freeze_token` DECIMAL(16, 9) COMMENT 'Frozen',
     `last_sync` DATETIME COMMENT 'Last sync',

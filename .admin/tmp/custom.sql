@@ -58,10 +58,12 @@ BEGIN
       
       SET lockedToken = lockedToken+(lockedToken);
       SET frozenTotal = frozenTotal+(frozenToken);
-      SET total = total+(freeTotal+stakedTotal+lockedToken+frozenTotal);
+      
 
     end LOOP;
   CLOSE cur;
+
+  SET total = total+(freeTotal+stakedTotal+lockedToken+frozenTotal);
 
 	UPDATE `asset` SET 
     `free_token` = freeTotal, 

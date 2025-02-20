@@ -188,6 +188,7 @@ class Sync {
 
         try {
             $result = $this->binance->user()->getEarnFlexibleBalances();
+            
         }catch (\Exception $e){
             print_r($e->getMessage());
         }
@@ -204,17 +205,18 @@ class Sync {
             }
         }
 
-        try {
+         try {
             $result = $this->binance->user()->getEarnLockedBalances();
+            echo json_encode($result, JSON_PRETTY_PRINT);
         }catch (\Exception $e){
             print_r($e->getMessage());
         }
 
          if (is_array($result['rows'])) {
             foreach ($result['rows'] as $asset) {
-                if ($asset['totalAmount'] > 0) {
+                if ($asset['amount'] > 0) {
                     $assets[$asset['asset']]['Locked'] = [
-                        'free' => $asset['totalAmount'],
+                        'free' => $asset['amount'],
                         'locked' => 0,
                         'freeze' => 0,
                     ];

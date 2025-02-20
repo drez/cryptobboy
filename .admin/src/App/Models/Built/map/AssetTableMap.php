@@ -51,6 +51,7 @@ class AssetTableMap extends TableMap
         $this->addForeignKey('id_symbol', 'IdSymbol', 'INTEGER', 'symbol', 'id_symbol', false, 11, null);
         $this->addColumn('avg_price', 'AvgPrice', 'DECIMAL', false, 14, null);
         $this->addColumn('profit', 'Profit', 'DECIMAL', false, 12, null);
+        $this->addColumn('flexible_token', 'FlexibleToken', 'DECIMAL', false, 16, null);
         $this->addColumn('locked_token', 'LockedToken', 'DECIMAL', false, 16, null);
         $this->addColumn('freeze_token', 'FreezeToken', 'DECIMAL', false, 16, null);
         $this->addColumn('last_sync', 'LastSync', 'TIMESTAMP', false, null, null);
@@ -101,7 +102,7 @@ class AssetTableMap extends TableMap
   'set_child_colunms' => '{"id_token":["ticker"]}',
   'add_tab_columns' => '{"Other":"locked_token"}',
   'set_list_hide_columns' => '["locked_token","freeze_token","id_symbol","last_sync"]',
-  'set_readonly_columns' => '["free_token","staked_token","total_token","usd_value","locked_token","freeze_token","last_sync","avg_price","profit","last_sync"]',
+  'set_readonly_columns' => '["free_token","staked_token","total_token","usd_value","locked_token","flexible_token","freeze_token","last_sync","avg_price","profit","last_sync"]',
   'set_selectbox_filters' => '{"id_symbol":[["id_token","%obj%.id_token"]]}',
 ),
             'add_validator' =>  array (
