@@ -94,3 +94,19 @@
   .good{
     background-color: #00c411;
   }
+
+  .d::after{
+    content: "\EA4C";
+    font-family: "remixicon";
+    text-indent: 0;
+    display: inline-block;
+    color: white;
+  }
+
+  .u::after{
+    content: "\EA76";
+    font-family: "remixicon";
+    text-indent: 0;
+    display: inline-block;
+    color: white;
+  }

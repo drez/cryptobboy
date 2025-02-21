@@ -132,23 +132,21 @@ JS;
                         avgPrices[ticker] = Number(avgPrice);
                     }
 
-                    
-                    var diff = Number(Math.round((data-avgPrices[ticker])/avgPrices[ticker]*100));
+                    var diff = Number(Math.round((data['p']-avgPrices[ticker])/avgPrices[ticker]*100));
                     var color = (diff >= 0)?'good':'bad';
-                    console.log(diff + ': ' + color)
 
                     if( $('#ticker_price_'+ticker).length){
-                        $('#ticker_price_'+ticker).removeClass('good bad').addClass(color).html(data);
+                        $('#ticker_price_'+ticker).removeClass('good bad u d').addClass(data['d']).addClass(color).html(data['p']);
                         $('#ticker_price_diff_'+ticker).removeClass('good bad').addClass(color).html(diff+"%");
                     }else{
-                        $('[data-ticker='+ticker+'] [c=AvgPrice]').append( $('<div>').attr('id', 'ticker_price_'+ticker).addClass('ticker_price').addClass(color).html(data) );
+                        $('[data-ticker='+ticker+'] [c=AvgPrice]').append( $('<div>').attr('id', 'ticker_price_'+ticker).addClass('ticker_price').addClass(data['d']).addClass(color).html(data['p']) );
                         $('[data-ticker='+ticker+'] [c=AvgPrice]').prepend( $('<div>').attr('id', 'ticker_price_diff_'+ticker).addClass('ticker_price').addClass(color).html(diff+"%") );
                     }
                 }
                 
                 
             }
-            setTimeout(getTickersSpot, 4000);
+            setTimeout(getTickersSpot, 6000);
         }, 'json');
     };
 JS;

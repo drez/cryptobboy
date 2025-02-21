@@ -84,4 +84,20 @@
 
 .good {
   background-color: #00c411;
+}
+
+.d::after {
+  content: "\ea4c";
+  font-family: "remixicon";
+  text-indent: 0;
+  display: inline-block;
+  color: white;
+}
+
+.u::after {
+  content: "\ea76";
+  font-family: "remixicon";
+  text-indent: 0;
+  display: inline-block;
+  color: white;
 }/*# sourceMappingURL=apigoat.css.map */

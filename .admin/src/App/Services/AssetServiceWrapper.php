@@ -83,11 +83,21 @@ class AssetServiceWrapper extends AssetService
             foreach($Assets as $Asset){
                 $tikers[$Asset['TP']] = $Asset['ticker'];
             }
-            
+
+            $direction = '';
            // echo pre(print_r($tikers, true));
             foreach($results as $result){
+                if(isset($_SESSION[_AUTH_VAR]->sessVar['tickers_history'][$result['symbol']])){
+                    $direction = ($_SESSION[_AUTH_VAR]->sessVar['tickers_history'][$result['symbol']] > trim($result['price'], '0')) ? 'u' : 'd';
+                }
+
                 if($tikers[$result['symbol']]){
-                    $res[$tikers[$result['symbol']]] = trim($result['price'], '0');
+                    $res[$tikers[$result['symbol']]] = [
+                            'p' => trim($result['price'], '0'),
+                            'd' => $direction,
+                            'b' => $_SESSION[_AUTH_VAR]->sessVar['tickers_history'][$result['symbol']],
+                        ];
+                    $_SESSION[_AUTH_VAR]->sessVar['tickers_history'][$result['symbol']] =  trim($result['price'], '0');
                 }
             }
 
