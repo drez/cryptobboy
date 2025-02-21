@@ -75,6 +75,15 @@
 	margin-right: 20px;
 }
 
+.symbol_change {
+    display: inline-block;
+    font-size: small;
+    
+    border-radius: 5px;
+    padding: 2px 1px 1px 2px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
 .ticker_price {
     display: inline-block;
     font-size: small;
@@ -84,11 +93,13 @@
     margin-left: 5px;
     margin-right: 5px;
     color: white;
-  
+    width: 80px;
+    text-align: center;
 }
 
   .bad{
-    background-color: #c44100;
+    background-color: white;
+    color: #c44100;
   }
 
   .good{
@@ -100,7 +111,7 @@
     font-family: "remixicon";
     text-indent: 0;
     display: inline-block;
-    color: white;
+    color: #ffaf87;
   }
 
   .u::after{
@@ -108,5 +119,21 @@
     font-family: "remixicon";
     text-indent: 0;
     display: inline-block;
-    color: white;
+    color: #86ff90;
+  }
+
+  .au::after{
+    content: "\EA76";
+    font-family: "remixicon";
+    text-indent: 0;
+    display: inline-block;
+    color: #00c411;
+  }
+
+  .ad::after{
+    content: "\EA4C";
+    font-family: "remixicon";
+    text-indent: 0;
+    display: inline-block;
+    color: #c44100;
   }

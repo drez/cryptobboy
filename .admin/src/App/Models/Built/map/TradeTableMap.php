@@ -90,7 +90,7 @@ class TradeTableMap extends TableMap
     public function buildRelations()
     {
         $this->addRelation('Exchange', 'App\\Exchange', RelationMap::MANY_TO_ONE, array('id_exchange' => 'id_exchange', ), null, null);
-        $this->addRelation('Asset', 'App\\Asset', RelationMap::MANY_TO_ONE, array('id_asset' => 'id_asset', ), null, null);
+        $this->addRelation('Asset', 'App\\Asset', RelationMap::MANY_TO_ONE, array('id_asset' => 'id_asset', ), 'CASCADE', null);
         $this->addRelation('Symbol', 'App\\Symbol', RelationMap::MANY_TO_ONE, array('id_symbol' => 'id_symbol', ), null, null);
         $this->addRelation('Token', 'App\\Token', RelationMap::MANY_TO_ONE, array('commission_asset' => 'id_token', ), null, null);
         $this->addRelation('AuthyGroup', 'App\\AuthyGroup', RelationMap::MANY_TO_ONE, array('id_group_creation' => 'id_authy_group', ), null, null);

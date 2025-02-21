@@ -142,33 +142,33 @@ $table['asset'] = [
         'type' => 'INTEGER',
         'description' => 'Token',
     ],
+    'avg_price' => [
+        'type' => 'DECIMAL',
+        'description' => 'Avg. price',
+    ],
     'free_token' => [
         'type' => 'DECIMAL',
         'description' => 'Free',
-    ],
-    'staked_token' => [
-        'type' => 'DECIMAL',
-        'description' => 'Staked',
-    ],
-    'total_token' => [
-        'type' => 'DECIMAL',
-        'description' => 'Total',
     ],
     'usd_value' => [
         'type' => 'DECIMAL',
         'description' => 'Value USD',
     ],
-    'id_symbol' => [
-        'type' => 'INTEGER',
-        'description' => 'Trading pair',
-    ],
-    'avg_price' => [
+    'total_token' => [
         'type' => 'DECIMAL',
-        'description' => 'Avg. price',
+        'description' => 'Total',
     ],
     'profit' => [
         'type' => 'DECIMAL',
         'description' => 'Profit',
+    ],
+    'staked_token' => [
+        'type' => 'DECIMAL',
+        'description' => 'Staked',
+    ],
+    'id_symbol' => [
+        'type' => 'INTEGER',
+        'description' => 'Trading pair',
     ],
     'flexible_token' => [
         'type' => 'DECIMAL',

@@ -24,6 +24,7 @@ class AssetServiceWrapper extends AssetService
         $this->customActions['getAsset']            = 'getAsset';
         $this->customActions['syncPair']            = 'syncPair';
         $this->customActions['getTickersSpot']            = 'getTickersSpot';
+        $this->customActions['getTickerHistory']            = 'getTickerHistory';
         $this->Form = new AssetFormWrapper($request, $args);
     }
 
@@ -66,6 +67,27 @@ class AssetServiceWrapper extends AssetService
 
     }
 
+    function getTickerHistory($request){
+
+       /* if(isset($_SESSION[_AUTH_VAR]->sessVar['symbol_history'][$request['i']])){
+            return json_encode($_SESSION[_AUTH_VAR]->sessVar['symbol_history'][$request['i']]);
+        }*/
+
+        try {
+            $binance = new Binance($_ENV['BINANCE_KEY'], $_ENV['BINANCE_SECRET']);
+            $results = $binance->system()->get24hr(['symbol' => $request['i']]);
+            $history = [
+                    'priceChange' => trim(($results['priceChange'] > 0?'+'.$results['priceChange']:$results['priceChange']), '0'),
+                    'volume' => $results['volume'],
+                    'priceChangePercent' => trim(($results['priceChangePercent'] > 0?'+'.$results['priceChangePercent']:$results['priceChangePercent']), '0'),
+            ];
+            $_SESSION[_AUTH_VAR]->sessVar['symbol_history'][$request['i']] = $history;
+            return json_encode($history);
+        }catch (\Exception $e){
+            return json_encode($e->getMessage());
+        }
+    }
+
     function getTickersSpot()
     {
         try {
@@ -95,7 +117,8 @@ class AssetServiceWrapper extends AssetService
                     $res[$tikers[$result['symbol']]] = [
                             'p' => trim($result['price'], '0'),
                             'd' => $direction,
-                            'b' => $_SESSION[_AUTH_VAR]->sessVar['tickers_history'][$result['symbol']],
+                           // 'b' => $_SESSION[_AUTH_VAR]->sessVar['tickers_history'][$result['symbol']],
+                            's' => $result['symbol']
                         ];
                     $_SESSION[_AUTH_VAR]->sessVar['tickers_history'][$result['symbol']] =  trim($result['price'], '0');
                 }
@@ -103,7 +126,7 @@ class AssetServiceWrapper extends AssetService
 
             //echo pre(print_r($result, true));
         }catch (\Exception $e){
-          return pre(print_r($e->getMessage(), true));
+          return json_encode($e->getMessage());
         }
 
         return json_encode($res);

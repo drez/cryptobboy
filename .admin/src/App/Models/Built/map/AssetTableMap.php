@@ -44,13 +44,13 @@ class AssetTableMap extends TableMap
         // columns
         $this->addPrimaryKey('id_asset', 'IdAsset', 'INTEGER', true, 10, null);
         $this->addForeignKey('id_token', 'IdToken', 'INTEGER', 'token', 'id_token', true, 11, null);
+        $this->addColumn('avg_price', 'AvgPrice', 'DECIMAL', false, 16, null);
         $this->addColumn('free_token', 'FreeToken', 'DECIMAL', false, 16, null);
-        $this->addColumn('staked_token', 'StakedToken', 'DECIMAL', false, 16, null);
-        $this->addColumn('total_token', 'TotalToken', 'DECIMAL', false, 16, null);
         $this->addColumn('usd_value', 'UsdValue', 'DECIMAL', false, 12, null);
-        $this->addForeignKey('id_symbol', 'IdSymbol', 'INTEGER', 'symbol', 'id_symbol', false, 11, null);
-        $this->addColumn('avg_price', 'AvgPrice', 'DECIMAL', false, 14, null);
+        $this->addColumn('total_token', 'TotalToken', 'DECIMAL', false, 16, null);
         $this->addColumn('profit', 'Profit', 'DECIMAL', false, 12, null);
+        $this->addColumn('staked_token', 'StakedToken', 'DECIMAL', false, 16, null);
+        $this->addForeignKey('id_symbol', 'IdSymbol', 'INTEGER', 'symbol', 'id_symbol', false, 11, null);
         $this->addColumn('flexible_token', 'FlexibleToken', 'DECIMAL', false, 16, null);
         $this->addColumn('locked_token', 'LockedToken', 'DECIMAL', false, 16, null);
         $this->addColumn('freeze_token', 'FreezeToken', 'DECIMAL', false, 16, null);
@@ -80,8 +80,8 @@ class AssetTableMap extends TableMap
         $this->addRelation('AuthyGroup', 'App\\AuthyGroup', RelationMap::MANY_TO_ONE, array('id_group_creation' => 'id_authy_group', ), null, null);
         $this->addRelation('AuthyRelatedByIdCreation', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_creation' => 'id_authy', ), null, null);
         $this->addRelation('AuthyRelatedByIdModification', 'App\\Authy', RelationMap::MANY_TO_ONE, array('id_modification' => 'id_authy', ), null, null);
-        $this->addRelation('AssetExchange', 'App\\AssetExchange', RelationMap::ONE_TO_MANY, array('id_asset' => 'id_asset', ), null, null, 'AssetExchanges');
-        $this->addRelation('Trade', 'App\\Trade', RelationMap::ONE_TO_MANY, array('id_asset' => 'id_asset', ), null, null, 'Trades');
+        $this->addRelation('AssetExchange', 'App\\AssetExchange', RelationMap::ONE_TO_MANY, array('id_asset' => 'id_asset', ), 'CASCADE', null, 'AssetExchanges');
+        $this->addRelation('Trade', 'App\\Trade', RelationMap::ONE_TO_MANY, array('id_asset' => 'id_asset', ), 'CASCADE', null, 'Trades');
     } // buildRelations()
 
     /**

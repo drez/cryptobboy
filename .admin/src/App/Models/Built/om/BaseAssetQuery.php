@@ -29,13 +29,13 @@ use App\Trade;
  *
  * @method AssetQuery orderByIdAsset($order = Criteria::ASC) Order by the id_asset column
  * @method AssetQuery orderByIdToken($order = Criteria::ASC) Order by the id_token column
- * @method AssetQuery orderByFreeToken($order = Criteria::ASC) Order by the free_token column
- * @method AssetQuery orderByStakedToken($order = Criteria::ASC) Order by the staked_token column
- * @method AssetQuery orderByTotalToken($order = Criteria::ASC) Order by the total_token column
- * @method AssetQuery orderByUsdValue($order = Criteria::ASC) Order by the usd_value column
- * @method AssetQuery orderByIdSymbol($order = Criteria::ASC) Order by the id_symbol column
  * @method AssetQuery orderByAvgPrice($order = Criteria::ASC) Order by the avg_price column
+ * @method AssetQuery orderByFreeToken($order = Criteria::ASC) Order by the free_token column
+ * @method AssetQuery orderByUsdValue($order = Criteria::ASC) Order by the usd_value column
+ * @method AssetQuery orderByTotalToken($order = Criteria::ASC) Order by the total_token column
  * @method AssetQuery orderByProfit($order = Criteria::ASC) Order by the profit column
+ * @method AssetQuery orderByStakedToken($order = Criteria::ASC) Order by the staked_token column
+ * @method AssetQuery orderByIdSymbol($order = Criteria::ASC) Order by the id_symbol column
  * @method AssetQuery orderByFlexibleToken($order = Criteria::ASC) Order by the flexible_token column
  * @method AssetQuery orderByLockedToken($order = Criteria::ASC) Order by the locked_token column
  * @method AssetQuery orderByFreezeToken($order = Criteria::ASC) Order by the freeze_token column
@@ -48,13 +48,13 @@ use App\Trade;
  *
  * @method AssetQuery groupByIdAsset() Group by the id_asset column
  * @method AssetQuery groupByIdToken() Group by the id_token column
- * @method AssetQuery groupByFreeToken() Group by the free_token column
- * @method AssetQuery groupByStakedToken() Group by the staked_token column
- * @method AssetQuery groupByTotalToken() Group by the total_token column
- * @method AssetQuery groupByUsdValue() Group by the usd_value column
- * @method AssetQuery groupByIdSymbol() Group by the id_symbol column
  * @method AssetQuery groupByAvgPrice() Group by the avg_price column
+ * @method AssetQuery groupByFreeToken() Group by the free_token column
+ * @method AssetQuery groupByUsdValue() Group by the usd_value column
+ * @method AssetQuery groupByTotalToken() Group by the total_token column
  * @method AssetQuery groupByProfit() Group by the profit column
+ * @method AssetQuery groupByStakedToken() Group by the staked_token column
+ * @method AssetQuery groupByIdSymbol() Group by the id_symbol column
  * @method AssetQuery groupByFlexibleToken() Group by the flexible_token column
  * @method AssetQuery groupByLockedToken() Group by the locked_token column
  * @method AssetQuery groupByFreezeToken() Group by the freeze_token column
@@ -101,13 +101,13 @@ use App\Trade;
  * @method Asset findOneOrCreate(PropelPDO $con = null) Return the first Asset matching the query, or a new Asset object populated from the query conditions when no match is found
  *
  * @method Asset findOneByIdToken(int $id_token) Return the first Asset filtered by the id_token column
- * @method Asset findOneByFreeToken(string $free_token) Return the first Asset filtered by the free_token column
- * @method Asset findOneByStakedToken(string $staked_token) Return the first Asset filtered by the staked_token column
- * @method Asset findOneByTotalToken(string $total_token) Return the first Asset filtered by the total_token column
- * @method Asset findOneByUsdValue(string $usd_value) Return the first Asset filtered by the usd_value column
- * @method Asset findOneByIdSymbol(int $id_symbol) Return the first Asset filtered by the id_symbol column
  * @method Asset findOneByAvgPrice(string $avg_price) Return the first Asset filtered by the avg_price column
+ * @method Asset findOneByFreeToken(string $free_token) Return the first Asset filtered by the free_token column
+ * @method Asset findOneByUsdValue(string $usd_value) Return the first Asset filtered by the usd_value column
+ * @method Asset findOneByTotalToken(string $total_token) Return the first Asset filtered by the total_token column
  * @method Asset findOneByProfit(string $profit) Return the first Asset filtered by the profit column
+ * @method Asset findOneByStakedToken(string $staked_token) Return the first Asset filtered by the staked_token column
+ * @method Asset findOneByIdSymbol(int $id_symbol) Return the first Asset filtered by the id_symbol column
  * @method Asset findOneByFlexibleToken(string $flexible_token) Return the first Asset filtered by the flexible_token column
  * @method Asset findOneByLockedToken(string $locked_token) Return the first Asset filtered by the locked_token column
  * @method Asset findOneByFreezeToken(string $freeze_token) Return the first Asset filtered by the freeze_token column
@@ -120,13 +120,13 @@ use App\Trade;
  *
  * @method array findByIdAsset(int $id_asset) Return Asset objects filtered by the id_asset column
  * @method array findByIdToken(int $id_token) Return Asset objects filtered by the id_token column
- * @method array findByFreeToken(string $free_token) Return Asset objects filtered by the free_token column
- * @method array findByStakedToken(string $staked_token) Return Asset objects filtered by the staked_token column
- * @method array findByTotalToken(string $total_token) Return Asset objects filtered by the total_token column
- * @method array findByUsdValue(string $usd_value) Return Asset objects filtered by the usd_value column
- * @method array findByIdSymbol(int $id_symbol) Return Asset objects filtered by the id_symbol column
  * @method array findByAvgPrice(string $avg_price) Return Asset objects filtered by the avg_price column
+ * @method array findByFreeToken(string $free_token) Return Asset objects filtered by the free_token column
+ * @method array findByUsdValue(string $usd_value) Return Asset objects filtered by the usd_value column
+ * @method array findByTotalToken(string $total_token) Return Asset objects filtered by the total_token column
  * @method array findByProfit(string $profit) Return Asset objects filtered by the profit column
+ * @method array findByStakedToken(string $staked_token) Return Asset objects filtered by the staked_token column
+ * @method array findByIdSymbol(int $id_symbol) Return Asset objects filtered by the id_symbol column
  * @method array findByFlexibleToken(string $flexible_token) Return Asset objects filtered by the flexible_token column
  * @method array findByLockedToken(string $locked_token) Return Asset objects filtered by the locked_token column
  * @method array findByFreezeToken(string $freeze_token) Return Asset objects filtered by the freeze_token column
@@ -244,7 +244,7 @@ abstract class BaseAssetQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_asset`, `id_token`, `free_token`, `staked_token`, `total_token`, `usd_value`, `id_symbol`, `avg_price`, `profit`, `flexible_token`, `locked_token`, `freeze_token`, `last_sync`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `asset` WHERE `id_asset` = :p0';
+        $sql = 'SELECT `id_asset`, `id_token`, `avg_price`, `free_token`, `usd_value`, `total_token`, `profit`, `staked_token`, `id_symbol`, `flexible_token`, `locked_token`, `freeze_token`, `last_sync`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `asset` WHERE `id_asset` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -423,6 +423,48 @@ abstract class BaseAssetQuery extends ModelCriteria
     }
 
     /**
+     * Filter the query on the avg_price column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByAvgPrice(1234); // WHERE avg_price = 1234
+     * $query->filterByAvgPrice(array(12, 34)); // WHERE avg_price IN (12, 34)
+     * $query->filterByAvgPrice(array('min' => 12)); // WHERE avg_price >= 12
+     * $query->filterByAvgPrice(array('max' => 12)); // WHERE avg_price <= 12
+     * </code>
+     *
+     * @param     mixed $avgPrice The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return AssetQuery The current query, for fluid interface
+     */
+    public function filterByAvgPrice($avgPrice = null, $comparison = null)
+    {
+        if (is_array($avgPrice)) {
+            $useMinMax = false;
+            if (isset($avgPrice['min'])) {
+                $this->addUsingAlias(AssetPeer::AVG_PRICE, $avgPrice['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($avgPrice['max'])) {
+                $this->addUsingAlias(AssetPeer::AVG_PRICE, $avgPrice['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(AssetPeer::AVG_PRICE, $avgPrice, $comparison);
+    }
+
+    /**
      * Filter the query on the free_token column
      *
      * Example usage:
@@ -462,90 +504,6 @@ abstract class BaseAssetQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(AssetPeer::FREE_TOKEN, $freeToken, $comparison);
-    }
-
-    /**
-     * Filter the query on the staked_token column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByStakedToken(1234); // WHERE staked_token = 1234
-     * $query->filterByStakedToken(array(12, 34)); // WHERE staked_token IN (12, 34)
-     * $query->filterByStakedToken(array('min' => 12)); // WHERE staked_token >= 12
-     * $query->filterByStakedToken(array('max' => 12)); // WHERE staked_token <= 12
-     * </code>
-     *
-     * @param     mixed $stakedToken The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return AssetQuery The current query, for fluid interface
-     */
-    public function filterByStakedToken($stakedToken = null, $comparison = null)
-    {
-        if (is_array($stakedToken)) {
-            $useMinMax = false;
-            if (isset($stakedToken['min'])) {
-                $this->addUsingAlias(AssetPeer::STAKED_TOKEN, $stakedToken['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($stakedToken['max'])) {
-                $this->addUsingAlias(AssetPeer::STAKED_TOKEN, $stakedToken['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(AssetPeer::STAKED_TOKEN, $stakedToken, $comparison);
-    }
-
-    /**
-     * Filter the query on the total_token column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByTotalToken(1234); // WHERE total_token = 1234
-     * $query->filterByTotalToken(array(12, 34)); // WHERE total_token IN (12, 34)
-     * $query->filterByTotalToken(array('min' => 12)); // WHERE total_token >= 12
-     * $query->filterByTotalToken(array('max' => 12)); // WHERE total_token <= 12
-     * </code>
-     *
-     * @param     mixed $totalToken The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return AssetQuery The current query, for fluid interface
-     */
-    public function filterByTotalToken($totalToken = null, $comparison = null)
-    {
-        if (is_array($totalToken)) {
-            $useMinMax = false;
-            if (isset($totalToken['min'])) {
-                $this->addUsingAlias(AssetPeer::TOTAL_TOKEN, $totalToken['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($totalToken['max'])) {
-                $this->addUsingAlias(AssetPeer::TOTAL_TOKEN, $totalToken['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(AssetPeer::TOTAL_TOKEN, $totalToken, $comparison);
     }
 
     /**
@@ -591,19 +549,17 @@ abstract class BaseAssetQuery extends ModelCriteria
     }
 
     /**
-     * Filter the query on the id_symbol column
+     * Filter the query on the total_token column
      *
      * Example usage:
      * <code>
-     * $query->filterByIdSymbol(1234); // WHERE id_symbol = 1234
-     * $query->filterByIdSymbol(array(12, 34)); // WHERE id_symbol IN (12, 34)
-     * $query->filterByIdSymbol(array('min' => 12)); // WHERE id_symbol >= 12
-     * $query->filterByIdSymbol(array('max' => 12)); // WHERE id_symbol <= 12
+     * $query->filterByTotalToken(1234); // WHERE total_token = 1234
+     * $query->filterByTotalToken(array(12, 34)); // WHERE total_token IN (12, 34)
+     * $query->filterByTotalToken(array('min' => 12)); // WHERE total_token >= 12
+     * $query->filterByTotalToken(array('max' => 12)); // WHERE total_token <= 12
      * </code>
      *
-     * @see       filterBySymbol()
-     *
-     * @param     mixed $idSymbol The value to use as filter.
+     * @param     mixed $totalToken The value to use as filter.
      *              Use scalar values for equality.
      *              Use array values for in_array() equivalent.
      *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
@@ -611,16 +567,16 @@ abstract class BaseAssetQuery extends ModelCriteria
      *
      * @return AssetQuery The current query, for fluid interface
      */
-    public function filterByIdSymbol($idSymbol = null, $comparison = null)
+    public function filterByTotalToken($totalToken = null, $comparison = null)
     {
-        if (is_array($idSymbol)) {
+        if (is_array($totalToken)) {
             $useMinMax = false;
-            if (isset($idSymbol['min'])) {
-                $this->addUsingAlias(AssetPeer::ID_SYMBOL, $idSymbol['min'], Criteria::GREATER_EQUAL);
+            if (isset($totalToken['min'])) {
+                $this->addUsingAlias(AssetPeer::TOTAL_TOKEN, $totalToken['min'], Criteria::GREATER_EQUAL);
                 $useMinMax = true;
             }
-            if (isset($idSymbol['max'])) {
-                $this->addUsingAlias(AssetPeer::ID_SYMBOL, $idSymbol['max'], Criteria::LESS_EQUAL);
+            if (isset($totalToken['max'])) {
+                $this->addUsingAlias(AssetPeer::TOTAL_TOKEN, $totalToken['max'], Criteria::LESS_EQUAL);
                 $useMinMax = true;
             }
             if ($useMinMax) {
@@ -631,49 +587,7 @@ abstract class BaseAssetQuery extends ModelCriteria
             }
         }
 
-        return $this->addUsingAlias(AssetPeer::ID_SYMBOL, $idSymbol, $comparison);
-    }
-
-    /**
-     * Filter the query on the avg_price column
-     *
-     * Example usage:
-     * <code>
-     * $query->filterByAvgPrice(1234); // WHERE avg_price = 1234
-     * $query->filterByAvgPrice(array(12, 34)); // WHERE avg_price IN (12, 34)
-     * $query->filterByAvgPrice(array('min' => 12)); // WHERE avg_price >= 12
-     * $query->filterByAvgPrice(array('max' => 12)); // WHERE avg_price <= 12
-     * </code>
-     *
-     * @param     mixed $avgPrice The value to use as filter.
-     *              Use scalar values for equality.
-     *              Use array values for in_array() equivalent.
-     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
-     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
-     *
-     * @return AssetQuery The current query, for fluid interface
-     */
-    public function filterByAvgPrice($avgPrice = null, $comparison = null)
-    {
-        if (is_array($avgPrice)) {
-            $useMinMax = false;
-            if (isset($avgPrice['min'])) {
-                $this->addUsingAlias(AssetPeer::AVG_PRICE, $avgPrice['min'], Criteria::GREATER_EQUAL);
-                $useMinMax = true;
-            }
-            if (isset($avgPrice['max'])) {
-                $this->addUsingAlias(AssetPeer::AVG_PRICE, $avgPrice['max'], Criteria::LESS_EQUAL);
-                $useMinMax = true;
-            }
-            if ($useMinMax) {
-                return $this;
-            }
-            if (null === $comparison) {
-                $comparison = Criteria::IN;
-            }
-        }
-
-        return $this->addUsingAlias(AssetPeer::AVG_PRICE, $avgPrice, $comparison);
+        return $this->addUsingAlias(AssetPeer::TOTAL_TOKEN, $totalToken, $comparison);
     }
 
     /**
@@ -716,6 +630,92 @@ abstract class BaseAssetQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(AssetPeer::PROFIT, $profit, $comparison);
+    }
+
+    /**
+     * Filter the query on the staked_token column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByStakedToken(1234); // WHERE staked_token = 1234
+     * $query->filterByStakedToken(array(12, 34)); // WHERE staked_token IN (12, 34)
+     * $query->filterByStakedToken(array('min' => 12)); // WHERE staked_token >= 12
+     * $query->filterByStakedToken(array('max' => 12)); // WHERE staked_token <= 12
+     * </code>
+     *
+     * @param     mixed $stakedToken The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return AssetQuery The current query, for fluid interface
+     */
+    public function filterByStakedToken($stakedToken = null, $comparison = null)
+    {
+        if (is_array($stakedToken)) {
+            $useMinMax = false;
+            if (isset($stakedToken['min'])) {
+                $this->addUsingAlias(AssetPeer::STAKED_TOKEN, $stakedToken['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($stakedToken['max'])) {
+                $this->addUsingAlias(AssetPeer::STAKED_TOKEN, $stakedToken['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(AssetPeer::STAKED_TOKEN, $stakedToken, $comparison);
+    }
+
+    /**
+     * Filter the query on the id_symbol column
+     *
+     * Example usage:
+     * <code>
+     * $query->filterByIdSymbol(1234); // WHERE id_symbol = 1234
+     * $query->filterByIdSymbol(array(12, 34)); // WHERE id_symbol IN (12, 34)
+     * $query->filterByIdSymbol(array('min' => 12)); // WHERE id_symbol >= 12
+     * $query->filterByIdSymbol(array('max' => 12)); // WHERE id_symbol <= 12
+     * </code>
+     *
+     * @see       filterBySymbol()
+     *
+     * @param     mixed $idSymbol The value to use as filter.
+     *              Use scalar values for equality.
+     *              Use array values for in_array() equivalent.
+     *              Use associative array('min' => $minValue, 'max' => $maxValue) for intervals.
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return AssetQuery The current query, for fluid interface
+     */
+    public function filterByIdSymbol($idSymbol = null, $comparison = null)
+    {
+        if (is_array($idSymbol)) {
+            $useMinMax = false;
+            if (isset($idSymbol['min'])) {
+                $this->addUsingAlias(AssetPeer::ID_SYMBOL, $idSymbol['min'], Criteria::GREATER_EQUAL);
+                $useMinMax = true;
+            }
+            if (isset($idSymbol['max'])) {
+                $this->addUsingAlias(AssetPeer::ID_SYMBOL, $idSymbol['max'], Criteria::LESS_EQUAL);
+                $useMinMax = true;
+            }
+            if ($useMinMax) {
+                return $this;
+            }
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(AssetPeer::ID_SYMBOL, $idSymbol, $comparison);
     }
 
     /**

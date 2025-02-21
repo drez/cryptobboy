@@ -198,12 +198,12 @@ class AssetForm extends Asset
         switch($act) {
             case 'head':
                 $trHead = th(_("Token ticker"), " th='sorted' c='Token.Ticker' title='"._('Token.Ticker')."' ")
-.th(_("Free"), " th='sorted' c='FreeToken' title='" . _('Free')."' ")
-.th(_("Staked"), " th='sorted' c='StakedToken' title='" . _('Staked')."' ")
-.th(_("Total"), " th='sorted' c='TotalToken' title='" . _('Total')."' ")
-.th(_("Value USD"), " th='sorted' c='UsdValue' title='" . _('Value USD')."' ")
 .th(_("Avg. price"), " th='sorted' c='AvgPrice' title='" . _('Avg. price')."' ")
+.th(_("Free"), " th='sorted' c='FreeToken' title='" . _('Free')."' ")
+.th(_("Value USD"), " th='sorted' c='UsdValue' title='" . _('Value USD')."' ")
+.th(_("Total"), " th='sorted' c='TotalToken' title='" . _('Total')."' ")
 .th(_("Profit"), " th='sorted' c='Profit' title='" . _('Profit')."' ")
+.th(_("Staked"), " th='sorted' c='StakedToken' title='" . _('Staked')."' ")
 .th(_("Flexible"), " th='sorted' c='FlexibleToken' title='" . _('Flexible')."' ")
 . $this->cCmoreColsHeader;
                 if(!$this->setReadOnly){
@@ -277,13 +277,13 @@ class AssetForm extends Asset
         $altValue = array (
   'IdAsset' => '',
   'IdToken' => '',
-  'FreeToken' => '',
-  'StakedToken' => '',
-  'TotalToken' => '',
-  'UsdValue' => '',
-  'IdSymbol' => '',
   'AvgPrice' => '',
+  'FreeToken' => '',
+  'UsdValue' => '',
+  'TotalToken' => '',
   'Profit' => '',
+  'StakedToken' => '',
+  'IdSymbol' => '',
   'FlexibleToken' => '',
   'LockedToken' => '',
   'FreezeToken' => '',
@@ -379,12 +379,12 @@ class AssetForm extends Asset
 
                 $tr .= $hook['tr_before'].tr(
                 td(span((($altValue['IdToken']) ? $altValue['IdToken'] : $altValue['Token_Ticker']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdToken' class=''  j='editAsset'") . 
-                td(span((($altValue['FreeToken']) ? $altValue['FreeToken'] : str_replace(',', '.', $data->getFreeToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='FreeToken' class='right'  j='editAsset'") . 
-                td(span((($altValue['StakedToken']) ? $altValue['StakedToken'] : str_replace(',', '.', $data->getStakedToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='StakedToken' class='right'  j='editAsset'") . 
-                td(span((($altValue['TotalToken']) ? $altValue['TotalToken'] : str_replace(',', '.', $data->getTotalToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='TotalToken' class='right'  j='editAsset'") . 
-                td(span((($altValue['UsdValue']) ? $altValue['UsdValue'] : str_replace(',', '.', $data->getUsdValue())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='UsdValue' class='right'  j='editAsset'") . 
                 td(span((($altValue['AvgPrice']) ? $altValue['AvgPrice'] : str_replace(',', '.', $data->getAvgPrice())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='AvgPrice' class='right'  j='editAsset'") . 
+                td(span((($altValue['FreeToken']) ? $altValue['FreeToken'] : str_replace(',', '.', $data->getFreeToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='FreeToken' class='right'  j='editAsset'") . 
+                td(span((($altValue['UsdValue']) ? $altValue['UsdValue'] : str_replace(',', '.', $data->getUsdValue())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='UsdValue' class='right'  j='editAsset'") . 
+                td(span((($altValue['TotalToken']) ? $altValue['TotalToken'] : str_replace(',', '.', $data->getTotalToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='TotalToken' class='right'  j='editAsset'") . 
                 td(span((($altValue['Profit']) ? $altValue['Profit'] : str_replace(',', '.', $data->getProfit())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Profit' class='right'  j='editAsset'") . 
+                td(span((($altValue['StakedToken']) ? $altValue['StakedToken'] : str_replace(',', '.', $data->getStakedToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='StakedToken' class='right'  j='editAsset'") . 
                 td(span((($altValue['FlexibleToken']) ? $altValue['FlexibleToken'] : str_replace(',', '.', $data->getFlexibleToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='FlexibleToken' class='right'  j='editAsset'") . $hook['td'].$cCmoreCols.$actionCell
                 , " ".$hook['tr']."
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
@@ -539,19 +539,19 @@ class AssetForm extends Asset
         #
         
         //integer not required
+        $e->setAvgPrice( ($data['AvgPrice'] == '' ) ? null : $data['AvgPrice']);
+        //integer not required
         $e->setFreeToken( ($data['FreeToken'] == '' ) ? null : $data['FreeToken']);
         //integer not required
-        $e->setStakedToken( ($data['StakedToken'] == '' ) ? null : $data['StakedToken']);
+        $e->setUsdValue( ($data['UsdValue'] == '' ) ? null : $data['UsdValue']);
         //integer not required
         $e->setTotalToken( ($data['TotalToken'] == '' ) ? null : $data['TotalToken']);
         //integer not required
-        $e->setUsdValue( ($data['UsdValue'] == '' ) ? null : $data['UsdValue']);
+        $e->setProfit( ($data['Profit'] == '' ) ? null : $data['Profit']);
+        //integer not required
+        $e->setStakedToken( ($data['StakedToken'] == '' ) ? null : $data['StakedToken']);
         //foreign
         $e->setIdSymbol(( $data['IdSymbol'] == '' ) ? null : $data['IdSymbol']);
-        //integer not required
-        $e->setAvgPrice( ($data['AvgPrice'] == '' ) ? null : $data['AvgPrice']);
-        //integer not required
-        $e->setProfit( ($data['Profit'] == '' ) ? null : $data['Profit']);
         //integer not required
         $e->setFlexibleToken( ($data['FlexibleToken'] == '' ) ? null : $data['FlexibleToken']);
         //integer not required
@@ -585,26 +585,26 @@ class AssetForm extends Asset
 
         
         
+        if(isset($data['AvgPrice'])){
+            $e->setAvgPrice( ($data['AvgPrice'] == '' ) ? null : $data['AvgPrice']);
+        }
         if(isset($data['FreeToken'])){
             $e->setFreeToken( ($data['FreeToken'] == '' ) ? null : $data['FreeToken']);
-        }
-        if(isset($data['StakedToken'])){
-            $e->setStakedToken( ($data['StakedToken'] == '' ) ? null : $data['StakedToken']);
-        }
-        if(isset($data['TotalToken'])){
-            $e->setTotalToken( ($data['TotalToken'] == '' ) ? null : $data['TotalToken']);
         }
         if(isset($data['UsdValue'])){
             $e->setUsdValue( ($data['UsdValue'] == '' ) ? null : $data['UsdValue']);
         }
-        if( isset($data['IdSymbol']) ){
-            $e->setIdSymbol(( $data['IdSymbol'] == '' ) ? null : $data['IdSymbol']);
-        }
-        if(isset($data['AvgPrice'])){
-            $e->setAvgPrice( ($data['AvgPrice'] == '' ) ? null : $data['AvgPrice']);
+        if(isset($data['TotalToken'])){
+            $e->setTotalToken( ($data['TotalToken'] == '' ) ? null : $data['TotalToken']);
         }
         if(isset($data['Profit'])){
             $e->setProfit( ($data['Profit'] == '' ) ? null : $data['Profit']);
+        }
+        if(isset($data['StakedToken'])){
+            $e->setStakedToken( ($data['StakedToken'] == '' ) ? null : $data['StakedToken']);
+        }
+        if( isset($data['IdSymbol']) ){
+            $e->setIdSymbol(( $data['IdSymbol'] == '' ) ? null : $data['IdSymbol']);
         }
         if(isset($data['FlexibleToken'])){
             $e->setFlexibleToken( ($data['FlexibleToken'] == '' ) ? null : $data['FlexibleToken']);
@@ -785,13 +785,13 @@ class AssetForm extends Asset
         
         
 $this->fields['Asset']['IdToken']['html'] = stdFieldRow(_("Token"), selectboxCustomArray('IdToken', $this->arrayIdTokenOptions, "", "v='ID_TOKEN'  s='d'  val='".$dataObj->getIdToken()."'", $dataObj->getIdToken()), 'IdToken', "", $this->commentsIdToken, $this->commentsIdToken_css, '', ' ', 'no');
-$this->fields['Asset']['FreeToken']['html'] = stdFieldRow(_("Free"), input('text', 'FreeToken', $dataObj->getFreeToken(), "  placeholder='".str_replace("'","&#39;",_('Free'))."'  v='FREE_TOKEN' size='10' s='d' class='req'"), 'FreeToken', "", $this->commentsFreeToken, $this->commentsFreeToken_css, '', ' ', 'no');
-$this->fields['Asset']['StakedToken']['html'] = stdFieldRow(_("Staked"), input('text', 'StakedToken', $dataObj->getStakedToken(), "  placeholder='".str_replace("'","&#39;",_('Staked'))."'  v='STAKED_TOKEN' size='10' s='d' class=''"), 'StakedToken', "", $this->commentsStakedToken, $this->commentsStakedToken_css, '', ' ', 'no');
-$this->fields['Asset']['TotalToken']['html'] = stdFieldRow(_("Total"), input('text', 'TotalToken', $dataObj->getTotalToken(), "  placeholder='".str_replace("'","&#39;",_('Total'))."'  v='TOTAL_TOKEN' size='10' s='d' class=''"), 'TotalToken', "", $this->commentsTotalToken, $this->commentsTotalToken_css, '', ' ', 'no');
-$this->fields['Asset']['UsdValue']['html'] = stdFieldRow(_("Value USD"), input('text', 'UsdValue', $dataObj->getUsdValue(), "  placeholder='".str_replace("'","&#39;",_('Value USD'))."'  v='USD_VALUE' size='10' s='d' class=''"), 'UsdValue', "", $this->commentsUsdValue, $this->commentsUsdValue_css, '', ' ', 'no');
-$this->fields['Asset']['IdSymbol']['html'] = stdFieldRow(_("Trading pair"), selectboxCustomArray('IdSymbol', $this->arrayIdSymbolOptions, _('Trading pair'), "v='ID_SYMBOL'  s='d'  val='".$dataObj->getIdSymbol()."'", $dataObj->getIdSymbol()), 'IdSymbol', "", $this->commentsIdSymbol, $this->commentsIdSymbol_css, '', ' ', 'no');
 $this->fields['Asset']['AvgPrice']['html'] = stdFieldRow(_("Avg. price"), input('text', 'AvgPrice', $dataObj->getAvgPrice(), "  placeholder='".str_replace("'","&#39;",_('Avg. price'))."'  v='AVG_PRICE' size='10' s='d' class=''"), 'AvgPrice', "", $this->commentsAvgPrice, $this->commentsAvgPrice_css, '', ' ', 'no');
+$this->fields['Asset']['FreeToken']['html'] = stdFieldRow(_("Free"), input('text', 'FreeToken', $dataObj->getFreeToken(), "  placeholder='".str_replace("'","&#39;",_('Free'))."'  v='FREE_TOKEN' size='10' s='d' class='req'"), 'FreeToken', "", $this->commentsFreeToken, $this->commentsFreeToken_css, '', ' ', 'no');
+$this->fields['Asset']['UsdValue']['html'] = stdFieldRow(_("Value USD"), input('text', 'UsdValue', $dataObj->getUsdValue(), "  placeholder='".str_replace("'","&#39;",_('Value USD'))."'  v='USD_VALUE' size='10' s='d' class=''"), 'UsdValue', "", $this->commentsUsdValue, $this->commentsUsdValue_css, '', ' ', 'no');
+$this->fields['Asset']['TotalToken']['html'] = stdFieldRow(_("Total"), input('text', 'TotalToken', $dataObj->getTotalToken(), "  placeholder='".str_replace("'","&#39;",_('Total'))."'  v='TOTAL_TOKEN' size='10' s='d' class=''"), 'TotalToken', "", $this->commentsTotalToken, $this->commentsTotalToken_css, '', ' ', 'no');
 $this->fields['Asset']['Profit']['html'] = stdFieldRow(_("Profit"), input('text', 'Profit', $dataObj->getProfit(), "  placeholder='".str_replace("'","&#39;",_('Profit'))."'  v='PROFIT' size='10' s='d' class=''"), 'Profit', "", $this->commentsProfit, $this->commentsProfit_css, '', ' ', 'no');
+$this->fields['Asset']['StakedToken']['html'] = stdFieldRow(_("Staked"), input('text', 'StakedToken', $dataObj->getStakedToken(), "  placeholder='".str_replace("'","&#39;",_('Staked'))."'  v='STAKED_TOKEN' size='10' s='d' class=''"), 'StakedToken', "", $this->commentsStakedToken, $this->commentsStakedToken_css, '', ' ', 'no');
+$this->fields['Asset']['IdSymbol']['html'] = stdFieldRow(_("Trading pair"), selectboxCustomArray('IdSymbol', $this->arrayIdSymbolOptions, _('Trading pair'), "v='ID_SYMBOL'  s='d'  val='".$dataObj->getIdSymbol()."'", $dataObj->getIdSymbol()), 'IdSymbol', "", $this->commentsIdSymbol, $this->commentsIdSymbol_css, '', ' ', 'no');
 $this->fields['Asset']['FlexibleToken']['html'] = stdFieldRow(_("Flexible"), input('text', 'FlexibleToken', $dataObj->getFlexibleToken(), "  placeholder='".str_replace("'","&#39;",_('Flexible'))."'  v='FLEXIBLE_TOKEN' size='10' s='d' class=''"), 'FlexibleToken', "", $this->commentsFlexibleToken, $this->commentsFlexibleToken_css, '', ' ', 'no');
 $this->fields['Asset']['LockedToken']['html'] = stdFieldRow(_("Locked"), input('text', 'LockedToken', $dataObj->getLockedToken(), "  placeholder='".str_replace("'","&#39;",_('Locked'))."'  v='LOCKED_TOKEN' size='10' s='d' class=''"), 'LockedToken', "", $this->commentsLockedToken, $this->commentsLockedToken_css, '', ' ', 'no');
 $this->fields['Asset']['FreezeToken']['html'] = stdFieldRow(_("Frozen"), input('text', 'FreezeToken', $dataObj->getFreezeToken(), "  placeholder='".str_replace("'","&#39;",_('Frozen'))."'  v='FREEZE_TOKEN' size='10' s='d' class=''"), 'FreezeToken', "", $this->commentsFreezeToken, $this->commentsFreezeToken_css, '', ' ', 'no');
@@ -906,13 +906,13 @@ $this->fields['Asset']['LastSync']['html'] = stdFieldRow(_("Last sync"), input('
                 .
                     '<div id="ogf_Asset">'.
 $this->fields['Asset']['IdToken']['html']
-.$this->fields['Asset']['FreeToken']['html']
-.$this->fields['Asset']['StakedToken']['html']
-.$this->fields['Asset']['TotalToken']['html']
-.$this->fields['Asset']['UsdValue']['html']
-.$this->fields['Asset']['IdSymbol']['html']
 .$this->fields['Asset']['AvgPrice']['html']
+.$this->fields['Asset']['FreeToken']['html']
+.$this->fields['Asset']['UsdValue']['html']
+.$this->fields['Asset']['TotalToken']['html']
 .$this->fields['Asset']['Profit']['html']
+.$this->fields['Asset']['StakedToken']['html']
+.$this->fields['Asset']['IdSymbol']['html']
 .$this->fields['Asset']['FlexibleToken']['html']
 .'</div><div id="ogf_locked_token"  class=" ui-tabs-panel">'
 .$this->fields['Asset']['LockedToken']['html']
@@ -988,26 +988,26 @@ $this->fields['Asset']['IdToken']['html']
         $this->fieldsRo['Asset']['IdToken']['html'] = stdFieldRow(_("Token"), div( ($dataObj->getToken())?$dataObj->getToken()->getTicker():'', 'IdToken_label' , "class='readonly' s='d'")
                 .input('hidden', 'IdToken', $dataObj->getIdToken(), "s='d'"), 'IdToken', "", $this->commentsIdToken, $this->commentsIdToken_css, 'readonly', ' ', 'no');
 
+        $this->fieldsRo['Asset']['AvgPrice']['html'] = stdFieldRow(_("Avg. price"), div( $dataObj->getAvgPrice(), 'AvgPrice_label' , "class='readonly' s='d'")
+                .input('hidden', 'AvgPrice', $dataObj->getAvgPrice(), "s='d'"), 'AvgPrice', "", $this->commentsAvgPrice, $this->commentsAvgPrice_css, 'readonly', ' ', 'no');
+
         $this->fieldsRo['Asset']['FreeToken']['html'] = stdFieldRow(_("Free"), div( $dataObj->getFreeToken(), 'FreeToken_label' , "class='readonly' s='d'")
                 .input('hidden', 'FreeToken', $dataObj->getFreeToken(), "s='d'"), 'FreeToken', "", $this->commentsFreeToken, $this->commentsFreeToken_css, 'readonly', ' ', 'no');
-
-        $this->fieldsRo['Asset']['StakedToken']['html'] = stdFieldRow(_("Staked"), div( $dataObj->getStakedToken(), 'StakedToken_label' , "class='readonly' s='d'")
-                .input('hidden', 'StakedToken', $dataObj->getStakedToken(), "s='d'"), 'StakedToken', "", $this->commentsStakedToken, $this->commentsStakedToken_css, 'readonly', ' ', 'no');
-
-        $this->fieldsRo['Asset']['TotalToken']['html'] = stdFieldRow(_("Total"), div( $dataObj->getTotalToken(), 'TotalToken_label' , "class='readonly' s='d'")
-                .input('hidden', 'TotalToken', $dataObj->getTotalToken(), "s='d'"), 'TotalToken', "", $this->commentsTotalToken, $this->commentsTotalToken_css, 'readonly', ' ', 'no');
 
         $this->fieldsRo['Asset']['UsdValue']['html'] = stdFieldRow(_("Value USD"), div( $dataObj->getUsdValue(), 'UsdValue_label' , "class='readonly' s='d'")
                 .input('hidden', 'UsdValue', $dataObj->getUsdValue(), "s='d'"), 'UsdValue', "", $this->commentsUsdValue, $this->commentsUsdValue_css, 'readonly', ' ', 'no');
 
-        $this->fieldsRo['Asset']['IdSymbol']['html'] = stdFieldRow(_("Trading pair"), div( ($dataObj->getSymbol())?$dataObj->getSymbol()->getName():'', 'IdSymbol_label' , "class='readonly' s='d'")
-                .input('hidden', 'IdSymbol', $dataObj->getIdSymbol(), "s='d'"), 'IdSymbol', "", $this->commentsIdSymbol, $this->commentsIdSymbol_css, 'readonly', ' ', 'no');
-
-        $this->fieldsRo['Asset']['AvgPrice']['html'] = stdFieldRow(_("Avg. price"), div( $dataObj->getAvgPrice(), 'AvgPrice_label' , "class='readonly' s='d'")
-                .input('hidden', 'AvgPrice', $dataObj->getAvgPrice(), "s='d'"), 'AvgPrice', "", $this->commentsAvgPrice, $this->commentsAvgPrice_css, 'readonly', ' ', 'no');
+        $this->fieldsRo['Asset']['TotalToken']['html'] = stdFieldRow(_("Total"), div( $dataObj->getTotalToken(), 'TotalToken_label' , "class='readonly' s='d'")
+                .input('hidden', 'TotalToken', $dataObj->getTotalToken(), "s='d'"), 'TotalToken', "", $this->commentsTotalToken, $this->commentsTotalToken_css, 'readonly', ' ', 'no');
 
         $this->fieldsRo['Asset']['Profit']['html'] = stdFieldRow(_("Profit"), div( $dataObj->getProfit(), 'Profit_label' , "class='readonly' s='d'")
                 .input('hidden', 'Profit', $dataObj->getProfit(), "s='d'"), 'Profit', "", $this->commentsProfit, $this->commentsProfit_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['Asset']['StakedToken']['html'] = stdFieldRow(_("Staked"), div( $dataObj->getStakedToken(), 'StakedToken_label' , "class='readonly' s='d'")
+                .input('hidden', 'StakedToken', $dataObj->getStakedToken(), "s='d'"), 'StakedToken', "", $this->commentsStakedToken, $this->commentsStakedToken_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['Asset']['IdSymbol']['html'] = stdFieldRow(_("Trading pair"), div( ($dataObj->getSymbol())?$dataObj->getSymbol()->getName():'', 'IdSymbol_label' , "class='readonly' s='d'")
+                .input('hidden', 'IdSymbol', $dataObj->getIdSymbol(), "s='d'"), 'IdSymbol', "", $this->commentsIdSymbol, $this->commentsIdSymbol_css, 'readonly', ' ', 'no');
 
         $this->fieldsRo['Asset']['FlexibleToken']['html'] = stdFieldRow(_("Flexible"), div( $dataObj->getFlexibleToken(), 'FlexibleToken_label' , "class='readonly' s='d'")
                 .input('hidden', 'FlexibleToken', $dataObj->getFlexibleToken(), "s='d'"), 'FlexibleToken', "", $this->commentsFlexibleToken, $this->commentsFlexibleToken_css, 'readonly', ' ', 'no');

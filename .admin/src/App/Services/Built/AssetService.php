@@ -185,12 +185,6 @@ class AssetService
         $obj = AssetQuery::create()->findPk(json_decode($this->request['i']));
 
 
-            if($obj->countAssetExchanges()){
-                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Wallet'. ", '', true,'Asset'); die( $error['onReadyJs'] );
-            }
-            if($obj->countTrades()){
-                $error = handleNotOkResponse(_("This entry cannot be deleted. It is in use in ")." 'Trade'. ", '', true,'Asset'); die( $error['onReadyJs'] );
-            }
 
         $obj->delete();
 

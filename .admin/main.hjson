@@ -19,14 +19,14 @@
         "id_asset()": ["primary()"],
         
         "id_token('Token')": ["integer()","foreign(token)"],
+        "avg_price('Avg. price')": ["decimal(16, 9)"],
         "free_token('Free')": ["decimal(16, 9)"],
-        "staked_token('Staked')": ["decimal(16, 9)"],
-        "total_token('Total')": ["decimal(16, 9)"],
         "usd_value('Value USD')": ["decimal(12, 2)"],
-        "id_symbol('Trading pair')": ["integer()","foreign(symbol)", "not-required", "default:null"],
-        "avg_price('Avg. price')": ["decimal(14, 4)"],
+        "total_token('Total')": ["decimal(16, 9)"],
         "profit('Profit')": ["decimal(12, 2)"],
-
+        "staked_token('Staked')": ["decimal(16, 9)"],
+        "id_symbol('Trading pair')": ["integer()","foreign(symbol)", "not-required", "default:null"],
+        
         "flexible_token('Flexible')": ["decimal(16, 9)"],
         "locked_token('Locked')": ["decimal(16, 9)"],
         "freeze_token('Frozen')": ["decimal(16, 9)"],
@@ -43,7 +43,7 @@
         "add_tab_columns": {"Other":"locked_token"},
 
         "id_asset_exchange()": ["primary()"],
-        "id_asset()": ["integer()","foreign(asset)"],
+        "id_asset()": ["integer()","foreign(asset)", "onDelete:cascade"],
         
         "type(Type)":["enum(Spot, Locked, Flexible)",'required'],
         "id_exchange('Exchange')": ["integer()","foreign(exchange)"],
@@ -73,7 +73,7 @@
         "start_avg('Avg')": ["enum(-, Reset)",'not-required'],
         "type('State')": ["enum(Buy, Sell)",'required'],
         "id_exchange('Exchange')": ["integer()","foreign(exchange)"],
-        "id_asset('')": ["integer()","foreign(asset)"],
+        "id_asset('')": ["integer()","foreign(asset)", "onDelete:cascade"],
         
         "id_symbol('Trading pair')": ["integer()","foreign(symbol)"],
         "date('Date')": ["timestamp()"],

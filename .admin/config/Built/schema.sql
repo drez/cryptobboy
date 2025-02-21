@@ -96,13 +96,13 @@ CREATE TABLE `asset`
 (
     `id_asset` INTEGER(10) NOT NULL AUTO_INCREMENT,
     `id_token` INTEGER(11) NOT NULL COMMENT 'Token',
+    `avg_price` DECIMAL(16, 9) COMMENT 'Avg. price',
     `free_token` DECIMAL(16, 9) COMMENT 'Free',
-    `staked_token` DECIMAL(16, 9) COMMENT 'Staked',
-    `total_token` DECIMAL(16, 9) COMMENT 'Total',
     `usd_value` DECIMAL(12, 2) COMMENT 'Value USD',
-    `id_symbol` INTEGER(11) COMMENT 'Trading pair',
-    `avg_price` DECIMAL(14, 4) COMMENT 'Avg. price',
+    `total_token` DECIMAL(16, 9) COMMENT 'Total',
     `profit` DECIMAL(12, 2) COMMENT 'Profit',
+    `staked_token` DECIMAL(16, 9) COMMENT 'Staked',
+    `id_symbol` INTEGER(11) COMMENT 'Trading pair',
     `flexible_token` DECIMAL(16, 9) COMMENT 'Flexible',
     `locked_token` DECIMAL(16, 9) COMMENT 'Locked',
     `freeze_token` DECIMAL(16, 9) COMMENT 'Frozen',
@@ -165,7 +165,8 @@ CREATE TABLE `asset_exchange`
     INDEX `asset_exchange_FI_6` (`id_modification`),
     CONSTRAINT `asset_exchange_FK_1`
         FOREIGN KEY (`id_asset`)
-        REFERENCES `asset` (`id_asset`),
+        REFERENCES `asset` (`id_asset`)
+        ON DELETE CASCADE,
     CONSTRAINT `asset_exchange_FK_2`
         FOREIGN KEY (`id_exchange`)
         REFERENCES `exchange` (`id_exchange`),
@@ -221,7 +222,8 @@ CREATE TABLE `trade`
         REFERENCES `exchange` (`id_exchange`),
     CONSTRAINT `trade_FK_2`
         FOREIGN KEY (`id_asset`)
-        REFERENCES `asset` (`id_asset`),
+        REFERENCES `asset` (`id_asset`)
+        ON DELETE CASCADE,
     CONSTRAINT `trade_FK_3`
         FOREIGN KEY (`id_symbol`)
         REFERENCES `symbol` (`id_symbol`),
