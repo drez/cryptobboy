@@ -69,23 +69,27 @@ class AssetServiceWrapper extends AssetService
 
     function getTickerHistory($request){
 
-       /* if(isset($_SESSION[_AUTH_VAR]->sessVar['symbol_history'][$request['i']])){
-            return json_encode($_SESSION[_AUTH_VAR]->sessVar['symbol_history'][$request['i']]);
-        }*/
+        foreach($request['data']['symbols'] as $symbols){
+            if (!isset($_SESSION[_AUTH_VAR]->sessVar['symbol_history'][$request['i']])) { // check time 24h
+                try {
+                    $binance = new Binance($_ENV['BINANCE_KEY'], $_ENV['BINANCE_SECRET']);
+                    $results = $binance->system()->get24hr(['symbol' => $symbols]);
+                    $history = [
+                        'priceChange' => trim(($results['priceChange'] > 0 ? '+' . $results['priceChange'] : $results['priceChange']), '0'),
+                        'volume' => trim($results['volume'], '0'),
+                        'priceChangePercent' => trim(($results['priceChangePercent'] > 0 ? '+' . $results['priceChangePercent'] : $results['priceChangePercent']), '0'),
+                    ];
+                    $_SESSION[_AUTH_VAR]->sessVar['symbol_history'][$request['i']] = $history;
+                    $_SESSION[_AUTH_VAR]->sessVar['symbol_history']['time'] = time();
 
-        try {
-            $binance = new Binance($_ENV['BINANCE_KEY'], $_ENV['BINANCE_SECRET']);
-            $results = $binance->system()->get24hr(['symbol' => $request['i']]);
-            $history = [
-                    'priceChange' => trim(($results['priceChange'] > 0?'+'.$results['priceChange']:$results['priceChange']), '0'),
-                    'volume' => $results['volume'],
-                    'priceChangePercent' => trim(($results['priceChangePercent'] > 0?'+'.$results['priceChangePercent']:$results['priceChangePercent']), '0'),
-            ];
-            $_SESSION[_AUTH_VAR]->sessVar['symbol_history'][$request['i']] = $history;
-            return json_encode($history);
-        }catch (\Exception $e){
-            return json_encode($e->getMessage());
+                } catch (\Exception $e) {
+                    return json_encode($e->getMessage());
+                }
+            }
         }
+
+        return json_encode($_SESSION[_AUTH_VAR]->sessVar['symbol_history']);
+       
     }
 
     function getTickersSpot()

@@ -36,7 +36,9 @@ class AssetFormWrapper extends AssetForm
         }
 
         $siteUrl = _SITE_URL;
+
         $this->hookFormIncludeJs = <<<JS
+
         var last_value=0;
         let color='#000';
         const getTicker = () => {
@@ -121,17 +123,28 @@ JS;
         $this->hookListJs = <<<JS
 
     const getTickersHistories = () => {
+        var allSymbols = [];
         $('#AssetTable tbody tr').each((index)=>{
             
             var symbol = $('#AssetTable tbody tr:nth-child('+index+')').attr('data-symbol');
             if(symbol){
-                $.post('{$siteUrl}Asset/getTickerHistory/'+symbol, {ui:'list'}, (data)=>{
-                    var priceChange = data['priceChangePercent'];
-                    var icon = (priceChange.indexOf('+') > -1)?'au':'ad';
-                    $('#AssetTable tbody tr:nth-child('+index+') td[c=IdToken]').append( $('<div>').addClass(icon).addClass('symbol_change').html(priceChange+'%' ));
-                }, 'json');
-            } 
+               allSymbols.push(symbol);
+            }
         });
+
+         $.post('{$siteUrl}Asset/getTickerHistory/', {ui:'list', symbols:allSymbols}, (data)=>{
+           Object.keys(data).forEach(function(key) {
+
+                if(key && data[key]['priceChangePercent'].length > 2){
+                    var priceChange = data[key]['priceChangePercent'];
+                    var icon = (priceChange.indexOf('+') > -1)?'au':'ad';
+                    $("#AssetTable tbody tr[data-symbol='"+key+"'] td[c=IdToken]").append( $('<div>').addClass(icon).addClass('symbol_change').html(priceChange+'%' ));
+
+                }
+                
+            });
+            
+        }, 'json');
     }
 
     var avgPrices = {};
@@ -168,7 +181,7 @@ JS;
 JS;
 
         $this->hookListReadyJs = <<<JS
-    //setTimeout(getTickersHistories, 3000);
+    setTimeout(getTickersHistories, 3000);
     getTickersSpot();
     $('.sw-header .custom-controls').append( $('<a>').html('Sync assets').addClass('button-link-blue header-controls').attr('href', 'Javascript:;').attr('id', 'syncAssets') );
     /*
@@ -221,6 +234,8 @@ JS;
         $altValue['FreeToken'] = ($data->getFreeToken() > 0) ? round($data->getFreeToken(), 2) : rtrim($data->getFreeToken(), '0');
         $altValue['StakedToken'] = ($data->getStakedToken() > 0) ? round($data->getStakedToken(), 2) : rtrim($data->getStakedToken(), '0');
         $altValue['TotalToken'] = ($data->getTotalToken() > 0) ? round($data->getTotalToken(), 2) : rtrim($data->getTotalToken(), '0');
+        $altValue['UsdValue'] = "$ ".$data->getUsdValue();
+        $altValue['Profit'] = "$ ".$data->getUsdValue();
     }
 
     public function beforeListTrTrade(&$altValue, $data, $i, $param, $actionRow){
