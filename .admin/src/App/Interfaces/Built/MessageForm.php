@@ -261,9 +261,9 @@ class MessageForm extends Message
         $this->isChild = '';
         $this->TableName = 'Message';
         $altValue = array (
-  'IdMessage' => '',
-  'Label' => '',
-  'MessageI18n_Text_en_US' => '',
+  'IdMessage' => NULL,
+  'Label' => NULL,
+  'MessageI18n_Text_en_US' => NULL,
 );
         $tr = '';
         $hook = [];
@@ -347,8 +347,8 @@ try{
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span(((isset($altValue['Label']) && !empty($altValue['Label'])) ? $altValue['Label'] : $data->getLabel())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Label' class=''  j='editMessage'") . 
-                td(span(((isset($altValue['MessageI18n_Text_en_US']) && !empty($altValue['MessageI18n_Text_en_US'])) ? $altValue['MessageI18n_Text_en_US'] : $data->getTranslation('en_US')->getText())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='MessageI18n_Text_en_US' class=''  j='editMessage'") . $cCmoreCols.$actionCell
+                td(span((($altValue['Label'] !== null ) ? $altValue['Label'] : $data->getLabel())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Label' class=''  j='editMessage'") . 
+                td(span((($altValue['MessageI18n_Text_en_US'] !== null ) ? $altValue['MessageI18n_Text_en_US'] : $data->getTranslation('en_US')->getText())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='MessageI18n_Text_en_US' class=''  j='editMessage'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -356,7 +356,7 @@ try{
                         id='MessageRow".$data->getPrimaryKey()."'")
                 ;
                 $i++;
-                unset($altValue);
+                $altValue = null;
             }
             $tr .= input('hidden', 'rowCountMessage', $i);
         }

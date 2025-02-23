@@ -239,14 +239,14 @@ class ExchangeForm extends Exchange
         $this->isChild = '';
         $this->TableName = 'Exchange';
         $altValue = array (
-  'IdExchange' => '',
-  'Name' => '',
-  'ApiKey' => '',
-  'DateCreation' => '',
-  'DateModification' => '',
-  'IdGroupCreation' => '',
-  'IdCreation' => '',
-  'IdModification' => '',
+  'IdExchange' => NULL,
+  'Name' => NULL,
+  'ApiKey' => NULL,
+  'DateCreation' => NULL,
+  'DateModification' => NULL,
+  'IdGroupCreation' => NULL,
+  'IdCreation' => NULL,
+  'IdModification' => NULL,
 );
         $tr = '';
         $hook = [];
@@ -323,7 +323,7 @@ class ExchangeForm extends Exchange
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span(((isset($altValue['Name']) && !empty($altValue['Name'])) ? $altValue['Name'] : $data->getName())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editExchange'") . $cCmoreCols.$actionCell
+                td(span((($altValue['Name'] !== null ) ? $altValue['Name'] : $data->getName())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editExchange'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -331,7 +331,7 @@ class ExchangeForm extends Exchange
                         id='ExchangeRow".$data->getPrimaryKey()."'")
                 ;
                 $i++;
-                unset($altValue);
+                $altValue = null;
             }
             $tr .= input('hidden', 'rowCountExchange', $i);
         }

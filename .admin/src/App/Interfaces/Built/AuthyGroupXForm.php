@@ -244,8 +244,8 @@ class AuthyGroupXForm extends AuthyGroupX
         $this->isChild = '';
         $this->TableName = 'AuthyGroupX';
         $altValue = array (
-  'IdAuthy' => '',
-  'IdAuthyGroup' => '',
+  'IdAuthy' => NULL,
+  'IdAuthyGroup' => NULL,
 );
         $tr = '';
         $hook = [];
@@ -326,7 +326,7 @@ class AuthyGroupXForm extends AuthyGroupX
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span(((isset($altValue['IdAuthyGroup']) && !empty($altValue['IdAuthyGroup'])) ? $altValue['IdAuthyGroup'] : $AuthyGroup_Name)." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdAuthyGroup' class=''  j='editAuthyGroupX'") . $cCmoreCols.$actionCell
+                td(span((($altValue['IdAuthyGroup'] !== null ) ? $altValue['IdAuthyGroup'] : $AuthyGroup_Name)." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdAuthyGroup' class=''  j='editAuthyGroupX'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -334,7 +334,7 @@ class AuthyGroupXForm extends AuthyGroupX
                         id='AuthyGroupXRow".$data->getPrimaryKey()."'")
                 ;
                 $i++;
-                unset($altValue);
+                $altValue = null;
             }
             $tr .= input('hidden', 'rowCountAuthyGroupX', $i);
         }

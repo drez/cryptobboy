@@ -328,23 +328,23 @@ class TradeForm extends Trade
         $this->isChild = '';
         $this->TableName = 'Trade';
         $altValue = array (
-  'IdTrade' => '',
-  'StartAvg' => '',
-  'Type' => '',
-  'IdExchange' => '',
-  'IdAsset' => '',
-  'IdSymbol' => '',
-  'Date' => '',
-  'Qty' => '',
-  'GrossUsd' => '',
-  'Commission' => '',
-  'CommissionAsset' => '',
-  'OrderId' => '',
-  'DateCreation' => '',
-  'DateModification' => '',
-  'IdGroupCreation' => '',
-  'IdCreation' => '',
-  'IdModification' => '',
+  'IdTrade' => NULL,
+  'StartAvg' => NULL,
+  'Type' => NULL,
+  'IdExchange' => NULL,
+  'IdAsset' => NULL,
+  'IdSymbol' => NULL,
+  'Date' => NULL,
+  'Qty' => NULL,
+  'GrossUsd' => NULL,
+  'Commission' => NULL,
+  'CommissionAsset' => NULL,
+  'OrderId' => NULL,
+  'DateCreation' => NULL,
+  'DateModification' => NULL,
+  'IdGroupCreation' => NULL,
+  'IdCreation' => NULL,
+  'IdModification' => NULL,
 );
         $tr = '';
         $hook = [];
@@ -433,13 +433,13 @@ class TradeForm extends Trade
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span(((isset($altValue['StartAvg']) && !empty($altValue['StartAvg'])) ? $altValue['StartAvg'] : isntPo($data->getStartAvg()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='StartAvg' class='center'  j='editTrade'") . 
-                td(span(((isset($altValue['Type']) && !empty($altValue['Type'])) ? $altValue['Type'] : isntPo($data->getType()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editTrade'") . 
-                td(span(((isset($altValue['IdExchange']) && !empty($altValue['IdExchange'])) ? $altValue['IdExchange'] : $Exchange_Name)." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdExchange' class=''  j='editTrade'") . 
-                td(span(((isset($altValue['IdSymbol']) && !empty($altValue['IdSymbol'])) ? $altValue['IdSymbol'] : $Symbol_Name)." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdSymbol' class=''  j='editTrade'") . 
-                td(span(((isset($altValue['Date']) && !empty($altValue['Date'])) ? $altValue['Date'] : $data->getDate())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class=''  j='editTrade'") . 
-                td(span(((isset($altValue['Qty']) && !empty($altValue['Qty'])) ? $altValue['Qty'] : str_replace(',', '.', $data->getQty()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Qty' class='right'  j='editTrade'") . 
-                td(span(((isset($altValue['GrossUsd']) && !empty($altValue['GrossUsd'])) ? $altValue['GrossUsd'] : str_replace(',', '.', $data->getGrossUsd()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='GrossUsd' class='right'  j='editTrade'") . $cCmoreCols.$actionCell
+                td(span((($altValue['StartAvg'] !== null ) ? $altValue['StartAvg'] : isntPo($data->getStartAvg()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='StartAvg' class='center'  j='editTrade'") . 
+                td(span((($altValue['Type'] !== null ) ? $altValue['Type'] : isntPo($data->getType()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editTrade'") . 
+                td(span((($altValue['IdExchange'] !== null ) ? $altValue['IdExchange'] : $Exchange_Name)." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdExchange' class=''  j='editTrade'") . 
+                td(span((($altValue['IdSymbol'] !== null ) ? $altValue['IdSymbol'] : $Symbol_Name)." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdSymbol' class=''  j='editTrade'") . 
+                td(span((($altValue['Date'] !== null ) ? $altValue['Date'] : $data->getDate())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Date' class=''  j='editTrade'") . 
+                td(span((($altValue['Qty'] !== null ) ? $altValue['Qty'] : str_replace(',', '.', $data->getQty()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Qty' class='right'  j='editTrade'") . 
+                td(span((($altValue['GrossUsd'] !== null ) ? $altValue['GrossUsd'] : str_replace(',', '.', $data->getGrossUsd()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='GrossUsd' class='right'  j='editTrade'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -447,7 +447,7 @@ class TradeForm extends Trade
                         id='TradeRow".$data->getPrimaryKey()."'")
                 ;
                 $i++;
-                unset($altValue);
+                $altValue = null;
             }
             $tr .= input('hidden', 'rowCountTrade', $i);
         }

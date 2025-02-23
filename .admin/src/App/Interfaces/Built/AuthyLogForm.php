@@ -242,14 +242,14 @@ class AuthyLogForm extends AuthyLog
         $this->isChild = '';
         $this->TableName = 'AuthyLog';
         $altValue = array (
-  'IdAuthyLog' => '',
-  'IdAuthy' => '',
-  'Timestamp' => '',
-  'Login' => '',
-  'Userid' => '',
-  'Result' => '',
-  'Ip' => '',
-  'Count' => '',
+  'IdAuthyLog' => NULL,
+  'IdAuthy' => NULL,
+  'Timestamp' => NULL,
+  'Login' => NULL,
+  'Userid' => NULL,
+  'Result' => NULL,
+  'Ip' => NULL,
+  'Count' => NULL,
 );
         $tr = '';
         $hook = [];
@@ -330,10 +330,10 @@ class AuthyLogForm extends AuthyLog
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span(((isset($altValue['Timestamp']) && !empty($altValue['Timestamp'])) ? $altValue['Timestamp'] : $data->getTimestamp())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Timestamp' class=''  j='editAuthyLog'") . 
-                td(span(((isset($altValue['Login']) && !empty($altValue['Login'])) ? $altValue['Login'] : $data->getLogin())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Login' class=''  j='editAuthyLog'") . 
-                td(span(((isset($altValue['Ip']) && !empty($altValue['Ip'])) ? $altValue['Ip'] : $data->getIp())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Ip' class=''  j='editAuthyLog'") . 
-                td(span(((isset($altValue['Count']) && !empty($altValue['Count'])) ? $altValue['Count'] : $data->getCount())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Count' class=''  j='editAuthyLog'") . $cCmoreCols.$actionCell
+                td(span((($altValue['Timestamp'] !== null ) ? $altValue['Timestamp'] : $data->getTimestamp())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Timestamp' class=''  j='editAuthyLog'") . 
+                td(span((($altValue['Login'] !== null ) ? $altValue['Login'] : $data->getLogin())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Login' class=''  j='editAuthyLog'") . 
+                td(span((($altValue['Ip'] !== null ) ? $altValue['Ip'] : $data->getIp())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Ip' class=''  j='editAuthyLog'") . 
+                td(span((($altValue['Count'] !== null ) ? $altValue['Count'] : $data->getCount())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Count' class=''  j='editAuthyLog'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -341,7 +341,7 @@ class AuthyLogForm extends AuthyLog
                         id='AuthyLogRow".$data->getPrimaryKey()."'")
                 ;
                 $i++;
-                unset($altValue);
+                $altValue = null;
             }
             $tr .= input('hidden', 'rowCountAuthyLog', $i);
         }

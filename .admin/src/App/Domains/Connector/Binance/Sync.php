@@ -20,7 +20,7 @@ class Sync {
 
     function __construct()
     {
-        $this->binance = new Binance($_ENV['BINANCE_KEY'], $_ENV['BINANCE_SECRET']);
+        $this->binance = new Binance(EXCHANGE_BINANCE_KEY, EXCHANGE_BINANCE_SECRET);
 
         $Exchange = ExchangeQuery::create()->filterByName('Binance')->findOne();
         if ($Exchange) {

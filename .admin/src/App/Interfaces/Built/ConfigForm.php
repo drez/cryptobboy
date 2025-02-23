@@ -242,18 +242,18 @@ class ConfigForm extends Config
         $this->isChild = '';
         $this->TableName = 'Config';
         $altValue = array (
-  'IdConfig' => '',
-  'Category' => '',
-  'Config' => '',
-  'Value' => '',
-  'System' => '',
-  'Description' => '',
-  'Type' => '',
-  'DateCreation' => '',
-  'DateModification' => '',
-  'IdGroupCreation' => '',
-  'IdCreation' => '',
-  'IdModification' => '',
+  'IdConfig' => NULL,
+  'Category' => NULL,
+  'Config' => NULL,
+  'Value' => NULL,
+  'System' => NULL,
+  'Description' => NULL,
+  'Type' => NULL,
+  'DateCreation' => NULL,
+  'DateModification' => NULL,
+  'IdGroupCreation' => NULL,
+  'IdCreation' => NULL,
+  'IdModification' => NULL,
 );
         $tr = '';
         $hook = [];
@@ -330,10 +330,10 @@ class ConfigForm extends Config
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span(((isset($altValue['Category']) && !empty($altValue['Category'])) ? $altValue['Category'] : isntPo($data->getCategory()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Category' class='center'  j='editConfig'") . 
-                td(span(((isset($altValue['Config']) && !empty($altValue['Config'])) ? $altValue['Config'] : $data->getConfig())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Config' class=''  j='editConfig'") . 
-                td(span(((isset($altValue['Value']) && !empty($altValue['Value'])) ? $altValue['Value'] : substr(strip_tags($data->getValue()), 0, 100))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Value' class=''  j='editConfig'") . 
-                td(span(((isset($altValue['Description']) && !empty($altValue['Description'])) ? $altValue['Description'] : $data->getDescription())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Description' class=''  j='editConfig'") . $cCmoreCols.$actionCell
+                td(span((($altValue['Category'] !== null ) ? $altValue['Category'] : isntPo($data->getCategory()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Category' class='center'  j='editConfig'") . 
+                td(span((($altValue['Config'] !== null ) ? $altValue['Config'] : $data->getConfig())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Config' class=''  j='editConfig'") . 
+                td(span((($altValue['Value'] !== null ) ? $altValue['Value'] : substr(strip_tags($data->getValue()), 0, 100))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Value' class=''  j='editConfig'") . 
+                td(span((($altValue['Description'] !== null ) ? $altValue['Description'] : $data->getDescription())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Description' class=''  j='editConfig'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -341,7 +341,7 @@ class ConfigForm extends Config
                         id='ConfigRow".$data->getPrimaryKey()."'")
                 ;
                 $i++;
-                unset($altValue);
+                $altValue = null;
             }
             $tr .= input('hidden', 'rowCountConfig', $i);
         }

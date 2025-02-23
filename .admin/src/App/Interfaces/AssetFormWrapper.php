@@ -87,6 +87,14 @@ JS;
 
     public function beforeList(&$request, &$pmpoData)
     {
+
+        if(empty(EXCHANGE_BINANCE_KEY) || empty(EXCHANGE_BINANCE_SECRET)){
+            $this->hookListReadyJs = <<<JS
+    alerb("No API key found, please set it in 'Settings' -> 'Settings'");
+JS;
+            return;
+        }
+
         $siteUrl = _SITE_URL;
         $this->hookListJs = <<<JS
 

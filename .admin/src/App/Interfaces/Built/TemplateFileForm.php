@@ -246,15 +246,15 @@ class TemplateFileForm extends TemplateFile
         $this->isChild = '';
         $this->TableName = 'TemplateFile';
         $altValue = array (
-  'IdTemplateFile' => '',
-  'IdTemplate' => '',
-  'Name' => '',
-  'File' => '',
-  'DateCreation' => '',
-  'DateModification' => '',
-  'IdGroupCreation' => '',
-  'IdCreation' => '',
-  'IdModification' => '',
+  'IdTemplateFile' => NULL,
+  'IdTemplate' => NULL,
+  'Name' => NULL,
+  'File' => NULL,
+  'DateCreation' => NULL,
+  'DateModification' => NULL,
+  'IdGroupCreation' => NULL,
+  'IdCreation' => NULL,
+  'IdModification' => NULL,
 );
         $tr = '';
         $hook = [];
@@ -331,8 +331,8 @@ class TemplateFileForm extends TemplateFile
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span(((isset($altValue['Name']) && !empty($altValue['Name'])) ? $altValue['Name'] : $data->getName())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editTemplateFile'") . 
-                td(span(((isset($altValue['File']) && !empty($altValue['File'])) ? $altValue['File'] : $data->getFile())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='File' class=''  j='editTemplateFile'") . $cCmoreCols.$actionCell
+                td(span((($altValue['Name'] !== null ) ? $altValue['Name'] : $data->getName())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editTemplateFile'") . 
+                td(span((($altValue['File'] !== null ) ? $altValue['File'] : $data->getFile())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='File' class=''  j='editTemplateFile'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -340,7 +340,7 @@ class TemplateFileForm extends TemplateFile
                         id='TemplateFileRow".$data->getPrimaryKey()."'")
                 ;
                 $i++;
-                unset($altValue);
+                $altValue = null;
             }
             $tr .= input('hidden', 'rowCountTemplateFile', $i);
         }

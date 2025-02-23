@@ -190,9 +190,9 @@ class TokenForm extends Token
 
         switch($act) {
             case 'head':
-                $trHead = th(_("Name"), " th='sorted' c='Name' title='" . _('Name')."' ")
-.th(_("Ticker"), " th='sorted' c='Ticker' title='" . _('Ticker')."' ")
+                $trHead = th(_("Ticker"), " th='sorted' c='Ticker' title='" . _('Ticker')."' ")
 .th(_("Stablecoin"), " th='sorted' c='IsStablecoin' title='" . _('Stablecoin')."' ")
+.th(_("Name"), " th='sorted' c='Name' title='" . _('Name')."' ")
 . $this->cCmoreColsHeader;
                 if(!$this->setReadOnly){
                     $trHead .= th('&nbsp;',' class="actionrow delete" ');
@@ -261,15 +261,15 @@ class TokenForm extends Token
         $this->isChild = '';
         $this->TableName = 'Token';
         $altValue = array (
-  'IdToken' => '',
-  'Name' => '',
-  'Ticker' => '',
-  'IsStablecoin' => '',
-  'DateCreation' => '',
-  'DateModification' => '',
-  'IdGroupCreation' => '',
-  'IdCreation' => '',
-  'IdModification' => '',
+  'IdToken' => NULL,
+  'Ticker' => NULL,
+  'IsStablecoin' => NULL,
+  'Name' => NULL,
+  'DateCreation' => NULL,
+  'DateModification' => NULL,
+  'IdGroupCreation' => NULL,
+  'IdCreation' => NULL,
+  'IdModification' => NULL,
 );
         $tr = '';
         $hook = [];
@@ -346,9 +346,9 @@ class TokenForm extends Token
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span(((isset($altValue['Name']) && !empty($altValue['Name'])) ? $altValue['Name'] : $data->getName())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editToken'") . 
-                td(span(((isset($altValue['Ticker']) && !empty($altValue['Ticker'])) ? $altValue['Ticker'] : $data->getTicker())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Ticker' class=''  j='editToken'") . 
-                td(span(((isset($altValue['IsStablecoin']) && !empty($altValue['IsStablecoin'])) ? $altValue['IsStablecoin'] : isntPo($data->getIsStablecoin()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IsStablecoin' class='center'  j='editToken'") . $cCmoreCols.$actionCell
+                td(span((($altValue['Ticker'] !== null ) ? $altValue['Ticker'] : $data->getTicker())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Ticker' class=''  j='editToken'") . 
+                td(span((($altValue['IsStablecoin'] !== null ) ? $altValue['IsStablecoin'] : isntPo($data->getIsStablecoin()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IsStablecoin' class='center'  j='editToken'") . 
+                td(span((($altValue['Name'] !== null ) ? $altValue['Name'] : $data->getName())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editToken'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -356,7 +356,7 @@ class TokenForm extends Token
                         id='TokenRow".$data->getPrimaryKey()."'")
                 ;
                 $i++;
-                unset($altValue);
+                $altValue = null;
             }
             $tr .= input('hidden', 'rowCountToken', $i);
         }
@@ -689,9 +689,9 @@ class TokenForm extends Token
         
         
         
-$this->fields['Token']['Name']['html'] = stdFieldRow(_("Name"), input('text', 'Name', htmlentities($dataObj->getName()), "   placeholder='".str_replace("'","&#39;",_('Name'))."' size='35'  v='NAME' s='d' class=''  ")."", 'Name', "", $this->commentsName, $this->commentsName_css, '', ' ', 'no');
 $this->fields['Token']['Ticker']['html'] = stdFieldRow(_("Ticker"), input('text', 'Ticker', htmlentities($dataObj->getTicker()), "   placeholder='".str_replace("'","&#39;",_('Ticker'))."' size='35'  v='TICKER' s='d' class='req'  ")."", 'Ticker', "", $this->commentsTicker, $this->commentsTicker_css, '', ' ', 'no');
 $this->fields['Token']['IsStablecoin']['html'] = stdFieldRow(_("Stablecoin"), selectboxCustomArray('IsStablecoin', array( '0' => array('0'=>_("No"), '1'=>"No"),'1' => array('0'=>_("Yes"), '1'=>"Yes"), ), "", "s='d'  ", $dataObj->getIsStablecoin(), '', false), 'IsStablecoin', "", $this->commentsIsStablecoin, $this->commentsIsStablecoin_css, '', ' ', 'no');
+$this->fields['Token']['Name']['html'] = stdFieldRow(_("Name"), input('text', 'Name', htmlentities($dataObj->getName()), "   placeholder='".str_replace("'","&#39;",_('Name'))."' size='35'  v='NAME' s='d' class=''  ")."", 'Name', "", $this->commentsName, $this->commentsName_css, '', ' ', 'no');
 
 
         
@@ -745,9 +745,9 @@ $this->fields['Token']['IsStablecoin']['html'] = stdFieldRow(_("Stablecoin"), se
                 $this->hookFormInnerTop
                 
                 .
-$this->fields['Token']['Name']['html']
-.$this->fields['Token']['Ticker']['html']
+$this->fields['Token']['Ticker']['html']
 .$this->fields['Token']['IsStablecoin']['html']
+.$this->fields['Token']['Name']['html']
                 
                 .$this->formSaveBar
                 .$this->hookFormInnerBottom
@@ -806,14 +806,14 @@ $this->fields['Token']['Name']['html']
     function lockFormField($fields, $dataObj)
     {
         
-        $this->fieldsRo['Token']['Name']['html'] = stdFieldRow(_("Name"), div( $dataObj->getName(), 'Name_label' , "class='readonly' s='d'")
-                .input('hidden', 'Name', $dataObj->getName(), "s='d'"), 'Name', "", $this->commentsName, $this->commentsName_css, 'readonly', ' ', 'no');
-
         $this->fieldsRo['Token']['Ticker']['html'] = stdFieldRow(_("Ticker"), div( $dataObj->getTicker(), 'Ticker_label' , "class='readonly' s='d'")
                 .input('hidden', 'Ticker', $dataObj->getTicker(), "s='d'"), 'Ticker', "", $this->commentsTicker, $this->commentsTicker_css, 'readonly', ' ', 'no');
 
         $this->fieldsRo['Token']['IsStablecoin']['html'] = stdFieldRow(_("Stablecoin"), div( $dataObj->getIsStablecoin(), 'IsStablecoin_label' , "class='readonly' s='d'")
                 .input('hidden', 'IsStablecoin', $dataObj->getIsStablecoin(), "s='d'"), 'IsStablecoin', "", $this->commentsIsStablecoin, $this->commentsIsStablecoin_css, 'readonly', ' ', 'no');
+
+        $this->fieldsRo['Token']['Name']['html'] = stdFieldRow(_("Name"), div( $dataObj->getName(), 'Name_label' , "class='readonly' s='d'")
+                .input('hidden', 'Name', $dataObj->getName(), "s='d'"), 'Name', "", $this->commentsName, $this->commentsName_css, 'readonly', ' ', 'no');
 
 
         if($fields == 'all') {

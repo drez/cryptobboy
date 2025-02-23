@@ -66,12 +66,6 @@ abstract class BaseToken extends BaseObject implements Persistent
     protected $id_token;
 
     /**
-     * The value for the name field.
-     * @var        string
-     */
-    protected $name;
-
-    /**
      * The value for the ticker field.
      * @var        string
      */
@@ -82,6 +76,12 @@ abstract class BaseToken extends BaseObject implements Persistent
      * @var        int
      */
     protected $is_stablecoin;
+
+    /**
+     * The value for the name field.
+     * @var        string
+     */
+    protected $name;
 
     /**
      * The value for the date_creation field.
@@ -210,18 +210,6 @@ abstract class BaseToken extends BaseObject implements Persistent
 
     /**
      * @Field()
-     * Get the [name] column value.
-     * Name
-     * @return string
-     */
-    public function getName()
-    {
-
-        return $this->name;
-    }
-
-    /**
-     * @Field()
      * Get the [ticker] column value.
      * Ticker
      * @return string
@@ -250,6 +238,18 @@ abstract class BaseToken extends BaseObject implements Persistent
         }
 
         return $valueSet[$this->is_stablecoin];
+    }
+
+    /**
+     * @Field()
+     * Get the [name] column value.
+     * Name
+     * @return string
+     */
+    public function getName()
+    {
+
+        return $this->name;
     }
 
     /**
@@ -392,27 +392,6 @@ abstract class BaseToken extends BaseObject implements Persistent
     } // setIdToken()
 
     /**
-     * Set the value of [name] column.
-     * Name
-     * @param  string $v new value
-     * @return Token The current object (for fluent API support)
-     */
-    public function setName($v)
-    {
-        if ($v !== null) {
-            $v = (string) $v;
-        }
-
-        if ($this->name !== $v) {
-            $this->name = $v;
-            $this->modifiedColumns[] = TokenPeer::NAME;
-        }
-
-
-        return $this;
-    } // setName()
-
-    /**
      * Set the value of [ticker] column.
      * Ticker
      * @param  string $v new value
@@ -458,6 +437,27 @@ abstract class BaseToken extends BaseObject implements Persistent
 
         return $this;
     } // setIsStablecoin()
+
+    /**
+     * Set the value of [name] column.
+     * Name
+     * @param  string $v new value
+     * @return Token The current object (for fluent API support)
+     */
+    public function setName($v)
+    {
+        if ($v !== null) {
+            $v = (string) $v;
+        }
+
+        if ($this->name !== $v) {
+            $this->name = $v;
+            $this->modifiedColumns[] = TokenPeer::NAME;
+        }
+
+
+        return $this;
+    } // setName()
 
     /**
      * Sets the value of [date_creation] column to a normalized version of the date/time value specified.
@@ -613,9 +613,9 @@ abstract class BaseToken extends BaseObject implements Persistent
         try {
 
             $this->id_token = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
-            $this->name = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
-            $this->ticker = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-            $this->is_stablecoin = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
+            $this->ticker = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
+            $this->is_stablecoin = ($row[$startcol + 2] !== null) ? (int) $row[$startcol + 2] : null;
+            $this->name = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
             $this->date_creation = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
             $this->date_modification = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
             $this->id_group_creation = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
@@ -980,14 +980,14 @@ abstract class BaseToken extends BaseObject implements Persistent
         if ($this->isColumnModified(TokenPeer::ID_TOKEN)) {
             $modifiedColumns[':p' . $index++]  = '`id_token`';
         }
-        if ($this->isColumnModified(TokenPeer::NAME)) {
-            $modifiedColumns[':p' . $index++]  = '`name`';
-        }
         if ($this->isColumnModified(TokenPeer::TICKER)) {
             $modifiedColumns[':p' . $index++]  = '`ticker`';
         }
         if ($this->isColumnModified(TokenPeer::IS_STABLECOIN)) {
             $modifiedColumns[':p' . $index++]  = '`is_stablecoin`';
+        }
+        if ($this->isColumnModified(TokenPeer::NAME)) {
+            $modifiedColumns[':p' . $index++]  = '`name`';
         }
         if ($this->isColumnModified(TokenPeer::DATE_CREATION)) {
             $modifiedColumns[':p' . $index++]  = '`date_creation`';
@@ -1018,14 +1018,14 @@ abstract class BaseToken extends BaseObject implements Persistent
                     case '`id_token`':
                         $stmt->bindValue($identifier, $this->id_token, PDO::PARAM_INT);
                         break;
-                    case '`name`':
-                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
-                        break;
                     case '`ticker`':
                         $stmt->bindValue($identifier, $this->ticker, PDO::PARAM_STR);
                         break;
                     case '`is_stablecoin`':
                         $stmt->bindValue($identifier, $this->is_stablecoin, PDO::PARAM_INT);
+                        break;
+                    case '`name`':
+                        $stmt->bindValue($identifier, $this->name, PDO::PARAM_STR);
                         break;
                     case '`date_creation`':
                         $stmt->bindValue($identifier, $this->date_creation, PDO::PARAM_STR);
@@ -1246,9 +1246,9 @@ abstract class BaseToken extends BaseObject implements Persistent
         $keys = TokenPeer::getFieldNames($keyType);
         $result = array(
             $keys[0] => $this->getIdToken(),
-            $keys[1] => $this->getName(),
-            $keys[2] => $this->getTicker(),
-            $keys[3] => $this->getIsStablecoin(),
+            $keys[1] => $this->getTicker(),
+            $keys[2] => $this->getIsStablecoin(),
+            $keys[3] => $this->getName(),
             $keys[4] => $this->getDateCreation(),
             $keys[5] => $this->getDateModification(),
             $keys[6] => $this->getIdGroupCreation(),
@@ -1320,17 +1320,17 @@ abstract class BaseToken extends BaseObject implements Persistent
                 $this->setIdToken($value);
                 break;
             case 1:
-                $this->setName($value);
-                break;
-            case 2:
                 $this->setTicker($value);
                 break;
-            case 3:
+            case 2:
                 $valueSet = TokenPeer::getValueSet(TokenPeer::IS_STABLECOIN);
                 if (isset($valueSet[$value])) {
                     $value = $valueSet[$value];
                 }
                 $this->setIsStablecoin($value);
+                break;
+            case 3:
+                $this->setName($value);
                 break;
             case 4:
                 $this->setDateCreation($value);
@@ -1372,9 +1372,9 @@ abstract class BaseToken extends BaseObject implements Persistent
         $keys = TokenPeer::getFieldNames($keyType);
 
         if (array_key_exists($keys[0], $arr)) $this->setIdToken($arr[$keys[0]]);
-        if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
-        if (array_key_exists($keys[2], $arr)) $this->setTicker($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setIsStablecoin($arr[$keys[3]]);
+        if (array_key_exists($keys[1], $arr)) $this->setTicker($arr[$keys[1]]);
+        if (array_key_exists($keys[2], $arr)) $this->setIsStablecoin($arr[$keys[2]]);
+        if (array_key_exists($keys[3], $arr)) $this->setName($arr[$keys[3]]);
         if (array_key_exists($keys[4], $arr)) $this->setDateCreation($arr[$keys[4]]);
         if (array_key_exists($keys[5], $arr)) $this->setDateModification($arr[$keys[5]]);
         if (array_key_exists($keys[6], $arr)) $this->setIdGroupCreation($arr[$keys[6]]);
@@ -1392,9 +1392,9 @@ abstract class BaseToken extends BaseObject implements Persistent
         $criteria = new Criteria(TokenPeer::DATABASE_NAME);
 
         if ($this->isColumnModified(TokenPeer::ID_TOKEN)) $criteria->add(TokenPeer::ID_TOKEN, $this->id_token);
-        if ($this->isColumnModified(TokenPeer::NAME)) $criteria->add(TokenPeer::NAME, $this->name);
         if ($this->isColumnModified(TokenPeer::TICKER)) $criteria->add(TokenPeer::TICKER, $this->ticker);
         if ($this->isColumnModified(TokenPeer::IS_STABLECOIN)) $criteria->add(TokenPeer::IS_STABLECOIN, $this->is_stablecoin);
+        if ($this->isColumnModified(TokenPeer::NAME)) $criteria->add(TokenPeer::NAME, $this->name);
         if ($this->isColumnModified(TokenPeer::DATE_CREATION)) $criteria->add(TokenPeer::DATE_CREATION, $this->date_creation);
         if ($this->isColumnModified(TokenPeer::DATE_MODIFICATION)) $criteria->add(TokenPeer::DATE_MODIFICATION, $this->date_modification);
         if ($this->isColumnModified(TokenPeer::ID_GROUP_CREATION)) $criteria->add(TokenPeer::ID_GROUP_CREATION, $this->id_group_creation);
@@ -1463,9 +1463,9 @@ abstract class BaseToken extends BaseObject implements Persistent
      */
     public function copyInto($copyObj, $deepCopy = false, $makeNew = true)
     {
-        $copyObj->setName($this->getName());
         $copyObj->setTicker($this->getTicker());
         $copyObj->setIsStablecoin($this->getIsStablecoin());
+        $copyObj->setName($this->getName());
         $copyObj->setDateCreation($this->getDateCreation());
         $copyObj->setDateModification($this->getDateModification());
         $copyObj->setIdGroupCreation($this->getIdGroupCreation());
@@ -2946,9 +2946,9 @@ abstract class BaseToken extends BaseObject implements Persistent
     public function clear()
     {
         $this->id_token = null;
-        $this->name = null;
         $this->ticker = null;
         $this->is_stablecoin = null;
+        $this->name = null;
         $this->date_creation = null;
         $this->date_modification = null;
         $this->id_group_creation = null;

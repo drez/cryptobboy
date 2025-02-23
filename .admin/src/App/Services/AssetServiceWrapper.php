@@ -41,7 +41,7 @@ class AssetServiceWrapper extends AssetService
             }
 
             try {
-                $binance = new Binance($_ENV['BINANCE_KEY'], $_ENV['BINANCE_SECRET']);
+                $binance = new Binance(EXCHANGE_BINANCE_KEY, EXCHANGE_BINANCE_SECRET);
                 $result = $binance->system()->getTickerPrice(['symbol' => $tradingPair]);
                 // echo pre(print_r($result, true));
 
@@ -71,7 +71,7 @@ class AssetServiceWrapper extends AssetService
                 date('d') != date('d', $_SESSION[_AUTH_VAR]->sessVar['symbol_history']['time'])
             ) { // check time 24h
                 try {
-                    $binance = new Binance($_ENV['BINANCE_KEY'], $_ENV['BINANCE_SECRET']);
+                    $binance = new Binance(EXCHANGE_BINANCE_KEY, EXCHANGE_BINANCE_SECRET);
                     $results = $binance->system()->get24hr(['symbol' => $symbols]);
                     echo json_encode($results, JSON_PRETTY_PRINT);
                     $history = [
@@ -95,7 +95,7 @@ class AssetServiceWrapper extends AssetService
     function getTickersSpot()
     {
         try {
-            $binance = new Binance($_ENV['BINANCE_KEY'], $_ENV['BINANCE_SECRET']);
+            $binance = new Binance(EXCHANGE_BINANCE_KEY, EXCHANGE_BINANCE_SECRET);
             $results = $binance->system()->getTickerPrice();
 
             $Assets = AssetQuery::create()

@@ -263,14 +263,14 @@ class SymbolForm extends Symbol
         $this->isChild = '';
         $this->TableName = 'Symbol';
         $altValue = array (
-  'IdSymbol' => '',
-  'Name' => '',
-  'IdToken' => '',
-  'DateCreation' => '',
-  'DateModification' => '',
-  'IdGroupCreation' => '',
-  'IdCreation' => '',
-  'IdModification' => '',
+  'IdSymbol' => NULL,
+  'Name' => NULL,
+  'IdToken' => NULL,
+  'DateCreation' => NULL,
+  'DateModification' => NULL,
+  'IdGroupCreation' => NULL,
+  'IdCreation' => NULL,
+  'IdModification' => NULL,
 );
         $tr = '';
         $hook = [];
@@ -351,8 +351,8 @@ class SymbolForm extends Symbol
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span(((isset($altValue['Name']) && !empty($altValue['Name'])) ? $altValue['Name'] : $data->getName())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editSymbol'") . 
-                td(span(((isset($altValue['IdToken']) && !empty($altValue['IdToken'])) ? $altValue['IdToken'] : $altValue['Token_Ticker'])." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdToken' class=''  j='editSymbol'") . $cCmoreCols.$actionCell
+                td(span((($altValue['Name'] !== null ) ? $altValue['Name'] : $data->getName())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editSymbol'") . 
+                td(span((($altValue['IdToken'] !== null ) ? $altValue['IdToken'] : $altValue['Token_Ticker'])." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdToken' class=''  j='editSymbol'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -360,7 +360,7 @@ class SymbolForm extends Symbol
                         id='SymbolRow".$data->getPrimaryKey()."'")
                 ;
                 $i++;
-                unset($altValue);
+                $altValue = null;
             }
             $tr .= input('hidden', 'rowCountSymbol', $i);
         }

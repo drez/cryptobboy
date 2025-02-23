@@ -267,19 +267,19 @@ class AssetExchangeForm extends AssetExchange
         $this->isChild = '';
         $this->TableName = 'AssetExchange';
         $altValue = array (
-  'IdAssetExchange' => '',
-  'IdAsset' => '',
-  'Type' => '',
-  'IdExchange' => '',
-  'IdToken' => '',
-  'FreeToken' => '',
-  'LockedToken' => '',
-  'FreezeToken' => '',
-  'DateCreation' => '',
-  'DateModification' => '',
-  'IdGroupCreation' => '',
-  'IdCreation' => '',
-  'IdModification' => '',
+  'IdAssetExchange' => NULL,
+  'IdAsset' => NULL,
+  'Type' => NULL,
+  'IdExchange' => NULL,
+  'IdToken' => NULL,
+  'FreeToken' => NULL,
+  'LockedToken' => NULL,
+  'FreezeToken' => NULL,
+  'DateCreation' => NULL,
+  'DateModification' => NULL,
+  'IdGroupCreation' => NULL,
+  'IdCreation' => NULL,
+  'IdModification' => NULL,
 );
         $tr = '';
         $hook = [];
@@ -364,11 +364,11 @@ class AssetExchangeForm extends AssetExchange
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span(((isset($altValue['Type']) && !empty($altValue['Type'])) ? $altValue['Type'] : isntPo($data->getType()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editAssetExchange'") . 
-                td(span(((isset($altValue['IdExchange']) && !empty($altValue['IdExchange'])) ? $altValue['IdExchange'] : $Exchange_Name)." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdExchange' class=''  j='editAssetExchange'") . 
-                td(span(((isset($altValue['FreeToken']) && !empty($altValue['FreeToken'])) ? $altValue['FreeToken'] : str_replace(',', '.', $data->getFreeToken()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='FreeToken' class='right'  j='editAssetExchange'") . 
-                td(span(((isset($altValue['LockedToken']) && !empty($altValue['LockedToken'])) ? $altValue['LockedToken'] : str_replace(',', '.', $data->getLockedToken()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='LockedToken' class='right'  j='editAssetExchange'") . 
-                td(span(((isset($altValue['FreezeToken']) && !empty($altValue['FreezeToken'])) ? $altValue['FreezeToken'] : str_replace(',', '.', $data->getFreezeToken()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='FreezeToken' class='right'  j='editAssetExchange'") . $cCmoreCols.$actionCell
+                td(span((($altValue['Type'] !== null ) ? $altValue['Type'] : isntPo($data->getType()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editAssetExchange'") . 
+                td(span((($altValue['IdExchange'] !== null ) ? $altValue['IdExchange'] : $Exchange_Name)." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdExchange' class=''  j='editAssetExchange'") . 
+                td(span((($altValue['FreeToken'] !== null ) ? $altValue['FreeToken'] : str_replace(',', '.', $data->getFreeToken()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='FreeToken' class='right'  j='editAssetExchange'") . 
+                td(span((($altValue['LockedToken'] !== null ) ? $altValue['LockedToken'] : str_replace(',', '.', $data->getLockedToken()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='LockedToken' class='right'  j='editAssetExchange'") . 
+                td(span((($altValue['FreezeToken'] !== null ) ? $altValue['FreezeToken'] : str_replace(',', '.', $data->getFreezeToken()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='FreezeToken' class='right'  j='editAssetExchange'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -376,7 +376,7 @@ class AssetExchangeForm extends AssetExchange
                         id='AssetExchangeRow".$data->getPrimaryKey()."'")
                 ;
                 $i++;
-                unset($altValue);
+                $altValue = null;
             }
             $tr .= input('hidden', 'rowCountAssetExchange', $i);
         }

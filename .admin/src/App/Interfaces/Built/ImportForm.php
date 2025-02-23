@@ -246,15 +246,15 @@ class ImportForm extends Import
         $this->isChild = '';
         $this->TableName = 'Import';
         $altValue = array (
-  'IdImport' => '',
-  'Name' => '',
-  'Items' => '',
-  'File' => '',
-  'DateCreation' => '',
-  'DateModification' => '',
-  'IdGroupCreation' => '',
-  'IdCreation' => '',
-  'IdModification' => '',
+  'IdImport' => NULL,
+  'Name' => NULL,
+  'Items' => NULL,
+  'File' => NULL,
+  'DateCreation' => NULL,
+  'DateModification' => NULL,
+  'IdGroupCreation' => NULL,
+  'IdCreation' => NULL,
+  'IdModification' => NULL,
 );
         $tr = '';
         $hook = [];
@@ -333,8 +333,8 @@ class ImportForm extends Import
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span(((isset($altValue['Name']) && !empty($altValue['Name'])) ? $altValue['Name'] : $data->getName())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editImport'") . 
-                td(span(((isset($altValue['Items']) && !empty($altValue['Items'])) ? $altValue['Items'] : $data->getItems())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Items' class=''  j='editImport'") . $cCmoreCols.$actionCell
+                td(span((($altValue['Name'] !== null ) ? $altValue['Name'] : $data->getName())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editImport'") . 
+                td(span((($altValue['Items'] !== null ) ? $altValue['Items'] : $data->getItems())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Items' class=''  j='editImport'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -342,7 +342,7 @@ class ImportForm extends Import
                         id='ImportRow".$data->getPrimaryKey()."'")
                 ;
                 $i++;
-                unset($altValue);
+                $altValue = null;
             }
             $tr .= input('hidden', 'rowCountImport', $i);
         }

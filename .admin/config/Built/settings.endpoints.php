@@ -380,10 +380,6 @@ $table['token'] = [
     'id_token' => [
         'type' => 'INTEGER',
     ],
-    'name' => [
-        'type' => 'VARCHAR',
-        'description' => 'Name',
-    ],
     'ticker' => [
         'type' => 'VARCHAR',
         'description' => 'Ticker',
@@ -392,6 +388,10 @@ $table['token'] = [
         'type' => 'ENUM',
         'description' => 'Stablecoin',
         'valueSet' => null,
+    ],
+    'name' => [
+        'type' => 'VARCHAR',
+        'description' => 'Name',
     ],
     'date_creation' => [
         'type' => 'TIMESTAMP',
