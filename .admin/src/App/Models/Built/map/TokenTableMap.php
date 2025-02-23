@@ -90,6 +90,7 @@ class TokenTableMap extends TableMap
         return array(
             'GoatCheese' =>  array (
   'i18n_langs' => '["en_US"]',
+  'add_search_columns' => '{"Ticker":[["ticker","%val"]]}',
   'set_parent_menu' => 'Settings',
 ),
             'add_validator' =>  array (

@@ -123,7 +123,15 @@ class TokenForm extends Token
             # main search form
             $q::create()
                 ;
-                
+
+        if( isset($this->searchMs['Ticker']) ) {
+            $criteria = \Criteria::LIKE;
+
+
+            $value = $this->setCriteria($this->searchMs['Ticker'], $criteria);
+
+            $q->filterByTicker($value, $criteria);
+        }
                 
         }else{
             
@@ -200,8 +208,20 @@ class TokenForm extends Token
 
             case 'search':
                 
-                
-                ;
+                $data = [];
+            
+
+            $trSearch = button(span(_("Show search")),'class="trigger-search button-link-blue"')
+
+            .div(
+                form(div(input('text', 'Ticker', $this->searchMs['Ticker'], '  title="'._('Ticker').'" placeholder="'._('Ticker').'"',''),'','class="ac-search-item"').$this->hookListSearchTop
+                    .div(
+                       button(span(_("Search")),'id="msTokenBt" title="'._('Search').'" class="icon search"')
+                       .button(span(_("Clear")),' title="'._('Clear search').'" id="msTokenBtClear"')
+                       .input('hidden', 'Seq', $data['Seq'] )
+                    ,'','class="ac-search-item ac-action-buttons"')
+                    ,"id='formMsToken'")
+            ,"", "  class='msSearchCtnr'");;
                 return $trSearch;
 
             case 'add':
@@ -409,6 +429,40 @@ class TokenForm extends Token
             
             ."
         
+
+    $('#msTokenBt').click(function() {
+        sw_message('".addslashes(_('Search in progress...'))."',false ,'search-progress', true);
+        $('#msTokenBt button').attr('disabled', 'disabled');
+
+        $.post('"._SITE_URL.$this->virtualClassName."', {ui: '".$uiTabsId."', ms:$('#formMsToken').serialize() },  function(data){
+            $('#".$uiTabsId."').html(data);
+            $('#formMsToken .js-select-label').SelectBox();
+            $('#formMsToken input[type=text]').first().focus();
+            $('#formMsToken input[type=text]').first().putCursorAtEnd();
+            $('#msTokenBt button').attr('disabled', '');
+            sw_message_remove('search-progress');
+        });
+
+        return false;
+    });
+
+    $('#formMsToken').keydown(function(e) {
+        if(e.which == 13) {
+            $('#msTokenBt').click();
+        }
+    });
+
+    $('#msTokenBtClear').bind('click', function (){
+        sw_message('".addslashes(_('Search cleared...'))."', false,'search-reset', true);
+
+        $.post('"._SITE_URL.$this->virtualClassName."', {ui: '".$uiTabsId."', ms:'clear' },  function(data){
+                $('#".$uiTabsId."').html(data);
+                $('#formMsToken input[type=text]:first-of-type').focus().putCursorAtEnd();
+                sw_message_remove('search-reset');
+        });
+
+        return false;
+    });
         
         
         $('#tabsContain .js-select-label').SelectBox();

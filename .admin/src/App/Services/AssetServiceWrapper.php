@@ -63,26 +63,23 @@ class AssetServiceWrapper extends AssetService
         return $sync->syncAccountTrades($request['data']['IdToken'], ['data']['IdAsset']);
     }
 
-    public function syncPair(){
-
-    }
-
     function getTickerHistory($request){
 
         foreach($request['data']['symbols'] as $symbols){
             if (
-                !isset($_SESSION[_AUTH_VAR]->sessVar['symbol_history'][$request['i']]) ||
+                !isset($_SESSION[_AUTH_VAR]->sessVar['symbol_history'][$symbols]) ||
                 date('d') != date('d', $_SESSION[_AUTH_VAR]->sessVar['symbol_history']['time'])
             ) { // check time 24h
                 try {
                     $binance = new Binance($_ENV['BINANCE_KEY'], $_ENV['BINANCE_SECRET']);
                     $results = $binance->system()->get24hr(['symbol' => $symbols]);
+                    echo json_encode($results, JSON_PRETTY_PRINT);
                     $history = [
                         'priceChange' => trim(($results['priceChange'] > 0 ? '+' . $results['priceChange'] : $results['priceChange']), '0'),
                         'volume' => trim($results['volume'], '0'),
                         'priceChangePercent' => trim(($results['priceChangePercent'] > 0 ? '+' . $results['priceChangePercent'] : $results['priceChangePercent']), '0'),
                     ];
-                    $_SESSION[_AUTH_VAR]->sessVar['symbol_history'][$request['i']] = $history;
+                    $_SESSION[_AUTH_VAR]->sessVar['symbol_history'][$symbols] = $history;
                     $_SESSION[_AUTH_VAR]->sessVar['symbol_history']['time'] = time();
 
                 } catch (\Exception $e) {

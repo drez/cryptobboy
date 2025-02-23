@@ -62,7 +62,7 @@ class Sync {
     function syncAccountTrades($IdToken, $IdAsset){
         $return = "Up to date";
 
-        if($this->assetNeedSync($IdAsset)){
+        if(1 || $this->assetNeedSync($IdAsset)){
             $return = "Resynced";
             $symbols = $this->getTradeSymbolForTicker($IdToken);
             $trades = [];
@@ -72,7 +72,7 @@ class Sync {
 
             foreach($symbols as $symbol => $IdSymbol){
                 $results = $this->binance->user()->getMyTrades(['symbol' => $symbol, 'recvWindow' => '10000']);
-               //echo pre(print_r($results, true));
+              // echo pre(print_r($results, true));
                 if($results){
                     foreach($results as $result){
                         if(isset($trades[$result['orderId']])){
@@ -133,7 +133,7 @@ class Sync {
     {
 
         $tokens = $this->getLocalTokensMap();
-
+        $count = 0;
         try {
            
             $result = $this->binance->system()->getExchangeInfo();
@@ -149,8 +149,8 @@ class Sync {
                         ->findOneOrCreate();
 
                     if($Symbol->isNew()){
-
                         $Symbol->save();
+                        $count++;
                     }
                 }
                 
@@ -159,6 +159,8 @@ class Sync {
         }catch (\Exception $e){
           return pre(print_r($e->getMessage(), true));
         }
+
+        return $count;
     }
 
     function syncAccountAssets()
@@ -272,17 +274,19 @@ class Sync {
                 if ($ticker != 'USDT') {
                     try {
                         $result = $this->binance->system()->getTickerPrice(['symbol' => $ticker.'USDT']);
+                       // echo json_encode($result, JSON_PRETTY_PRINT);
                     }catch (\Exception $e){
                         print_r($ticker.":".$e->getMessage());
+                        $result['price'] = 0;
                     }
 
                     $Asset = AssetQuery::create()
                             ->filterByIdToken($tokens[$ticker])
                             ->findOne();
-                    
+                   // echo $ticker.":".$result['price']."<br>\n\n".
                     $Asset->setUsdValue(bcmul($Asset->getTotalToken(),$result['price']));
                     $Asset->save();
-                    echo $ticker.":".$Asset->getTotalToken()."<br>";
+                   // echo $ticker.":".$Asset->getTotalToken()."<br>";
                 } else {
                      $Asset = AssetQuery::create()
                             ->filterByIdToken($tokens[$ticker])
@@ -295,9 +299,15 @@ class Sync {
             }
         }
 
+      //  if($newToken > 0){
+            $_SESSION[_AUTH_VAR]->sessVar['symbol_history']['time'] = 0;
+            $newSymbols = $this->syncTradeSymbols();
+       // }
+
         return div(
             div("New tokens: $newToken")
             .div("New assets: $newAsset")
+            .div("New trade symbols: $newSymbols")
         );  
         
     }

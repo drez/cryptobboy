@@ -96,15 +96,21 @@
         "validator": {"name":{"required":{"msg":"name_required","value":null}}},
       },
       "token('Token')": {
+        add_search_columns:{
+          "Ticker": [["ticker", "%val"]], 
+        },
         set_parent_menu:"Settings",
         "id_token()": ["primary()"],
-        "name('Name')": ["varchar(100)"],
         "ticker('Ticker')": ["varchar(100)"],
         "is_stablecoin('Stablecoin')": ["enum(No, Yes)",'required'],
+        "name('Name')": ["varchar(100)"],
         
         "validator": {"ticker":{"required":{"msg":"ticker_required","value":null}}},
       },
       "symbol('Symbol')": {
+        add_search_columns:{
+          "Base Ticker": [["id_token", "%val"]], 
+        },
         set_parent_menu:"Settings",
         "set_child_colunms":{"id_token":["ticker"]},
 

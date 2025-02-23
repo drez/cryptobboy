@@ -83,6 +83,7 @@ class SymbolTableMap extends TableMap
         return array(
             'GoatCheese' =>  array (
   'i18n_langs' => '["en_US"]',
+  'add_search_columns' => '{"Base Ticker":[["id_token","%val"]]}',
   'set_parent_menu' => 'Settings',
   'set_child_colunms' => '{"id_token":["ticker"]}',
 ),

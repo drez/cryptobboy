@@ -79,42 +79,9 @@ JS;
         });
     });*/
 JS; 
-    $this->hookFormReadyJs .= $swmessage;
+        $this->hookFormReadyJs .= $swmessage;
 
-        $avgPrice = ['qty' => 0, 'amount' => 0];
-        $Trades = TradeQuery::create()
-            ->filterByIdAsset($dataObj->getPrimaryKey())
-            ->orderByDate('ASC')
-            ->find();
-        foreach($Trades as $Trade){
-                if($Trade->getStartAvg() == 'Reset'){
-                    $avgPrice['qty'] = 0;
-                    $avgPrice['amount'] = 0;
-                    $curavg = 0;
-                }
-
-                if($Trade->getType() == 'Buy'){
-                    $avgPrice['qty'] += $Trade->getQty();
-                    $avgPrice['amount'] += $Trade->getQty()*$Trade->getGrossUsd();
-                }elseif($avgPrice['qty'] > 0){
-                    $curavg = $avgPrice['amount'] / $avgPrice['qty'];
-                    $profit += ($Trade->getGrossUsd() - $curavg) * $Trade->getQty();
-
-                    $avgPrice['amount'] -= $Trade->getQty()*$curavg;
-                    $avgPrice['qty'] = ($avgPrice['qty'] - $Trade->getQty() < 0) ? 0 : $avgPrice['qty'] - $Trade->getQty();
-
-                }
-            }
-
-            if($avgPrice['amount'] || $curavg){
-                if($avgPrice['qty'] > 0){
-                    $avg = $avgPrice['amount'] / $avgPrice['qty'];
-                }
-                $dataObj->setAvgPrice(($avgPrice['qty'] > 0)?$avg:$curavg);
-                $dataObj->setProfit($profit);
-                ($dataObj->getSymbol()->isNew())?$dataObj->setSymbol(null):'';
-                $dataObj->save();
-            }
+        \Asset\Utils::setAvgPrice($dataObj);
         
     }
 
@@ -193,9 +160,7 @@ JS;
     setTimeout(getTickersHistories, 3000);
     getTickersSpot();
     $('.sw-header .custom-controls').append( $('<a>').html('Sync assets').addClass('button-link-blue header-controls').attr('href', 'Javascript:;').attr('id', 'syncAssets') );
-    /*
-    $('.sw-header .custom-controls').append( $('<a>').html('Sync trades').addClass('button-link-blue header-controls').attr('href', 'Javascript:;').attr('id', 'syncTrades') );
-    */
+  
     $('#syncAssets').click(()=>{
         sw_message('Synchronizing...', false, 'sync_load', true);
         $.post('{$siteUrl}Asset/syncAssets/', {ui:'list'}, (data)=>{
@@ -204,14 +169,7 @@ JS;
             sw_message(true, false, 'sync_load');
         });
     });
-    $('#syncTrades').click(()=>{
-        sw_message('Synchronizing...', false, 'sync_load', true);
-        $.post('{$siteUrl}Asset/syncTrades/', {ui:'list'}, (data)=>{
-            $('#editPopupDialog').html(data);
-            $('#editPopupDialog').dialog('open');
-            sw_message(true, false, 'sync_load');
-        });
-    });
+   
 JS;
     }
 
@@ -220,12 +178,17 @@ JS;
             $sync = new \Connector\Binance\Sync();
             $Asset = AssetQuery::create()->findPk($this->IdPk);
             $result = $sync->syncAccountTrades($Asset->getToken()->getTicker(), $this->IdPk);
-
+           // print_r($result);
+            
             $refresh = "";
             if($result != 'Up to date'){
+                $avg = \Asset\Utils::setAvgPrice($Asset);
+               // print_r($avg);
                 $refresh = "
                 sw_message('Recalculating');
-                document.location = '"._SITE_URL."Asset/edit/".$this->IdPk."?sw=".urlencode($result)."';";
+                $('#formAsset #AvgPrice_label').html('".$avg['AvgPrice']."');
+                $('#formAsset #Profit_label').html('".$avg['Profit']."');
+                ";
             }else{
                 $refresh = "sw_message('$result');";
             }
