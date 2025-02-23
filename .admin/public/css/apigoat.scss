@@ -76,8 +76,9 @@
 }
 
 .symbol_change {
-    display: inline-block;
+    display: inline-flex;
     font-size: small;
+    justify-content: center;
     
     border-radius: 5px;
     padding: 2px 1px 1px 2px;
@@ -85,7 +86,8 @@
     margin-right: 5px;
 }
 .ticker_price {
-    display: inline-block;
+    display: inline-flex;
+    justify-content: center;
     font-size: small;
     
     border-radius: 5px;
@@ -104,6 +106,10 @@
 
   .good{
     background-color: #00c411;
+  }
+  
+  .black{
+    color: #141414;
   }
 
   .d::after{

@@ -326,7 +326,7 @@ class AuthyGroupXForm extends AuthyGroupX
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span((($altValue['IdAuthyGroup']) ? $altValue['IdAuthyGroup'] : $AuthyGroup_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdAuthyGroup' class=''  j='editAuthyGroupX'") . $cCmoreCols.$actionCell
+                td(span(((isset($altValue['IdAuthyGroup']) && !empty($altValue['IdAuthyGroup'])) ? $altValue['IdAuthyGroup'] : $AuthyGroup_Name)." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdAuthyGroup' class=''  j='editAuthyGroupX'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'

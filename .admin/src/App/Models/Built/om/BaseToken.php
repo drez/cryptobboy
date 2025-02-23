@@ -78,6 +78,12 @@ abstract class BaseToken extends BaseObject implements Persistent
     protected $ticker;
 
     /**
+     * The value for the is_stablecoin field.
+     * @var        int
+     */
+    protected $is_stablecoin;
+
+    /**
      * The value for the date_creation field.
      * @var        string
      */
@@ -224,6 +230,26 @@ abstract class BaseToken extends BaseObject implements Persistent
     {
 
         return $this->ticker;
+    }
+
+    /**
+     * @Field()
+     * Get the [is_stablecoin] column value.
+     * Stablecoin
+     * @return int
+     * @throws PropelException - if the stored enum key is unknown.
+     */
+    public function getIsStablecoin()
+    {
+        if (null === $this->is_stablecoin) {
+            return null;
+        }
+        $valueSet = TokenPeer::getValueSet(TokenPeer::IS_STABLECOIN);
+        if (!isset($valueSet[$this->is_stablecoin])) {
+            throw new PropelException('Unknown stored enum key: ' . $this->is_stablecoin);
+        }
+
+        return $valueSet[$this->is_stablecoin];
     }
 
     /**
@@ -408,6 +434,32 @@ abstract class BaseToken extends BaseObject implements Persistent
     } // setTicker()
 
     /**
+     * Set the value of [is_stablecoin] column.
+     * Stablecoin
+     * @param  int $v new value
+     * @return Token The current object (for fluent API support)
+     * @throws PropelException - if the value is not accepted by this enum.
+     */
+    public function setIsStablecoin($v)
+    {
+        if ($v !== null) {
+            $valueSet = TokenPeer::getValueSet(TokenPeer::IS_STABLECOIN);
+            if (!in_array($v, $valueSet)) {
+                throw new PropelException(sprintf('Value "%s" is not accepted in this enumerated column', $v));
+            }
+            $v = array_search($v, $valueSet);
+        }
+
+        if ($this->is_stablecoin !== $v) {
+            $this->is_stablecoin = $v;
+            $this->modifiedColumns[] = TokenPeer::IS_STABLECOIN;
+        }
+
+
+        return $this;
+    } // setIsStablecoin()
+
+    /**
      * Sets the value of [date_creation] column to a normalized version of the date/time value specified.
      *
      * @param mixed $v string, integer (timestamp), or DateTime value.
@@ -563,11 +615,12 @@ abstract class BaseToken extends BaseObject implements Persistent
             $this->id_token = ($row[$startcol + 0] !== null) ? (int) $row[$startcol + 0] : null;
             $this->name = ($row[$startcol + 1] !== null) ? (string) $row[$startcol + 1] : null;
             $this->ticker = ($row[$startcol + 2] !== null) ? (string) $row[$startcol + 2] : null;
-            $this->date_creation = ($row[$startcol + 3] !== null) ? (string) $row[$startcol + 3] : null;
-            $this->date_modification = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
-            $this->id_group_creation = ($row[$startcol + 5] !== null) ? (int) $row[$startcol + 5] : null;
-            $this->id_creation = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
-            $this->id_modification = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
+            $this->is_stablecoin = ($row[$startcol + 3] !== null) ? (int) $row[$startcol + 3] : null;
+            $this->date_creation = ($row[$startcol + 4] !== null) ? (string) $row[$startcol + 4] : null;
+            $this->date_modification = ($row[$startcol + 5] !== null) ? (string) $row[$startcol + 5] : null;
+            $this->id_group_creation = ($row[$startcol + 6] !== null) ? (int) $row[$startcol + 6] : null;
+            $this->id_creation = ($row[$startcol + 7] !== null) ? (int) $row[$startcol + 7] : null;
+            $this->id_modification = ($row[$startcol + 8] !== null) ? (int) $row[$startcol + 8] : null;
             $this->resetModified();
 
             $this->setNew(false);
@@ -577,7 +630,7 @@ abstract class BaseToken extends BaseObject implements Persistent
             }
             $this->postHydrate($row, $startcol, $rehydrate);
 
-            return $startcol + 8; // 8 = TokenPeer::NUM_HYDRATE_COLUMNS.
+            return $startcol + 9; // 9 = TokenPeer::NUM_HYDRATE_COLUMNS.
 
         } catch (Exception $e) {
             throw new PropelException("Error populating Token object", $e);
@@ -933,6 +986,9 @@ abstract class BaseToken extends BaseObject implements Persistent
         if ($this->isColumnModified(TokenPeer::TICKER)) {
             $modifiedColumns[':p' . $index++]  = '`ticker`';
         }
+        if ($this->isColumnModified(TokenPeer::IS_STABLECOIN)) {
+            $modifiedColumns[':p' . $index++]  = '`is_stablecoin`';
+        }
         if ($this->isColumnModified(TokenPeer::DATE_CREATION)) {
             $modifiedColumns[':p' . $index++]  = '`date_creation`';
         }
@@ -967,6 +1023,9 @@ abstract class BaseToken extends BaseObject implements Persistent
                         break;
                     case '`ticker`':
                         $stmt->bindValue($identifier, $this->ticker, PDO::PARAM_STR);
+                        break;
+                    case '`is_stablecoin`':
+                        $stmt->bindValue($identifier, $this->is_stablecoin, PDO::PARAM_INT);
                         break;
                     case '`date_creation`':
                         $stmt->bindValue($identifier, $this->date_creation, PDO::PARAM_STR);
@@ -1189,11 +1248,12 @@ abstract class BaseToken extends BaseObject implements Persistent
             $keys[0] => $this->getIdToken(),
             $keys[1] => $this->getName(),
             $keys[2] => $this->getTicker(),
-            $keys[3] => $this->getDateCreation(),
-            $keys[4] => $this->getDateModification(),
-            $keys[5] => $this->getIdGroupCreation(),
-            $keys[6] => $this->getIdCreation(),
-            $keys[7] => $this->getIdModification(),
+            $keys[3] => $this->getIsStablecoin(),
+            $keys[4] => $this->getDateCreation(),
+            $keys[5] => $this->getDateModification(),
+            $keys[6] => $this->getIdGroupCreation(),
+            $keys[7] => $this->getIdCreation(),
+            $keys[8] => $this->getIdModification(),
         );
         $virtualColumns = $this->virtualColumns;
         foreach ($virtualColumns as $key => $virtualColumn) {
@@ -1266,18 +1326,25 @@ abstract class BaseToken extends BaseObject implements Persistent
                 $this->setTicker($value);
                 break;
             case 3:
-                $this->setDateCreation($value);
+                $valueSet = TokenPeer::getValueSet(TokenPeer::IS_STABLECOIN);
+                if (isset($valueSet[$value])) {
+                    $value = $valueSet[$value];
+                }
+                $this->setIsStablecoin($value);
                 break;
             case 4:
-                $this->setDateModification($value);
+                $this->setDateCreation($value);
                 break;
             case 5:
-                $this->setIdGroupCreation($value);
+                $this->setDateModification($value);
                 break;
             case 6:
-                $this->setIdCreation($value);
+                $this->setIdGroupCreation($value);
                 break;
             case 7:
+                $this->setIdCreation($value);
+                break;
+            case 8:
                 $this->setIdModification($value);
                 break;
         } // switch()
@@ -1307,11 +1374,12 @@ abstract class BaseToken extends BaseObject implements Persistent
         if (array_key_exists($keys[0], $arr)) $this->setIdToken($arr[$keys[0]]);
         if (array_key_exists($keys[1], $arr)) $this->setName($arr[$keys[1]]);
         if (array_key_exists($keys[2], $arr)) $this->setTicker($arr[$keys[2]]);
-        if (array_key_exists($keys[3], $arr)) $this->setDateCreation($arr[$keys[3]]);
-        if (array_key_exists($keys[4], $arr)) $this->setDateModification($arr[$keys[4]]);
-        if (array_key_exists($keys[5], $arr)) $this->setIdGroupCreation($arr[$keys[5]]);
-        if (array_key_exists($keys[6], $arr)) $this->setIdCreation($arr[$keys[6]]);
-        if (array_key_exists($keys[7], $arr)) $this->setIdModification($arr[$keys[7]]);
+        if (array_key_exists($keys[3], $arr)) $this->setIsStablecoin($arr[$keys[3]]);
+        if (array_key_exists($keys[4], $arr)) $this->setDateCreation($arr[$keys[4]]);
+        if (array_key_exists($keys[5], $arr)) $this->setDateModification($arr[$keys[5]]);
+        if (array_key_exists($keys[6], $arr)) $this->setIdGroupCreation($arr[$keys[6]]);
+        if (array_key_exists($keys[7], $arr)) $this->setIdCreation($arr[$keys[7]]);
+        if (array_key_exists($keys[8], $arr)) $this->setIdModification($arr[$keys[8]]);
     }
 
     /**
@@ -1326,6 +1394,7 @@ abstract class BaseToken extends BaseObject implements Persistent
         if ($this->isColumnModified(TokenPeer::ID_TOKEN)) $criteria->add(TokenPeer::ID_TOKEN, $this->id_token);
         if ($this->isColumnModified(TokenPeer::NAME)) $criteria->add(TokenPeer::NAME, $this->name);
         if ($this->isColumnModified(TokenPeer::TICKER)) $criteria->add(TokenPeer::TICKER, $this->ticker);
+        if ($this->isColumnModified(TokenPeer::IS_STABLECOIN)) $criteria->add(TokenPeer::IS_STABLECOIN, $this->is_stablecoin);
         if ($this->isColumnModified(TokenPeer::DATE_CREATION)) $criteria->add(TokenPeer::DATE_CREATION, $this->date_creation);
         if ($this->isColumnModified(TokenPeer::DATE_MODIFICATION)) $criteria->add(TokenPeer::DATE_MODIFICATION, $this->date_modification);
         if ($this->isColumnModified(TokenPeer::ID_GROUP_CREATION)) $criteria->add(TokenPeer::ID_GROUP_CREATION, $this->id_group_creation);
@@ -1396,6 +1465,7 @@ abstract class BaseToken extends BaseObject implements Persistent
     {
         $copyObj->setName($this->getName());
         $copyObj->setTicker($this->getTicker());
+        $copyObj->setIsStablecoin($this->getIsStablecoin());
         $copyObj->setDateCreation($this->getDateCreation());
         $copyObj->setDateModification($this->getDateModification());
         $copyObj->setIdGroupCreation($this->getIdGroupCreation());
@@ -2878,6 +2948,7 @@ abstract class BaseToken extends BaseObject implements Persistent
         $this->id_token = null;
         $this->name = null;
         $this->ticker = null;
+        $this->is_stablecoin = null;
         $this->date_creation = null;
         $this->date_modification = null;
         $this->id_group_creation = null;

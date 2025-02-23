@@ -207,7 +207,7 @@ class Sync {
 
          try {
             $result = $this->binance->user()->getEarnLockedBalances();
-            echo json_encode($result, JSON_PRETTY_PRINT);
+           // echo json_encode($result, JSON_PRETTY_PRINT);
         }catch (\Exception $e){
             print_r($e->getMessage());
         }

@@ -333,8 +333,8 @@ class ImportForm extends Import
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editImport'") . 
-                td(span((($altValue['Items']) ? $altValue['Items'] : $data->getItems()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Items' class=''  j='editImport'") . $cCmoreCols.$actionCell
+                td(span(((isset($altValue['Name']) && !empty($altValue['Name'])) ? $altValue['Name'] : $data->getName())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editImport'") . 
+                td(span(((isset($altValue['Items']) && !empty($altValue['Items'])) ? $altValue['Items'] : $data->getItems())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Items' class=''  j='editImport'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'

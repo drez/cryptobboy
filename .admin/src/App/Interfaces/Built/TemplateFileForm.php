@@ -331,8 +331,8 @@ class TemplateFileForm extends TemplateFile
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editTemplateFile'") . 
-                td(span((($altValue['File']) ? $altValue['File'] : $data->getFile()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='File' class=''  j='editTemplateFile'") . $cCmoreCols.$actionCell
+                td(span(((isset($altValue['Name']) && !empty($altValue['Name'])) ? $altValue['Name'] : $data->getName())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editTemplateFile'") . 
+                td(span(((isset($altValue['File']) && !empty($altValue['File'])) ? $altValue['File'] : $data->getFile())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='File' class=''  j='editTemplateFile'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'

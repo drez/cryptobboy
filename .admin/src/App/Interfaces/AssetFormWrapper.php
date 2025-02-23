@@ -101,7 +101,8 @@ JS;
                     $profit += ($Trade->getGrossUsd() - $curavg) * $Trade->getQty();
 
                     $avgPrice['amount'] -= $Trade->getQty()*$curavg;
-                    $avgPrice['qty'] -= $Trade->getQty();
+                    $avgPrice['qty'] = ($avgPrice['qty'] - $Trade->getQty() < 0) ? 0 : $avgPrice['qty'] - $Trade->getQty();
+
                 }
             }
 
@@ -135,11 +136,10 @@ JS;
          $.post('{$siteUrl}Asset/getTickerHistory/', {ui:'list', symbols:allSymbols}, (data)=>{
            Object.keys(data).forEach(function(key) {
 
-                if(key && data[key]['priceChangePercent'].length > 2){
+                if(key && data[key]['priceChangePercent']?.length > 2){
                     var priceChange = data[key]['priceChangePercent'];
                     var icon = (priceChange.indexOf('+') > -1)?'au':'ad';
                     $("#AssetTable tbody tr[data-symbol='"+key+"'] td[c=IdToken]").append( $('<div>').addClass(icon).addClass('symbol_change').html(priceChange+'%' ));
-
                 }
                 
             });
@@ -162,14 +162,23 @@ JS;
                     }
 
                     var diff = Number(Math.round((data['p']-avgPrices[ticker])/avgPrices[ticker]*100));
-                    var color = (diff >= 0)?'good':'bad';
-
+                    console.log(avgPrices[ticker])
+                    if(avgPrices[ticker] == 0){
+                        var diff = '';
+                        var color_diff = 'null';
+                        var color = 'black';
+                    }else{
+                        var color = (diff >= 0)?'good':'bad';
+                        var color_diff = color;
+                        diff = diff+"%";
+                    }
+                    
                     if( $('#ticker_price_'+ticker).length){
-                        $('#ticker_price_'+ticker).removeClass('good bad u d').addClass(data['d']).addClass(color).html(data['p']);
-                        $('#ticker_price_diff_'+ticker).removeClass('good bad').addClass(color).html(diff+"%");
+                        $('#ticker_price_'+ticker).removeClass('good bad black u d').addClass(data['d']).addClass(color).html(data['p']);
+                        $('#ticker_price_diff_'+ticker).removeClass('good bad').addClass(color_diff).html(diff);
                     }else{
                         $('[data-ticker='+ticker+'] [c=AvgPrice]').append( $('<div>').attr('id', 'ticker_price_'+ticker).addClass('ticker_price').addClass(data['d']).addClass(color).html(data['p']) );
-                        $('[data-ticker='+ticker+'] [c=AvgPrice]').append( $('<div>').attr('id', 'ticker_price_diff_'+ticker).addClass('ticker_price').addClass(color).html(diff+"%") );
+                        $('[data-ticker='+ticker+'] [c=AvgPrice]').append( $('<div>').attr('id', 'ticker_price_diff_'+ticker).addClass('ticker_price').addClass(color_diff).html(diff) );
                     }
                 }
                 
@@ -189,7 +198,7 @@ JS;
     */
     $('#syncAssets').click(()=>{
         sw_message('Synchronizing...', false, 'sync_load', true);
-        $.post('" . _SITE_URL . $this->virtualClassName . "/syncAssets/', {ui:'list'}, (data)=>{
+        $.post('{$siteUrl}Asset/syncAssets/', {ui:'list'}, (data)=>{
             $('#editPopupDialog').html(data);
             $('#editPopupDialog').dialog('open');
             sw_message(true, false, 'sync_load');
@@ -197,7 +206,7 @@ JS;
     });
     $('#syncTrades').click(()=>{
         sw_message('Synchronizing...', false, 'sync_load', true);
-        $.post('" . _SITE_URL . $this->virtualClassName . "/syncTrades/', {ui:'list'}, (data)=>{
+        $.post('{$siteUrl}Asset/syncTrades/', {ui:'list'}, (data)=>{
             $('#editPopupDialog').html(data);
             $('#editPopupDialog').dialog('open');
             sw_message(true, false, 'sync_load');
@@ -230,10 +239,10 @@ JS;
 
     public function beforeListTr(&$altValue, $data, $i, &$param, $actionRow){
         $param['tr'] = "data-ticker='".$data->getToken()->getTicker()."'";
-        $altValue['AvgPrice'] = rtrim($data->getAvgPrice(), '0');
-        $altValue['FreeToken'] = ($data->getFreeToken() > 0) ? round($data->getFreeToken(), 2) : rtrim($data->getFreeToken(), '0');
-        $altValue['StakedToken'] = ($data->getStakedToken() > 0) ? round($data->getStakedToken(), 2) : rtrim($data->getStakedToken(), '0');
-        $altValue['TotalToken'] = ($data->getTotalToken() > 0) ? round($data->getTotalToken(), 2) : rtrim($data->getTotalToken(), '0');
+        $altValue['AvgPrice'] = ((float) $data->getAvgPrice() >= 0) ? round($data->getAvgPrice(), 2) : rtrim($data->getAvgPrice(), '0');
+        $altValue['FreeToken'] = ((float)$data->getFreeToken() >= 0) ? round($data->getFreeToken(), 2) : rtrim($data->getFreeToken(), '0');
+        $altValue['StakedToken'] = ((float)$data->getStakedToken() >= 0) ? round($data->getStakedToken(), 2) : rtrim($data->getStakedToken(), '0');
+        $altValue['TotalToken'] = ((float)$data->getTotalToken() >= 0) ? round($data->getTotalToken(), 2) : rtrim($data->getTotalToken(), '0');
         $altValue['UsdValue'] = "$ ".$data->getUsdValue();
         $altValue['Profit'] = "$ ".$data->getUsdValue();
     }

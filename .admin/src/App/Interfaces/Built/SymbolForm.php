@@ -333,8 +333,8 @@ class SymbolForm extends Symbol
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editSymbol'") . 
-                td(span((($altValue['IdToken']) ? $altValue['IdToken'] : $altValue['Token_Ticker']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdToken' class=''  j='editSymbol'") . $cCmoreCols.$actionCell
+                td(span(((isset($altValue['Name']) && !empty($altValue['Name'])) ? $altValue['Name'] : $data->getName())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editSymbol'") . 
+                td(span(((isset($altValue['IdToken']) && !empty($altValue['IdToken'])) ? $altValue['IdToken'] : $altValue['Token_Ticker'])." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdToken' class=''  j='editSymbol'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'

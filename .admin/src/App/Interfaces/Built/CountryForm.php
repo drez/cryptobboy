@@ -330,11 +330,11 @@ class CountryForm extends Country
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editCountry'") . 
-                td(span((($altValue['Code']) ? $altValue['Code'] : $data->getCode()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Code' class=''  j='editCountry'") . 
-                td(span((($altValue['Timezone']) ? $altValue['Timezone'] : $data->getTimezone()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Timezone' class=''  j='editCountry'") . 
-                td(span((($altValue['TimezoneCode']) ? $altValue['TimezoneCode'] : $data->getTimezoneCode()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='TimezoneCode' class=''  j='editCountry'") . 
-                td(span((($altValue['Priority']) ? $altValue['Priority'] : $data->getPriority()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Priority' class=''  j='editCountry'") . $cCmoreCols.$actionCell
+                td(span(((isset($altValue['Name']) && !empty($altValue['Name'])) ? $altValue['Name'] : $data->getName())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editCountry'") . 
+                td(span(((isset($altValue['Code']) && !empty($altValue['Code'])) ? $altValue['Code'] : $data->getCode())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Code' class=''  j='editCountry'") . 
+                td(span(((isset($altValue['Timezone']) && !empty($altValue['Timezone'])) ? $altValue['Timezone'] : $data->getTimezone())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Timezone' class=''  j='editCountry'") . 
+                td(span(((isset($altValue['TimezoneCode']) && !empty($altValue['TimezoneCode'])) ? $altValue['TimezoneCode'] : $data->getTimezoneCode())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='TimezoneCode' class=''  j='editCountry'") . 
+                td(span(((isset($altValue['Priority']) && !empty($altValue['Priority'])) ? $altValue['Priority'] : $data->getPriority())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Priority' class=''  j='editCountry'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'

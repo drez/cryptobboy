@@ -38,13 +38,13 @@ abstract class BaseTokenPeer
     const TM_CLASS = 'App\\map\\TokenTableMap';
 
     /** The total number of columns. */
-    const NUM_COLUMNS = 8;
+    const NUM_COLUMNS = 9;
 
     /** The number of lazy-loaded columns. */
     const NUM_LAZY_LOAD_COLUMNS = 0;
 
     /** The number of columns to hydrate (NUM_COLUMNS - NUM_LAZY_LOAD_COLUMNS) */
-    const NUM_HYDRATE_COLUMNS = 8;
+    const NUM_HYDRATE_COLUMNS = 9;
 
     /** the column name for the id_token field */
     const ID_TOKEN = 'token.id_token';
@@ -54,6 +54,9 @@ abstract class BaseTokenPeer
 
     /** the column name for the ticker field */
     const TICKER = 'token.ticker';
+
+    /** the column name for the is_stablecoin field */
+    const IS_STABLECOIN = 'token.is_stablecoin';
 
     /** the column name for the date_creation field */
     const DATE_CREATION = 'token.date_creation';
@@ -69,6 +72,10 @@ abstract class BaseTokenPeer
 
     /** the column name for the id_modification field */
     const ID_MODIFICATION = 'token.id_modification';
+
+    /** The enumerated values for the is_stablecoin field */
+    const IS_STABLECOIN_NO = 'No';
+    const IS_STABLECOIN_YES = 'Yes';
 
     /** The default string format for model objects of the related table **/
     const DEFAULT_STRING_FORMAT = 'YAML';
@@ -89,12 +96,12 @@ abstract class BaseTokenPeer
      * e.g. TokenPeer::$fieldNames[TokenPeer::TYPE_PHPNAME][0] = 'Id'
      */
     protected static $fieldNames = array (
-        BasePeer::TYPE_PHPNAME => array ('IdToken', 'Name', 'Ticker', 'DateCreation', 'DateModification', 'IdGroupCreation', 'IdCreation', 'IdModification', ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idToken', 'name', 'ticker', 'dateCreation', 'dateModification', 'idGroupCreation', 'idCreation', 'idModification', ),
-        BasePeer::TYPE_COLNAME => array (TokenPeer::ID_TOKEN, TokenPeer::NAME, TokenPeer::TICKER, TokenPeer::DATE_CREATION, TokenPeer::DATE_MODIFICATION, TokenPeer::ID_GROUP_CREATION, TokenPeer::ID_CREATION, TokenPeer::ID_MODIFICATION, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_TOKEN', 'NAME', 'TICKER', 'DATE_CREATION', 'DATE_MODIFICATION', 'ID_GROUP_CREATION', 'ID_CREATION', 'ID_MODIFICATION', ),
-        BasePeer::TYPE_FIELDNAME => array ('id_token', 'name', 'ticker', 'date_creation', 'date_modification', 'id_group_creation', 'id_creation', 'id_modification', ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
+        BasePeer::TYPE_PHPNAME => array ('IdToken', 'Name', 'Ticker', 'IsStablecoin', 'DateCreation', 'DateModification', 'IdGroupCreation', 'IdCreation', 'IdModification', ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idToken', 'name', 'ticker', 'isStablecoin', 'dateCreation', 'dateModification', 'idGroupCreation', 'idCreation', 'idModification', ),
+        BasePeer::TYPE_COLNAME => array (TokenPeer::ID_TOKEN, TokenPeer::NAME, TokenPeer::TICKER, TokenPeer::IS_STABLECOIN, TokenPeer::DATE_CREATION, TokenPeer::DATE_MODIFICATION, TokenPeer::ID_GROUP_CREATION, TokenPeer::ID_CREATION, TokenPeer::ID_MODIFICATION, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_TOKEN', 'NAME', 'TICKER', 'IS_STABLECOIN', 'DATE_CREATION', 'DATE_MODIFICATION', 'ID_GROUP_CREATION', 'ID_CREATION', 'ID_MODIFICATION', ),
+        BasePeer::TYPE_FIELDNAME => array ('id_token', 'name', 'ticker', 'is_stablecoin', 'date_creation', 'date_modification', 'id_group_creation', 'id_creation', 'id_modification', ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, )
     );
 
     /**
@@ -104,12 +111,20 @@ abstract class BaseTokenPeer
      * e.g. TokenPeer::$fieldNames[BasePeer::TYPE_PHPNAME]['Id'] = 0
      */
     protected static $fieldKeys = array (
-        BasePeer::TYPE_PHPNAME => array ('IdToken' => 0, 'Name' => 1, 'Ticker' => 2, 'DateCreation' => 3, 'DateModification' => 4, 'IdGroupCreation' => 5, 'IdCreation' => 6, 'IdModification' => 7, ),
-        BasePeer::TYPE_STUDLYPHPNAME => array ('idToken' => 0, 'name' => 1, 'ticker' => 2, 'dateCreation' => 3, 'dateModification' => 4, 'idGroupCreation' => 5, 'idCreation' => 6, 'idModification' => 7, ),
-        BasePeer::TYPE_COLNAME => array (TokenPeer::ID_TOKEN => 0, TokenPeer::NAME => 1, TokenPeer::TICKER => 2, TokenPeer::DATE_CREATION => 3, TokenPeer::DATE_MODIFICATION => 4, TokenPeer::ID_GROUP_CREATION => 5, TokenPeer::ID_CREATION => 6, TokenPeer::ID_MODIFICATION => 7, ),
-        BasePeer::TYPE_RAW_COLNAME => array ('ID_TOKEN' => 0, 'NAME' => 1, 'TICKER' => 2, 'DATE_CREATION' => 3, 'DATE_MODIFICATION' => 4, 'ID_GROUP_CREATION' => 5, 'ID_CREATION' => 6, 'ID_MODIFICATION' => 7, ),
-        BasePeer::TYPE_FIELDNAME => array ('id_token' => 0, 'name' => 1, 'ticker' => 2, 'date_creation' => 3, 'date_modification' => 4, 'id_group_creation' => 5, 'id_creation' => 6, 'id_modification' => 7, ),
-        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, )
+        BasePeer::TYPE_PHPNAME => array ('IdToken' => 0, 'Name' => 1, 'Ticker' => 2, 'IsStablecoin' => 3, 'DateCreation' => 4, 'DateModification' => 5, 'IdGroupCreation' => 6, 'IdCreation' => 7, 'IdModification' => 8, ),
+        BasePeer::TYPE_STUDLYPHPNAME => array ('idToken' => 0, 'name' => 1, 'ticker' => 2, 'isStablecoin' => 3, 'dateCreation' => 4, 'dateModification' => 5, 'idGroupCreation' => 6, 'idCreation' => 7, 'idModification' => 8, ),
+        BasePeer::TYPE_COLNAME => array (TokenPeer::ID_TOKEN => 0, TokenPeer::NAME => 1, TokenPeer::TICKER => 2, TokenPeer::IS_STABLECOIN => 3, TokenPeer::DATE_CREATION => 4, TokenPeer::DATE_MODIFICATION => 5, TokenPeer::ID_GROUP_CREATION => 6, TokenPeer::ID_CREATION => 7, TokenPeer::ID_MODIFICATION => 8, ),
+        BasePeer::TYPE_RAW_COLNAME => array ('ID_TOKEN' => 0, 'NAME' => 1, 'TICKER' => 2, 'IS_STABLECOIN' => 3, 'DATE_CREATION' => 4, 'DATE_MODIFICATION' => 5, 'ID_GROUP_CREATION' => 6, 'ID_CREATION' => 7, 'ID_MODIFICATION' => 8, ),
+        BasePeer::TYPE_FIELDNAME => array ('id_token' => 0, 'name' => 1, 'ticker' => 2, 'is_stablecoin' => 3, 'date_creation' => 4, 'date_modification' => 5, 'id_group_creation' => 6, 'id_creation' => 7, 'id_modification' => 8, ),
+        BasePeer::TYPE_NUM => array (0, 1, 2, 3, 4, 5, 6, 7, 8, )
+    );
+
+    /** The enumerated values for this table */
+    protected static $enumValueSets = array(
+        TokenPeer::IS_STABLECOIN => array(
+            TokenPeer::IS_STABLECOIN_NO,
+            TokenPeer::IS_STABLECOIN_YES,
+        ),
     );
 
     /**
@@ -152,6 +167,51 @@ abstract class BaseTokenPeer
     }
 
     /**
+     * Gets the list of values for all ENUM columns
+     * @return array
+     */
+    public static function getValueSets()
+    {
+      return TokenPeer::$enumValueSets;
+    }
+
+    /**
+     * Gets the list of values for an ENUM column
+     *
+     * @param string $colname The ENUM column name.
+     *
+     * @return array list of possible values for the column
+     */
+    public static function getValueSet($colname)
+    {
+        $valueSets = TokenPeer::getValueSets();
+
+        if (!isset($valueSets[$colname])) {
+            throw new PropelException(sprintf('Column "%s" has no ValueSet.', $colname));
+        }
+
+        return $valueSets[$colname];
+    }
+
+    /**
+     * Gets the SQL value for the ENUM column value
+     *
+     * @param string $colname ENUM column name.
+     * @param string $enumVal ENUM value.
+     *
+     * @return int SQL value
+     */
+    public static function getSqlValueForEnum($colname, $enumVal)
+    {
+        $values = TokenPeer::getValueSet($colname);
+        if (!in_array($enumVal, $values)) {
+            throw new PropelException(sprintf('Value "%s" is not accepted in this enumerated column', $colname));
+        }
+
+        return array_search($enumVal, $values);
+    }
+
+    /**
      * Convenience method which changes table.column to alias.column.
      *
      * Using this method you can maintain SQL abstraction while using column aliases.
@@ -186,6 +246,7 @@ abstract class BaseTokenPeer
             $criteria->addSelectColumn(TokenPeer::ID_TOKEN);
             $criteria->addSelectColumn(TokenPeer::NAME);
             $criteria->addSelectColumn(TokenPeer::TICKER);
+            $criteria->addSelectColumn(TokenPeer::IS_STABLECOIN);
             $criteria->addSelectColumn(TokenPeer::DATE_CREATION);
             $criteria->addSelectColumn(TokenPeer::DATE_MODIFICATION);
             $criteria->addSelectColumn(TokenPeer::ID_GROUP_CREATION);
@@ -195,6 +256,7 @@ abstract class BaseTokenPeer
             $criteria->addSelectColumn($alias . '.id_token');
             $criteria->addSelectColumn($alias . '.name');
             $criteria->addSelectColumn($alias . '.ticker');
+            $criteria->addSelectColumn($alias . '.is_stablecoin');
             $criteria->addSelectColumn($alias . '.date_creation');
             $criteria->addSelectColumn($alias . '.date_modification');
             $criteria->addSelectColumn($alias . '.id_group_creation');
@@ -498,6 +560,17 @@ abstract class BaseTokenPeer
         }
 
         return array($obj, $col);
+    }
+
+    /**
+     * Gets the SQL value for IsStablecoin ENUM value
+     *
+     * @param  string $enumVal ENUM value to get SQL value for
+     * @return int SQL value
+     */
+    public static function getIsStablecoinSqlValue($enumVal)
+    {
+        return TokenPeer::getSqlValueForEnum(TokenPeer::IS_STABLECOIN, $enumVal);
     }
 
 
@@ -1672,6 +1745,12 @@ abstract class BaseTokenPeer
 
         if ($obj->isNew() || $obj->isColumnModified(TokenPeer::TICKER))
             $columns[TokenPeer::TICKER] = $obj->getTicker();
+
+        if ($obj->isNew() || $obj->isColumnModified(TokenPeer::IS_STABLECOIN))
+            $columns[TokenPeer::IS_STABLECOIN] = $obj->getIsStablecoin();
+
+        if ($obj->isNew() || $obj->isColumnModified(TokenPeer::IS_STABLECOIN))
+            $columns[TokenPeer::IS_STABLECOIN] = $obj->getIsStablecoin();
 
         }
 

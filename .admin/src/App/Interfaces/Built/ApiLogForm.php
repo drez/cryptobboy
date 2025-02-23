@@ -337,10 +337,10 @@ class ApiLogForm extends ApiLog
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span((($altValue['IdApiRbac']) ? $altValue['IdApiRbac'] : $altValue['ApiRbac_Model']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdApiRbac' class=''  j='editApiLog'") . td(span($altValue['ApiRbac_Action'].""), " c='ApiRbac__Action' j='editApiLog' i='".json_encode($data->getPrimaryKey())."'").
+                td(span(((isset($altValue['IdApiRbac']) && !empty($altValue['IdApiRbac'])) ? $altValue['IdApiRbac'] : $altValue['ApiRbac_Model'])." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdApiRbac' class=''  j='editApiLog'") . td(span($altValue['ApiRbac_Action'].""), " c='ApiRbac__Action' j='editApiLog' i='".json_encode($data->getPrimaryKey())."'").
                             td(span($altValue['ApiRbac_Query'].""), " c='ApiRbac__Query' j='editApiLog' i='".json_encode($data->getPrimaryKey())."'").
                             
-                td(span((($altValue['Time']) ? $altValue['Time'] : $data->getTime()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Time' class=''  j='editApiLog'") . $cCmoreCols.$actionCell
+                td(span(((isset($altValue['Time']) && !empty($altValue['Time'])) ? $altValue['Time'] : $data->getTime())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Time' class=''  j='editApiLog'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'

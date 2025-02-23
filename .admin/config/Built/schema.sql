@@ -283,6 +283,7 @@ CREATE TABLE `token`
     `id_token` INTEGER(10) NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(100) COMMENT 'Name',
     `ticker` VARCHAR(100) COMMENT 'Ticker',
+    `is_stablecoin` TINYINT NOT NULL COMMENT 'Stablecoin',
     `date_creation` DATETIME,
     `date_modification` DATETIME,
     `id_group_creation` INTEGER,

@@ -335,13 +335,13 @@ class AuthyGroupForm extends AuthyGroup
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span((($altValue['Name']) ? $altValue['Name'] : $data->getName()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editAuthyGroup'") . 
-                td(span((($altValue['Desc']) ? $altValue['Desc'] : $data->getDesc()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Desc' class=''  j='editAuthyGroup'") . 
-                td(span((($altValue['DefaultGroup']) ? $altValue['DefaultGroup'] : isntPo($data->getDefaultGroup())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DefaultGroup' class='center'  j='editAuthyGroup'") . 
-                td(span((($altValue['Admin']) ? $altValue['Admin'] : isntPo($data->getAdmin())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Admin' class='center'  j='editAuthyGroup'") . 
-                td(span((($altValue['RightsAll']) ? $altValue['RightsAll'] : $data->getRightsAll()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='RightsAll' class=''  j='editAuthyGroup'") . 
-                td(span((($altValue['RightsOwner']) ? $altValue['RightsOwner'] : $data->getRightsOwner()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='RightsOwner' class=''  j='editAuthyGroup'") . 
-                td(span((($altValue['RightsGroup']) ? $altValue['RightsGroup'] : $data->getRightsGroup()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='RightsGroup' class=''  j='editAuthyGroup'") . $cCmoreCols.$actionCell
+                td(span(((isset($altValue['Name']) && !empty($altValue['Name'])) ? $altValue['Name'] : $data->getName())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Name' class=''  j='editAuthyGroup'") . 
+                td(span(((isset($altValue['Desc']) && !empty($altValue['Desc'])) ? $altValue['Desc'] : $data->getDesc())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Desc' class=''  j='editAuthyGroup'") . 
+                td(span(((isset($altValue['DefaultGroup']) && !empty($altValue['DefaultGroup'])) ? $altValue['DefaultGroup'] : isntPo($data->getDefaultGroup()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DefaultGroup' class='center'  j='editAuthyGroup'") . 
+                td(span(((isset($altValue['Admin']) && !empty($altValue['Admin'])) ? $altValue['Admin'] : isntPo($data->getAdmin()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Admin' class='center'  j='editAuthyGroup'") . 
+                td(span(((isset($altValue['RightsAll']) && !empty($altValue['RightsAll'])) ? $altValue['RightsAll'] : $data->getRightsAll())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='RightsAll' class=''  j='editAuthyGroup'") . 
+                td(span(((isset($altValue['RightsOwner']) && !empty($altValue['RightsOwner'])) ? $altValue['RightsOwner'] : $data->getRightsOwner())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='RightsOwner' class=''  j='editAuthyGroup'") . 
+                td(span(((isset($altValue['RightsGroup']) && !empty($altValue['RightsGroup'])) ? $altValue['RightsGroup'] : $data->getRightsGroup())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='RightsGroup' class=''  j='editAuthyGroup'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'

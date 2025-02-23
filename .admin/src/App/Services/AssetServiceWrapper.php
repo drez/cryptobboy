@@ -70,7 +70,10 @@ class AssetServiceWrapper extends AssetService
     function getTickerHistory($request){
 
         foreach($request['data']['symbols'] as $symbols){
-            if (!isset($_SESSION[_AUTH_VAR]->sessVar['symbol_history'][$request['i']])) { // check time 24h
+            if (
+                !isset($_SESSION[_AUTH_VAR]->sessVar['symbol_history'][$request['i']]) ||
+                date('d') != date('d', $_SESSION[_AUTH_VAR]->sessVar['symbol_history']['time'])
+            ) { // check time 24h
                 try {
                     $binance = new Binance($_ENV['BINANCE_KEY'], $_ENV['BINANCE_SECRET']);
                     $results = $binance->system()->get24hr(['symbol' => $symbols]);

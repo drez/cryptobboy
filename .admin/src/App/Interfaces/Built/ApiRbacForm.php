@@ -377,15 +377,15 @@ class ApiRbacForm extends ApiRbac
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span((($altValue['DateCreation']) ? $altValue['DateCreation'] : $data->getDateCreation()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DateCreation' class=''  j='editApiRbac'") . 
-                td(span((($altValue['Description']) ? $altValue['Description'] : substr(strip_tags($data->getDescription()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Description' class=''  j='editApiRbac'") . 
-                td(span((($altValue['Model']) ? $altValue['Model'] : $data->getModel()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Model' class=''  j='editApiRbac'") . 
-                td(span((($altValue['Action']) ? $altValue['Action'] : $data->getAction()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Action' class=''  j='editApiRbac'") . 
-                td(span((($altValue['Body']) ? $altValue['Body'] : substr(strip_tags($data->getBody()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Body' class=''  j='editApiRbac'") . 
-                td(span((($altValue['Method']) ? $altValue['Method'] : isntPo($data->getMethod())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Method' class='center'  j='editApiRbac'") . 
-                td(span((($altValue['Scope']) ? $altValue['Scope'] : isntPo($data->getScope())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Scope' class='center'  j='editApiRbac'") . 
-                td(span((($altValue['Rule']) ? $altValue['Rule'] : isntPo($data->getRule())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Rule' class='center'  j='editApiRbac'") . 
-                td(span((($altValue['Count']) ? $altValue['Count'] : $data->getCount()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Count' class=''  j='editApiRbac'") . $cCmoreCols.$actionCell
+                td(span(((isset($altValue['DateCreation']) && !empty($altValue['DateCreation'])) ? $altValue['DateCreation'] : $data->getDateCreation())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='DateCreation' class=''  j='editApiRbac'") . 
+                td(span(((isset($altValue['Description']) && !empty($altValue['Description'])) ? $altValue['Description'] : substr(strip_tags($data->getDescription()), 0, 100))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Description' class=''  j='editApiRbac'") . 
+                td(span(((isset($altValue['Model']) && !empty($altValue['Model'])) ? $altValue['Model'] : $data->getModel())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Model' class=''  j='editApiRbac'") . 
+                td(span(((isset($altValue['Action']) && !empty($altValue['Action'])) ? $altValue['Action'] : $data->getAction())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Action' class=''  j='editApiRbac'") . 
+                td(span(((isset($altValue['Body']) && !empty($altValue['Body'])) ? $altValue['Body'] : substr(strip_tags($data->getBody()), 0, 100))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Body' class=''  j='editApiRbac'") . 
+                td(span(((isset($altValue['Method']) && !empty($altValue['Method'])) ? $altValue['Method'] : isntPo($data->getMethod()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Method' class='center'  j='editApiRbac'") . 
+                td(span(((isset($altValue['Scope']) && !empty($altValue['Scope'])) ? $altValue['Scope'] : isntPo($data->getScope()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Scope' class='center'  j='editApiRbac'") . 
+                td(span(((isset($altValue['Rule']) && !empty($altValue['Rule'])) ? $altValue['Rule'] : isntPo($data->getRule()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Rule' class='center'  j='editApiRbac'") . 
+                td(span(((isset($altValue['Count']) && !empty($altValue['Count'])) ? $altValue['Count'] : $data->getCount())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Count' class=''  j='editApiRbac'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -1214,10 +1214,10 @@ $this->fields['ApiRbac']['DateCreation']['html']
                         tr(
                             (isset($this->hookListColumnsApiLogFirst)?$this->hookListColumnsApiLogFirst:'').
                             
-                td(span((($altValue['IdApiRbac']) ? $altValue['IdApiRbac'] : $altValue['ApiRbac_Model']) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdApiRbac' class=''  j='editApiLog'") . td(span($altValue['ApiRbac_Action'].""), " c='ApiRbac__Action' j='editApiLog' i='".json_encode($data->getPrimaryKey())."'").
+                td(span(((isset($altValue['IdApiRbac']) && !empty($altValue['IdApiRbac'])) ? $altValue['IdApiRbac'] : $altValue['ApiRbac_Model'])." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdApiRbac' class=''  j='editApiLog'") . td(span($altValue['ApiRbac_Action'].""), " c='ApiRbac__Action' j='editApiLog' i='".json_encode($data->getPrimaryKey())."'").
                             td(span($altValue['ApiRbac_Query'].""), " c='ApiRbac__Query' j='editApiLog' i='".json_encode($data->getPrimaryKey())."'").
                             
-                td(span((($altValue['Time']) ? $altValue['Time'] : $data->getTime()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Time' class=''  j='editApiLog'") . 
+                td(span(((isset($altValue['Time']) && !empty($altValue['Time'])) ? $altValue['Time'] : $data->getTime())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Time' class=''  j='editApiLog'") . 
                             (isset($this->hookListColumnsApiLog)?$this->hookListColumnsApiLog:'').
                             $actionRow
                             

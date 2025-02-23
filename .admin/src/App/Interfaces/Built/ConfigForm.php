@@ -330,10 +330,10 @@ class ConfigForm extends Config
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span((($altValue['Category']) ? $altValue['Category'] : isntPo($data->getCategory())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Category' class='center'  j='editConfig'") . 
-                td(span((($altValue['Config']) ? $altValue['Config'] : $data->getConfig()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Config' class=''  j='editConfig'") . 
-                td(span((($altValue['Value']) ? $altValue['Value'] : substr(strip_tags($data->getValue()), 0, 100)) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Value' class=''  j='editConfig'") . 
-                td(span((($altValue['Description']) ? $altValue['Description'] : $data->getDescription()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Description' class=''  j='editConfig'") . $cCmoreCols.$actionCell
+                td(span(((isset($altValue['Category']) && !empty($altValue['Category'])) ? $altValue['Category'] : isntPo($data->getCategory()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Category' class='center'  j='editConfig'") . 
+                td(span(((isset($altValue['Config']) && !empty($altValue['Config'])) ? $altValue['Config'] : $data->getConfig())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Config' class=''  j='editConfig'") . 
+                td(span(((isset($altValue['Value']) && !empty($altValue['Value'])) ? $altValue['Value'] : substr(strip_tags($data->getValue()), 0, 100))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Value' class=''  j='editConfig'") . 
+                td(span(((isset($altValue['Description']) && !empty($altValue['Description'])) ? $altValue['Description'] : $data->getDescription())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Description' class=''  j='editConfig'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'

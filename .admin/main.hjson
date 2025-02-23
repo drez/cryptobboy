@@ -100,6 +100,7 @@
         "id_token()": ["primary()"],
         "name('Name')": ["varchar(100)"],
         "ticker('Ticker')": ["varchar(100)"],
+        "is_stablecoin('Stablecoin')": ["enum(No, Yes)",'required'],
         
         "validator": {"ticker":{"required":{"msg":"ticker_required","value":null}}},
       },

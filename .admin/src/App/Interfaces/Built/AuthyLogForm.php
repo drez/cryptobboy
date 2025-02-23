@@ -330,10 +330,10 @@ class AuthyLogForm extends AuthyLog
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span((($altValue['Timestamp']) ? $altValue['Timestamp'] : $data->getTimestamp()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Timestamp' class=''  j='editAuthyLog'") . 
-                td(span((($altValue['Login']) ? $altValue['Login'] : $data->getLogin()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Login' class=''  j='editAuthyLog'") . 
-                td(span((($altValue['Ip']) ? $altValue['Ip'] : $data->getIp()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Ip' class=''  j='editAuthyLog'") . 
-                td(span((($altValue['Count']) ? $altValue['Count'] : $data->getCount()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Count' class=''  j='editAuthyLog'") . $cCmoreCols.$actionCell
+                td(span(((isset($altValue['Timestamp']) && !empty($altValue['Timestamp'])) ? $altValue['Timestamp'] : $data->getTimestamp())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Timestamp' class=''  j='editAuthyLog'") . 
+                td(span(((isset($altValue['Login']) && !empty($altValue['Login'])) ? $altValue['Login'] : $data->getLogin())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Login' class=''  j='editAuthyLog'") . 
+                td(span(((isset($altValue['Ip']) && !empty($altValue['Ip'])) ? $altValue['Ip'] : $data->getIp())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Ip' class=''  j='editAuthyLog'") . 
+                td(span(((isset($altValue['Count']) && !empty($altValue['Count'])) ? $altValue['Count'] : $data->getCount())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Count' class=''  j='editAuthyLog'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'

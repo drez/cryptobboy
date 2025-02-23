@@ -364,11 +364,11 @@ class AssetExchangeForm extends AssetExchange
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span((($altValue['Type']) ? $altValue['Type'] : isntPo($data->getType())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editAssetExchange'") . 
-                td(span((($altValue['IdExchange']) ? $altValue['IdExchange'] : $Exchange_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdExchange' class=''  j='editAssetExchange'") . 
-                td(span((($altValue['FreeToken']) ? $altValue['FreeToken'] : str_replace(',', '.', $data->getFreeToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='FreeToken' class='right'  j='editAssetExchange'") . 
-                td(span((($altValue['LockedToken']) ? $altValue['LockedToken'] : str_replace(',', '.', $data->getLockedToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='LockedToken' class='right'  j='editAssetExchange'") . 
-                td(span((($altValue['FreezeToken']) ? $altValue['FreezeToken'] : str_replace(',', '.', $data->getFreezeToken())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='FreezeToken' class='right'  j='editAssetExchange'") . $cCmoreCols.$actionCell
+                td(span(((isset($altValue['Type']) && !empty($altValue['Type'])) ? $altValue['Type'] : isntPo($data->getType()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Type' class='center'  j='editAssetExchange'") . 
+                td(span(((isset($altValue['IdExchange']) && !empty($altValue['IdExchange'])) ? $altValue['IdExchange'] : $Exchange_Name)." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdExchange' class=''  j='editAssetExchange'") . 
+                td(span(((isset($altValue['FreeToken']) && !empty($altValue['FreeToken'])) ? $altValue['FreeToken'] : str_replace(',', '.', $data->getFreeToken()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='FreeToken' class='right'  j='editAssetExchange'") . 
+                td(span(((isset($altValue['LockedToken']) && !empty($altValue['LockedToken'])) ? $altValue['LockedToken'] : str_replace(',', '.', $data->getLockedToken()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='LockedToken' class='right'  j='editAssetExchange'") . 
+                td(span(((isset($altValue['FreezeToken']) && !empty($altValue['FreezeToken'])) ? $altValue['FreezeToken'] : str_replace(',', '.', $data->getFreezeToken()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='FreezeToken' class='right'  j='editAssetExchange'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'

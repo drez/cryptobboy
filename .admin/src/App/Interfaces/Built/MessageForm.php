@@ -347,8 +347,8 @@ try{
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span((($altValue['Label']) ? $altValue['Label'] : $data->getLabel()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Label' class=''  j='editMessage'") . 
-                td(span((($altValue['MessageI18n_Text_en_US']) ? $altValue['MessageI18n_Text_en_US'] : $data->getTranslation('en_US')->getText()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='MessageI18n_Text_en_US' class=''  j='editMessage'") . $cCmoreCols.$actionCell
+                td(span(((isset($altValue['Label']) && !empty($altValue['Label'])) ? $altValue['Label'] : $data->getLabel())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Label' class=''  j='editMessage'") . 
+                td(span(((isset($altValue['MessageI18n_Text_en_US']) && !empty($altValue['MessageI18n_Text_en_US'])) ? $altValue['MessageI18n_Text_en_US'] : $data->getTranslation('en_US')->getText())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='MessageI18n_Text_en_US' class=''  j='editMessage'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'

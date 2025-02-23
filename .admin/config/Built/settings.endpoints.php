@@ -388,6 +388,11 @@ $table['token'] = [
         'type' => 'VARCHAR',
         'description' => 'Ticker',
     ],
+    'is_stablecoin' => [
+        'type' => 'ENUM',
+        'description' => 'Stablecoin',
+        'valueSet' => null,
+    ],
     'date_creation' => [
         'type' => 'TIMESTAMP',
     ],

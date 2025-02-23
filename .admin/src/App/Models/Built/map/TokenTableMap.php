@@ -45,6 +45,11 @@ class TokenTableMap extends TableMap
         $this->addPrimaryKey('id_token', 'IdToken', 'INTEGER', true, 10, null);
         $this->addColumn('name', 'Name', 'VARCHAR', false, 100, null);
         $this->addColumn('ticker', 'Ticker', 'VARCHAR', false, 100, null);
+        $this->addColumn('is_stablecoin', 'IsStablecoin', 'ENUM', true, null, null);
+        $this->getColumn('is_stablecoin', false)->setValueSet(array (
+  0 => 'No',
+  1 => 'Yes',
+));
         $this->addColumn('date_creation', 'DateCreation', 'TIMESTAMP', false, null, null);
         $this->addColumn('date_modification', 'DateModification', 'TIMESTAMP', false, null, null);
         $this->addForeignKey('id_group_creation', 'IdGroupCreation', 'INTEGER', 'authy_group', 'id_authy_group', false, null, null);
@@ -56,6 +61,8 @@ class TokenTableMap extends TableMap
         $this->addValidator('id_token', 'match', 'propel.validator.MatchValidator', '/^(?:[0-9]*|null)$/', ('Token_IdToken_match_/^(?:[0-9]*|null)$/'));
         $this->addValidator('name', 'type', 'propel.validator.TypeValidator', 'string', ('Token_Name_type_string'));
         $this->addValidator('ticker', 'type', 'propel.validator.TypeValidator', 'string', ('Token_Ticker_type_string'));
+        $this->addValidator('is_stablecoin', 'required', 'propel.validator.RequiredValidator', '', ('Token_IsStablecoin_required'));
+        $this->addValidator('is_stablecoin', 'type', 'propel.validator.TypeValidator', 'string', ('Token_IsStablecoin_type_string'));
     } // initialize()
 
     /**

@@ -473,12 +473,12 @@ class AuthyForm extends Authy
                 $actionCell =  td($this->canDelete . $this->listActionCell, " class='actionrow' ");
 
                 $tr .= tr(
-                td(span((($altValue['Username']) ? $altValue['Username'] : $data->getUsername()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Username' class=''  j='editAuthy'") . 
-                td(span((($altValue['Fullname']) ? $altValue['Fullname'] : $data->getFullname()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Fullname' class=''  j='editAuthy'") . 
-                td(span((($altValue['Email']) ? $altValue['Email'] : $data->getEmail()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Email' class=''  j='editAuthy'") . 
-                td(span((($altValue['Expire']) ? $altValue['Expire'] : $data->getExpire()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Expire' class=''  j='editAuthy'") . 
-                td(span((($altValue['Deactivate']) ? $altValue['Deactivate'] : isntPo($data->getDeactivate())) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Deactivate' class='center'  j='editAuthy'") . 
-                td(span((($altValue['IdAuthyGroup']) ? $altValue['IdAuthyGroup'] : $AuthyGroupRelatedByIdAuthyGroup_Name) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdAuthyGroup' class=''  j='editAuthy'") . $cCmoreCols.$actionCell
+                td(span(((isset($altValue['Username']) && !empty($altValue['Username'])) ? $altValue['Username'] : $data->getUsername())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Username' class=''  j='editAuthy'") . 
+                td(span(((isset($altValue['Fullname']) && !empty($altValue['Fullname'])) ? $altValue['Fullname'] : $data->getFullname())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Fullname' class=''  j='editAuthy'") . 
+                td(span(((isset($altValue['Email']) && !empty($altValue['Email'])) ? $altValue['Email'] : $data->getEmail())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Email' class=''  j='editAuthy'") . 
+                td(span(((isset($altValue['Expire']) && !empty($altValue['Expire'])) ? $altValue['Expire'] : $data->getExpire())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Expire' class=''  j='editAuthy'") . 
+                td(span(((isset($altValue['Deactivate']) && !empty($altValue['Deactivate'])) ? $altValue['Deactivate'] : isntPo($data->getDeactivate()))." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Deactivate' class='center'  j='editAuthy'") . 
+                td(span(((isset($altValue['IdAuthyGroup']) && !empty($altValue['IdAuthyGroup'])) ? $altValue['IdAuthyGroup'] : $AuthyGroupRelatedByIdAuthyGroup_Name)." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='IdAuthyGroup' class=''  j='editAuthy'") . $cCmoreCols.$actionCell
                 , " 
                         rid='".json_encode($data->getPrimaryKey())."' data-iterator='".$pcData->getPosition()."'
                         r='data'
@@ -1450,7 +1450,7 @@ $('.cntOnglet').parent().tabs();
                         tr(
                             (isset($this->hookListColumnsAuthyGroupXFirst)?$this->hookListColumnsAuthyGroupXFirst:'').
                             
-                td(span((($altValue['IdAuthyGroup']) ? $altValue['IdAuthyGroup'] : $AuthyGroup_Name) ?? ''." "), " crPk = '".(($data->getAuthyGroup())?$data->getAuthyGroup()->getIdAuthyGroup():0)."' i='" . json_encode($data->getPrimaryKey()) . "' c='IdAuthyGroup' class=''  j='editAuthyGroupX'") . 
+                td(span(((isset($altValue['IdAuthyGroup']) && !empty($altValue['IdAuthyGroup'])) ? $altValue['IdAuthyGroup'] : $AuthyGroup_Name)." "), " crPk = '".(($data->getAuthyGroup())?$data->getAuthyGroup()->getIdAuthyGroup():0)."' i='" . json_encode($data->getPrimaryKey()) . "' c='IdAuthyGroup' class=''  j='editAuthyGroupX'") . 
                             (isset($this->hookListColumnsAuthyGroupX)?$this->hookListColumnsAuthyGroupX:'').
                             $actionRow
                             
@@ -1767,10 +1767,10 @@ $('.cntOnglet').parent().tabs();
                         tr(
                             (isset($this->hookListColumnsAuthyLogFirst)?$this->hookListColumnsAuthyLogFirst:'').
                             
-                td(span((($altValue['Timestamp']) ? $altValue['Timestamp'] : $data->getTimestamp()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Timestamp' class=''  j='editAuthyLog'") . 
-                td(span((($altValue['Login']) ? $altValue['Login'] : $data->getLogin()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Login' class=''  j='editAuthyLog'") . 
-                td(span((($altValue['Ip']) ? $altValue['Ip'] : $data->getIp()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Ip' class=''  j='editAuthyLog'") . 
-                td(span((($altValue['Count']) ? $altValue['Count'] : $data->getCount()) ?? ''." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Count' class=''  j='editAuthyLog'") . 
+                td(span(((isset($altValue['Timestamp']) && !empty($altValue['Timestamp'])) ? $altValue['Timestamp'] : $data->getTimestamp())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Timestamp' class=''  j='editAuthyLog'") . 
+                td(span(((isset($altValue['Login']) && !empty($altValue['Login'])) ? $altValue['Login'] : $data->getLogin())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Login' class=''  j='editAuthyLog'") . 
+                td(span(((isset($altValue['Ip']) && !empty($altValue['Ip'])) ? $altValue['Ip'] : $data->getIp())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Ip' class=''  j='editAuthyLog'") . 
+                td(span(((isset($altValue['Count']) && !empty($altValue['Count'])) ? $altValue['Count'] : $data->getCount())." "), "  i='" . json_encode($data->getPrimaryKey()) . "' c='Count' class=''  j='editAuthyLog'") . 
                             (isset($this->hookListColumnsAuthyLog)?$this->hookListColumnsAuthyLog:'').
                             $actionRow
                             

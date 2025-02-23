@@ -30,6 +30,7 @@ use App\Trade;
  * @method TokenQuery orderByIdToken($order = Criteria::ASC) Order by the id_token column
  * @method TokenQuery orderByName($order = Criteria::ASC) Order by the name column
  * @method TokenQuery orderByTicker($order = Criteria::ASC) Order by the ticker column
+ * @method TokenQuery orderByIsStablecoin($order = Criteria::ASC) Order by the is_stablecoin column
  * @method TokenQuery orderByDateCreation($order = Criteria::ASC) Order by the date_creation column
  * @method TokenQuery orderByDateModification($order = Criteria::ASC) Order by the date_modification column
  * @method TokenQuery orderByIdGroupCreation($order = Criteria::ASC) Order by the id_group_creation column
@@ -39,6 +40,7 @@ use App\Trade;
  * @method TokenQuery groupByIdToken() Group by the id_token column
  * @method TokenQuery groupByName() Group by the name column
  * @method TokenQuery groupByTicker() Group by the ticker column
+ * @method TokenQuery groupByIsStablecoin() Group by the is_stablecoin column
  * @method TokenQuery groupByDateCreation() Group by the date_creation column
  * @method TokenQuery groupByDateModification() Group by the date_modification column
  * @method TokenQuery groupByIdGroupCreation() Group by the id_group_creation column
@@ -82,6 +84,7 @@ use App\Trade;
  *
  * @method Token findOneByName(string $name) Return the first Token filtered by the name column
  * @method Token findOneByTicker(string $ticker) Return the first Token filtered by the ticker column
+ * @method Token findOneByIsStablecoin(int $is_stablecoin) Return the first Token filtered by the is_stablecoin column
  * @method Token findOneByDateCreation(string $date_creation) Return the first Token filtered by the date_creation column
  * @method Token findOneByDateModification(string $date_modification) Return the first Token filtered by the date_modification column
  * @method Token findOneByIdGroupCreation(int $id_group_creation) Return the first Token filtered by the id_group_creation column
@@ -91,6 +94,7 @@ use App\Trade;
  * @method array findByIdToken(int $id_token) Return Token objects filtered by the id_token column
  * @method array findByName(string $name) Return Token objects filtered by the name column
  * @method array findByTicker(string $ticker) Return Token objects filtered by the ticker column
+ * @method array findByIsStablecoin(int $is_stablecoin) Return Token objects filtered by the is_stablecoin column
  * @method array findByDateCreation(string $date_creation) Return Token objects filtered by the date_creation column
  * @method array findByDateModification(string $date_modification) Return Token objects filtered by the date_modification column
  * @method array findByIdGroupCreation(int $id_group_creation) Return Token objects filtered by the id_group_creation column
@@ -204,7 +208,7 @@ abstract class BaseTokenQuery extends ModelCriteria
      */
     protected function findPkSimple($key, $con)
     {
-        $sql = 'SELECT `id_token`, `name`, `ticker`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `token` WHERE `id_token` = :p0';
+        $sql = 'SELECT `id_token`, `name`, `ticker`, `is_stablecoin`, `date_creation`, `date_modification`, `id_group_creation`, `id_creation`, `id_modification` FROM `token` WHERE `id_token` = :p0';
         try {
             $stmt = $con->prepare($sql);
             $stmt->bindValue(':p0', $key, PDO::PARAM_INT);
@@ -394,6 +398,33 @@ abstract class BaseTokenQuery extends ModelCriteria
         }
 
         return $this->addUsingAlias(TokenPeer::TICKER, $ticker, $comparison);
+    }
+
+    /**
+     * Filter the query on the is_stablecoin column
+     *
+     * @param     mixed $isStablecoin The value to use as filter
+     * @param     string $comparison Operator to use for the column comparison, defaults to Criteria::EQUAL
+     *
+     * @return TokenQuery The current query, for fluid interface
+     * @throws PropelException - if the value is not accepted by the enum.
+     */
+    public function filterByIsStablecoin($isStablecoin = null, $comparison = null)
+    {
+        if (is_scalar($isStablecoin)) {
+            $isStablecoin = TokenPeer::getSqlValueForEnum(TokenPeer::IS_STABLECOIN, $isStablecoin);
+        } elseif (is_array($isStablecoin)) {
+            $convertedValues = array();
+            foreach ($isStablecoin as $value) {
+                $convertedValues[] = TokenPeer::getSqlValueForEnum(TokenPeer::IS_STABLECOIN, $value);
+            }
+            $isStablecoin = $convertedValues;
+            if (null === $comparison) {
+                $comparison = Criteria::IN;
+            }
+        }
+
+        return $this->addUsingAlias(TokenPeer::IS_STABLECOIN, $isStablecoin, $comparison);
     }
 
     /**
