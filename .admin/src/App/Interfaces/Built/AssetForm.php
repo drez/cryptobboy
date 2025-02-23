@@ -1214,23 +1214,23 @@ $this->fields['Asset']['IdToken']['html']
 
         $this->TableName = 'Trade';
         $altValue = array (
-  'IdTrade' => '',
-  'StartAvg' => '',
-  'Type' => '',
-  'IdExchange' => '',
-  'IdAsset' => '',
-  'IdSymbol' => '',
-  'Date' => '',
-  'Qty' => '',
-  'GrossUsd' => '',
-  'Commission' => '',
-  'CommissionAsset' => '',
-  'OrderId' => '',
-  'DateCreation' => '',
-  'DateModification' => '',
-  'IdGroupCreation' => '',
-  'IdCreation' => '',
-  'IdModification' => '',
+  'IdTrade' => NULL,
+  'StartAvg' => NULL,
+  'Type' => NULL,
+  'IdExchange' => NULL,
+  'IdAsset' => NULL,
+  'IdSymbol' => NULL,
+  'Date' => NULL,
+  'Qty' => NULL,
+  'GrossUsd' => NULL,
+  'Commission' => NULL,
+  'CommissionAsset' => NULL,
+  'OrderId' => NULL,
+  'DateCreation' => NULL,
+  'DateModification' => NULL,
+  'IdGroupCreation' => NULL,
+  'IdCreation' => NULL,
+  'IdModification' => NULL,
 );
         $dataObj = null;
         $search = ['order' => null, 'page' => null, ];
@@ -1578,19 +1578,19 @@ $this->fields['Asset']['IdToken']['html']
 
         $this->TableName = 'AssetExchange';
         $altValue = array (
-  'IdAssetExchange' => '',
-  'IdAsset' => '',
-  'Type' => '',
-  'IdExchange' => '',
-  'IdToken' => '',
-  'FreeToken' => '',
-  'LockedToken' => '',
-  'FreezeToken' => '',
-  'DateCreation' => '',
-  'DateModification' => '',
-  'IdGroupCreation' => '',
-  'IdCreation' => '',
-  'IdModification' => '',
+  'IdAssetExchange' => NULL,
+  'IdAsset' => NULL,
+  'Type' => NULL,
+  'IdExchange' => NULL,
+  'IdToken' => NULL,
+  'FreeToken' => NULL,
+  'LockedToken' => NULL,
+  'FreezeToken' => NULL,
+  'DateCreation' => NULL,
+  'DateModification' => NULL,
+  'IdGroupCreation' => NULL,
+  'IdCreation' => NULL,
+  'IdModification' => NULL,
 );
         $dataObj = null;
         $search = ['order' => null, 'page' => null, ];

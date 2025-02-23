@@ -1261,8 +1261,8 @@ $('.cntOnglet').parent().tabs();
 
         $this->TableName = 'AuthyGroupX';
         $altValue = array (
-  'IdAuthy' => '',
-  'IdAuthyGroup' => '',
+  'IdAuthy' => NULL,
+  'IdAuthyGroup' => NULL,
 );
         $dataObj = null;
         $search = ['order' => null, 'page' => null, ];
@@ -1581,14 +1581,14 @@ $('.cntOnglet').parent().tabs();
 
         $this->TableName = 'AuthyLog';
         $altValue = array (
-  'IdAuthyLog' => '',
-  'IdAuthy' => '',
-  'Timestamp' => '',
-  'Login' => '',
-  'Userid' => '',
-  'Result' => '',
-  'Ip' => '',
-  'Count' => '',
+  'IdAuthyLog' => NULL,
+  'IdAuthy' => NULL,
+  'Timestamp' => NULL,
+  'Login' => NULL,
+  'Userid' => NULL,
+  'Result' => NULL,
+  'Ip' => NULL,
+  'Count' => NULL,
 );
         $dataObj = null;
         $search = ['order' => null, 'page' => null, ];

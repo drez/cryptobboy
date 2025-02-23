@@ -1019,10 +1019,10 @@ $this->fields['ApiRbac']['DateCreation']['html']
 
         $this->TableName = 'ApiLog';
         $altValue = array (
-  'IdApiLog' => '',
-  'IdApiRbac' => '',
-  'IdAuthy' => '',
-  'Time' => '',
+  'IdApiLog' => NULL,
+  'IdApiRbac' => NULL,
+  'IdAuthy' => NULL,
+  'Time' => NULL,
 );
         $dataObj = null;
         $search = ['order' => null, 'page' => null, ];

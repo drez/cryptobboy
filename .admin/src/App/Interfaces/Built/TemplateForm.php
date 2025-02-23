@@ -941,15 +941,15 @@ $this->fields['Template']['Name']['html']
 
         $this->TableName = 'TemplateFile';
         $altValue = array (
-  'IdTemplateFile' => '',
-  'IdTemplate' => '',
-  'Name' => '',
-  'File' => '',
-  'DateCreation' => '',
-  'DateModification' => '',
-  'IdGroupCreation' => '',
-  'IdCreation' => '',
-  'IdModification' => '',
+  'IdTemplateFile' => NULL,
+  'IdTemplate' => NULL,
+  'Name' => NULL,
+  'File' => NULL,
+  'DateCreation' => NULL,
+  'DateModification' => NULL,
+  'IdGroupCreation' => NULL,
+  'IdCreation' => NULL,
+  'IdModification' => NULL,
 );
         $dataObj = null;
         $search = ['order' => null, 'page' => null, ];

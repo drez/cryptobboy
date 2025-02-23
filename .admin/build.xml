@@ -185,7 +185,7 @@
 
         <delete dir="./public/css/min" />
         <delete dir="./public/js/min" />
-        <echo>&lt;?php echo 'Project cleaned';</echo>
+        <echo msg="Project cleaned" />
     </target>
 
     <!-- ============================================  -->
